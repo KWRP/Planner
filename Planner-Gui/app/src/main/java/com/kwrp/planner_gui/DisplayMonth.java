@@ -1,6 +1,7 @@
 package com.kwrp.planner_gui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -71,7 +75,24 @@ public class DisplayMonth extends AppCompatActivity {
                 myIntent.putExtra("date", dateSelected);
                 startActivity(myIntent);
                 Log.d("TESTING!!!", getFilesDir().getAbsolutePath());
-
+/*
+                File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
+                if (!eventsXml.exists()) {
+                    try {
+                        eventsXml.createNewFile();
+                        eventsXml.mkdir();
+                    }catch(IOException e) {
+                        e.printStackTrace();
+                        Log.d("---JAVA TESTING!!!---", "File not created!");
+                    }
+                    if (eventsXml.exists()) Log.d("---JAVA TESTING!!!---", "File created!");
+                } else {
+                    Log.d("---JAVA TESTING!!!---", "File already exists!");
+                }
+                Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
+*/
+                File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
+                if (!eventsXml.exists()) Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
                 //Integer v = ((GridView) findViewById(gridview)).getChildCount();
                 //TextView view = (TextView)((GridView) findViewById(gridview)).getChildAt(arg2);
                 //view.setBackgroundColor(Color.rgb(255, 155, 155));

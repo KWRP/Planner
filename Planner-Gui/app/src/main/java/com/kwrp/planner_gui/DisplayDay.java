@@ -3,12 +3,10 @@ package com.kwrp.planner_gui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -16,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,8 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import static android.R.id.input;
 
 
 public class DisplayDay extends AppCompatActivity {
@@ -68,7 +63,7 @@ public class DisplayDay extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Dialog dialog =  createEventDialog();
+                Dialog dialog = createEventDialog();
                 dialog.show();
             }
         });
@@ -204,9 +199,11 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     private void createNewEvent(String title, String description, String start, String duration) {
-        Log.d("TESTING!!!", getFilesDir().getAbsolutePath());
-        Log.d("Testing", jniCreateEvent(
-                title, description, start, duration, getFilesDir().getAbsolutePath() ));
+        String filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+
+        Log.d("---Java Test---", filePath);
+        Log.d("Java Test createEvent", jniCreateEvent(
+                title, description, start, duration, filePath));
 
     }
 
@@ -216,6 +213,8 @@ public class DisplayDay extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String jniGetEvents();
+
     public native String jniGetCurrentDate();
+
     public native String jniCreateEvent(String title, String description, String start, String duration, String dir);
 }

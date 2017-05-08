@@ -4,8 +4,6 @@
 #include <iostream>
 #include "include/tinyxml2.h"
 #include "include/xml-dao.hpp"
-#include <android/asset_manager.h>
-#include <android/log.h>
 
 // DisplayMonth JNI calls
 extern "C"
@@ -72,24 +70,28 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     const char *nativeDescription = env->GetStringUTFChars(description, 0);
     const char *nativeStart = env->GetStringUTFChars(start, 0);
     const char *nativeDuration = env->GetStringUTFChars(duration, 0);
-    std::string path = (char *) env->GetStringUTFChars(dir, 0);
+    const char *nativePath = env->GetStringUTFChars(dir, 0);
 
-    //bool newEvent = addEvent((char *) 06, (char *) 05, (char *) 2017, nativeTitle,
-                         //    nativeDescription, nativeStart, nativeDuration, path.c_str());
+    bool addDate = createXml(nativePath);
+    bool getDate = checkDate(nativePath, "5", "5", "2017");
 
-   // bool getDate = checkDate((char *) 2017, (char *) 05, (char *) 05);
+    bool newEvent = addEvent(nativePath, "6", "5", "2017", nativeTitle,
+                             nativeDescription, nativeStart, nativeDuration);
 
-    bool testing = test(path);
-   // bool getDate = checkDate((char *) 1, (char *) 1, (char *) 1);
+    //bool getDate2 = checkDate(nativePath, "6", "5", "2017");
 
-    //__android_log_print(ANDROID_LOG_INFO, "TESTTINGLOG!!!", "test directory = %s", path.c_str());
+    (env)->ReleaseStringUTFChars(title, nativeTitle);
+    (env)->ReleaseStringUTFChars(description, nativeDescription);
+    (env)->ReleaseStringUTFChars(start, nativeStart);
+    (env)->ReleaseStringUTFChars(duration, nativeDuration);
+    (env)->ReleaseStringUTFChars(dir, nativePath);
+
     std::string confirm = "";
-
-    if (getDate) {
+    if (newEvent) {
         confirm = "Event Created!!";
     } else {
         confirm = "Event Creation Failed!!!";
     }
-    
+
     return env->NewStringUTF(confirm.c_str());
 }
