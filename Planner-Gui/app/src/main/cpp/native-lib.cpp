@@ -80,7 +80,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
    // bool getDate = checkDate((char *) 2017, (char *) 05, (char *) 05);
 
     bool testing = test(path);
-    bool getDate = checkDate((char *) 1, (char *) 1, (char *) 1);
+   // bool getDate = checkDate((char *) 1, (char *) 1, (char *) 1);
 
     //__android_log_print(ANDROID_LOG_INFO, "TESTTINGLOG!!!", "test directory = %s", path.c_str());
     std::string confirm = "";
