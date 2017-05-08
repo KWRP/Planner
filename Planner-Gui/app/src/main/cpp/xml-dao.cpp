@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "include/tinyxml2.h"
 #include "include/xml-dao.hpp"
-#include "../../../../../../AppData/Local/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include/android/log.h"
+#include <android/log.h>
 
 using namespace tinyxml2;
 #ifndef XMLCheckResult
