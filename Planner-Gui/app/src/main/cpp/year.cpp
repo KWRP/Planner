@@ -1,30 +1,27 @@
+#include "Year.h"
 #include <string>
-#include "include/year.hpp"
-#include "include/helpers.hpp"
-
-using namespace std;
 
 Year::Year(string date) {
 	this->date = date;
-    setMonths(date);
+	for (int i = 0; i < 12; i++) {//changing though the months
+		string month = "";
+		if (i < 9)
+			month = "0" + to_string(i+1);
+		else
+			month = to_string(i+1);
+		date = date.erase(3, 2);
+		date = date.insert(3, month);
+		Month monthx(date);
+		months.push_back(monthx);
+	}
 }
-
-Year::Year() {}
 Year::~Year() {}
-
-Month Year::getMonth(int mon) {
-	return months.at(mon -1);
+Month Year::getMonth(string date) {
+	int mon = stoi(date.substr(3, 2));
+	return months.at(mon - 1);
 }
-
-void Year::setMonths(string date) {
-    Month month(date);
-    months.push_back(month);
-}
-
 string Year::toString() {
 	string result = "";
-
-	result = "The year is " + date + " there are " + numToString(months.size()) + " in a year.";
+	result = "The year is " + date + " there are " + to_string(months.size()) + "months in a year.";
 	return result;
 }
-

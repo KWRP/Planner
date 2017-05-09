@@ -1,13 +1,15 @@
-#include "include/event.hpp"
+#include <iostream>
+#include "include/Event.h"
+#include <string>
 
-using namespace std;
-using std::string;
-Event::Event(string title, string description, int startTime, int duration) {
+Event::Event(string title, string description, int startTime, int duration) {//will change when the xml for event is working
 	this->description = description;
 	this->title = title;
 	this->startTime = startTime;
 	this->duration = duration;
 }
-
-Event::Event(){};
-Event::~Event(){};
+string Event::toString() {
+	string result = "";
+	result = "title :" + title + "\ndescription :" + description + "\nstart time :" + to_string(startTime) + "\nduration :"+ to_string(duration);//will change when the xml for event is working
+	return result;
+}

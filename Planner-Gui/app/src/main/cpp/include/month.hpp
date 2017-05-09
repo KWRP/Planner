@@ -1,22 +1,21 @@
 #pragma once
 #ifndef MONTH_H
 #define MONTH_H
-
-#include <string>
-#include <vector>
-#include "day.hpp"
+#include "Week.h"
 
 class Month {
-private:
-	std::vector<Day> day; //maybe use an arrray
-	std::string date;
+private:	Week *weeks[6];
+			string date;
+			int numberOfDayInMonth(string date);
+			string changeDate(string date, bool forward);
 public:
-	void setDate(std::string date) { this->date = date; }
-	std::string getDate() { return date; }
-	std::string toString();
-	Day getDay(std::string theDay);
+	void setDate(string date) { this->date = date; }
+	string getDate() { return date; }
+	string toString();
+	Day* getDay(string theDay);
+	Week* getWeek(string theWeek);
 
-	Month(std::string date);
+	Month(string );
 	Month();
 	~Month();
 };

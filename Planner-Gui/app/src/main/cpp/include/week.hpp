@@ -2,23 +2,24 @@
 #ifndef WEEK_H
 #define WEEK_H
 
-#include <string>
-#include <vector>
-#include "day.hpp"
+#include "Day.h"
 
 class Week {
 private:
-	std::string date;
-	std::vector<Day> week;
-
+	string date;
+	Day* week [7]; //array of days,  should probable change to an array
+protected:
+	int dayOfWeek(string date);
 public:
-	std::string getDate() { return date; }
-	void setDate(std::string date) { this->date = date; }
-	Day getDay(std::string day);
-	std::string toString();
-
-	Week(std::string date);
+	string getDate() { return date; }
+	void setDate(string date) { this->date = date; }
+	Day* getDay(string day);
+	Day* getDay(int day);
+	string toString();
 	Week();
+	Week(string date);
 	~Week();
+	int numberOfDayInMonth(string date);
+	string changeDate(string date, bool forward);
 };
 #endif
