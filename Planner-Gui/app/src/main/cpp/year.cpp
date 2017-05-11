@@ -1,4 +1,4 @@
-#include "Year.h"
+#include "year.hpp"
 #include <string>
 
 Year::Year(string date) {
@@ -6,9 +6,9 @@ Year::Year(string date) {
 	for (int i = 0; i < 12; i++) {//changing though the months
 		string month = "";
 		if (i < 9)
-			month = "0" + to_string(i+1);
+			month = "0" + numToString(i+1);
 		else
-			month = to_string(i+1);
+			month = numToString(i+1);
 		date = date.erase(3, 2);
 		date = date.insert(3, month);
 		Month monthx(date);
@@ -16,12 +16,12 @@ Year::Year(string date) {
 	}
 }
 Year::~Year() {}
-Month Year::getMonth(string date) {
-	int mon = stoi(date.substr(3, 2));
-	return months.at(mon - 1);
-}
+//Month Year::getMonth(string date) {
+	//int mon = atoi(date.substr(3, 2).data());
+	//return months.at(mon - 1);
+//}
 string Year::toString() {
 	string result = "";
-	result = "The year is " + date + " there are " + to_string(months.size()) + "months in a year.";
+	result = "The year is " + date + " there are " + numToString(months.size()) + "months in a year.";
 	return result;
 }

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "include/Event.h"
+#include "include/event.hpp"
 #include <string>
 
 Event::Event(string title, string description, int startTime, int duration) {//will change when the xml for event is working
@@ -10,6 +10,6 @@ Event::Event(string title, string description, int startTime, int duration) {//w
 }
 string Event::toString() {
 	string result = "";
-	result = "title :" + title + "\ndescription :" + description + "\nstart time :" + to_string(startTime) + "\nduration :"+ to_string(duration);//will change when the xml for event is working
+	result = "title :" + title + "\ndescription :" + description + "\nstart time :" + numToString(startTime) + "\nduration :"+ numToString(duration);//will change when the xml for event is working
 	return result;
 }

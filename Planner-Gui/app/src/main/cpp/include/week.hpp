@@ -2,7 +2,7 @@
 #ifndef WEEK_H
 #define WEEK_H
 
-#include "Day.h"
+#include "day.hpp"
 
 class Week {
 private:

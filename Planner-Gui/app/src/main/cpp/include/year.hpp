@@ -15,10 +15,10 @@ public:
 	void setDate(std::string date) { this->date = date; }
 	std::string getDate() { return date; }
 	std::string toString();
-	Month getMonth(int mon);
-	void setMonths(std::string date);
+	//Month getMonth(int mon);
+	//void setMonths(std::string date);
 	Year(std::string date);
-	Year();
+	//Year();
 	~Year();
 
 };

@@ -1,11 +1,11 @@
-#include "include/Week.h"
+#include "include/week.hpp"
 #include <string>
-/*need to fix replaces in week and month for 02/32/2334  3/23/2342
-and finish forcing every week to start on a monday*/
+
+using namespace std;
 int Week::dayOfWeek(string date) {
-	int day = stoi(date.substr(0, 2));
-	int mon = stoi(date.substr(3, 2));
-	int year = stoi(date.substr(6, 4));
+	int day = atoi(date.substr(0, 2).data());
+	int mon = atoi(date.substr(3, 2).data());
+	int year = atoi(date.substr(6, 4).data());
 	std::tm time_in = { 0, 0, 0, // second, minute, hour
 	day, mon-1, year - 1900 }; // 1-based day, 0-based month, year since 1900
 
@@ -20,13 +20,13 @@ int Week::dayOfWeek(string date) {
 	return n;
 }
 int Week::numberOfDayInMonth(string date) {
-	int mon = stoi(date.substr(3, 2));
+	int mon = atoi(date.substr(3, 2).data());
 	int daysInMonth = 1;
 	if (mon == 04 || mon == 06 || mon == 9 || mon == 11) {
 		daysInMonth = 30;
 	}
 	else if (mon == 02) {
-		int year = stoi(date.substr(6, 4));
+		int year = atoi(date.substr(6, 4).data());
 		if (year % 4 == 0 && year % 100 && year % 400) {
 			daysInMonth = 29;
 		}
@@ -41,48 +41,48 @@ int Week::numberOfDayInMonth(string date) {
 }
 
 string Week::changeDate(string date, bool forward) {
-	int month = stoi(date.substr(3, 2));
-	int year = stoi(date.substr(6, 4));
+	int month = atoi(date.substr(3, 2).data());
+	int year = atoi(date.substr(6, 4).data());
 	if (forward) {
 		if (month == 12) {//checking that if it's the end of the year
 			year++;
-			date = "01/01/" + to_string(year);
+			date = "01/01/" + numToString(year);
 		}
 		else {//checks if it's the end of the month
 			if (month + 1 < 10)
-				date = "01/0" + to_string(month + 1) + "/" + to_string(year);
+				date = "01/0" + numToString(month + 1) + "/" + numToString(year);
 			else
-				date = "01/" + to_string(month + 1) + "/" + to_string(year);
+				date = "01/" + numToString(month + 1) + "/" + numToString(year);
 		}
 	}
 	else {
 		if (month == 1) {//checking that if it's the end of the year
 			year--;
-			date = "31/12/" + to_string(year);
+			date = "31/12/" + numToString(year);
 		}
 		else {
-			int day = numberOfDayInMonth(date.replace(3, 2, to_string(month-1)));
+			int day = numberOfDayInMonth(date.replace(3, 2, numToString(month-1)));
 			if (month - 1 < 10)
-				date = to_string(day) + "/" + "0" + to_string(month - 1) + "/" + to_string(year);
+				date = numToString(day) + "/" + "0" + numToString(month - 1) + "/" + numToString(year);
 			else
-				date = to_string(day) + "/" + to_string(month - 1) + "/" + to_string(year);
+				date = numToString(day) + "/" + numToString(month - 1) + "/" + numToString(year);
 		}
 	}
 	return date;
 }
 Week::Week(string date) {//might need to check that the substr is correct
 		this->date = date;
-		int dayChangeMon = stoi(date.substr(0, 2)) - dayOfWeek(date);
+		int dayChangeMon = atoi(date.substr(0, 2).data()) - dayOfWeek(date);
 		if (dayChangeMon < 0) {
 			date = changeDate(date, false);
-			date = date.replace(0, 2, to_string(stoi(date.substr(0, 2)) + dayChangeMon));
+			date = date.replace(0, 2, numToString(atoi(date.substr(0, 2).data()) + dayChangeMon));
 		}
 		else {
 			if (dayChangeMon < 10) {
-				date = date.replace(0, 2, "0" + to_string(dayChangeMon));
+				date = date.replace(0, 2, "0" + numToString(dayChangeMon));
 			}
 			else {
-				date = date.replace(0, 2, to_string(dayChangeMon));
+				date = date.replace(0, 2, numToString(dayChangeMon));
 			}
 		}
 		string thedate = date;
@@ -90,19 +90,19 @@ Week::Week(string date) {//might need to check that the substr is correct
 	for (int i = 0; i < 7; i++) {
 		int dateOfWeek = 0;
 		if (i == 0) {
-			 dateOfWeek = stoi(date.substr(0, 2));
+			 dateOfWeek = atoi(date.substr(0, 2).data());
 		}
 		else
-			 dateOfWeek = (stoi(date.substr(0, 2)) + 1);
+			 dateOfWeek = (atoi(date.substr(0, 2).data()) + 1);
 		if (dateOfWeek > daysInMonth) {
 			date = changeDate(date, true);
 		}
 		else {
 			date = date.erase(0, 2);
 			if (dateOfWeek < 10)
-				date = date.insert(0, "0" + to_string(dateOfWeek));
+				date = date.insert(0, "0" + numToString(dateOfWeek));
 			else
-				date = date.insert(0, to_string(dateOfWeek));
+				date = date.insert(0, numToString(dateOfWeek));
 		}
 		Day *dayx = new Day(date);
 	//	cout << "day to string " + dayx->toString() << endl;
@@ -113,18 +113,18 @@ Week::Week(string date) {//might need to check that the substr is correct
 Week::Week() {
 	time_t t = time(0);
 	struct tm *now = localtime(&t);
-	date = to_string(now->tm_mday) + "/" + to_string(1 + now->tm_mon) + "/" + to_string(now->tm_year + 1900);
-	int dayChangeMon = stoi(date.substr(0, 2)) - dayOfWeek(date);
+	date = numToString(now->tm_mday) + "/" + numToString(1 + now->tm_mon) + "/" + numToString(now->tm_year + 1900);
+	int dayChangeMon = atoi(date.substr(0, 2).data()) - dayOfWeek(date);
 					if (dayChangeMon < 0) {
 						date = changeDate(date, false);
-						date = date.replace(0, 2, to_string(stoi(date.substr(0, 2)) - dayChangeMon));
+						date = date.replace(0, 2, numToString(atoi(date.substr(0, 2).data()) - dayChangeMon));
 					}
 					else {
 						if (dayChangeMon < 10) {
-							date = date.replace(0, 2, "0" + to_string(dayChangeMon));
+							date = date.replace(0, 2, "0" + numToString(dayChangeMon));
 						}
 						else {
-							date = date.replace(0, 2, to_string(dayChangeMon));
+							date = date.replace(0, 2, numToString(dayChangeMon));
 						}
 					}
 					string thedate = date;
@@ -132,19 +132,19 @@ Week::Week() {
 	for (int i = 0; i < 7; i++) {
 		int dateOfWeek = 0;
 		if (i == 0) {
-			dateOfWeek = stoi(date.substr(0, 2));
+			dateOfWeek = atoi(date.substr(0, 2).data());
 		}
 		else
-			dateOfWeek = (stoi(date.substr(0, 2)) + 1);
+			dateOfWeek = (atoi(date.substr(0, 2).data()) + 1);
 		if (dateOfWeek > daysInMonth) {
 			date = changeDate(date, true);
 		}
 		else {
 			date = date.erase(0, 2);
 			if (dateOfWeek < 10)
-				date = date.insert(0, "0" + to_string(dateOfWeek));
+				date = date.insert(0, "0" + numToString(dateOfWeek));
 			else
-				date = date.insert(0, to_string(dateOfWeek));
+				date = date.insert(0, numToString(dateOfWeek));
 		}
 		Day *dayx = new Day(date);
 		cout << "day to string " + dayx->toString() << endl;
@@ -160,22 +160,22 @@ Week::~Week() {
 }
 Day* Week::getDay(string day) {
 	int dayOfWeek = 0;
-	int startDateOfWeek = stoi(date.substr(0,2));
-	int theDay = stoi(day.substr(0,2));
+	int startDateOfWeek = atoi(date.substr(0,2).data());
+	int theDay = atoi(day.substr(0,2).data());
 
-	int mon = stoi(day.substr(4, 2));
-	int startmon = stoi(date.substr(4, 2));
+	int mon = atoi(day.substr(4, 2).data());
+	int startmon = atoi(date.substr(4, 2).data());
 
-	int year = stoi(day.substr(6, 4));
-	int startYear = stoi(date.substr(6, 4));
+	int year = atoi(day.substr(6, 4).data());
+	int startYear = atoi(date.substr(6, 4).data());
 	
 	if (startYear < year) {//?
 		startDateOfWeek = 31 - theDay;
 	}
 	if (startmon < mon) {
 		this->date = date;
-		int year = stoi(date.substr(6, 4));
-		int mon = stoi(date.substr(3, 2));
+		//int year = atoi(date.substr(6, 4).data());
+		int mon = atoi(date.substr(3, 2).data());
 		int numDays = numberOfDayInMonth(date);
 		startDateOfWeek = numDays - theDay;
 	}
@@ -187,7 +187,7 @@ Day* Week::getDay(string day) {
 }
 Day* Week::getDay(int day) {
 	for (int i=0; i < 7; i++) {
-		if (stoi(week[i]->getDate().substr(0, 2)) == day)
+		if (atoi(week[i]->getDate().substr(0, 2).data()) == day)
 			return week[i];
 	}
 	cout << "day not found" << endl;

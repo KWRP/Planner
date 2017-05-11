@@ -1,4 +1,4 @@
-#include "include/Day.h"
+#include "include/day.hpp"
 #include <string>
 
 Day::Day(string date) {
@@ -7,7 +7,7 @@ Day::Day(string date) {
 Day::Day() {
 		time_t t = time(0);
 	struct tm *now = localtime(&t);
-	date =  to_string(now->tm_mday) +"/"+ to_string(1+now->tm_mon) +"/"+ to_string(now->tm_year +1900);
+	date =  numToString(now->tm_mday) +"/"+ numToString(1+now->tm_mon) +"/"+ numToString(now->tm_year +1900);
 }
 Day::~Day() {
 	cout << "day of " + date + " destructor was called" << endl;
@@ -19,7 +19,7 @@ Event* Day::getEvent(int eventNumber) {
 }
 string Day::toString() {
 	string result = "";
-	result = "Date : " + date + "\nnumber of Events : " + to_string(events.size()) + "\n";
+	result = "Date : " + date + "\nnumber of Events : " + numToString(events.size()) + "\n";
 	return result;
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 #ifndef MONTH_H
 #define MONTH_H
-#include "Week.h"
+#include "week.hpp"
 
 class Month {
 private:	Week *weeks[6];

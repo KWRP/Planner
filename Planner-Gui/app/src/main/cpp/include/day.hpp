@@ -3,8 +3,10 @@
 #define DAY_H
 #include<vector>
 #include <iostream>
+#include <cstdlib>
 //#include <string>
-#include "Event.h"
+#include "event.hpp"
+#include "helpers.hpp"
 #include<ctime>
 
 using namespace std;
