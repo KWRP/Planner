@@ -1,5 +1,6 @@
 package com.kwrp.planner_gui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,6 +76,7 @@ public class DisplayMonth extends AppCompatActivity {
                 myIntent.putExtra("date", dateSelected);
                 startActivity(myIntent);
                 Log.d("TESTING!!!", getFilesDir().getAbsolutePath());
+
 /*
                 File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
                 if (!eventsXml.exists()) {
@@ -96,6 +98,7 @@ public class DisplayMonth extends AppCompatActivity {
                 //Integer v = ((GridView) findViewById(gridview)).getChildCount();
                 //TextView view = (TextView)((GridView) findViewById(gridview)).getChildAt(arg2);
                 //view.setBackgroundColor(Color.rgb(255, 155, 155));
+                finish();
                 return true;
             }
         });

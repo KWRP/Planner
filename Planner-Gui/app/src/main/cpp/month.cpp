@@ -1,5 +1,7 @@
+#include "include/helpers.hpp"
 #include "include/month.hpp"
-#include <string>
+#include "include/week.hpp"
+#include "include/day.hpp"
 
 
 using namespace std;
@@ -86,6 +88,7 @@ Month::~Month() {
 		delete weeks[i];
 	}
 }
+
 Day* Month::getDay(string date) {
 	bool foundDay = false;
 	for (int week = 0; week < 6|| foundDay; week++) {
@@ -97,7 +100,9 @@ Day* Month::getDay(string date) {
 		}
 	}
 	cout << "NO day found" << endl;
+	return nullptr;
 }
+
 Week* Month::getWeek(string date) {
 	for (int week = 0; week < 6; week++) {
 		for (int day = 0; day < 7; day++) {
@@ -106,7 +111,9 @@ Week* Month::getWeek(string date) {
 		}
 	}
 	cout << "week not found" << endl;
+    return nullptr;
 }
+
 string Month::toString() {
 	string result = "";
 	result = "Date is ";// +date;

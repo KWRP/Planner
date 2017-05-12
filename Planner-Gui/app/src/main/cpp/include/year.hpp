@@ -4,7 +4,8 @@
 
 #include <string>
 #include <vector>
-#include "month.hpp"
+
+class Month;
 
 class Year {
 private:

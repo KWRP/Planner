@@ -95,13 +95,13 @@ public class DisplayDay extends AppCompatActivity {
         if (id == R.id.action_display_month) {
             Intent myIntent = new Intent(this, DisplayMonth.class); /** Class name here */
             startActivity(myIntent);
-            finish();
+            this.finish();
         }
         if (id == R.id.action_display_week) {
             Intent myIntent = new Intent(this, DisplayWeek.class); /** Class name here */
             startActivity(myIntent);
             //startActivityForResult(myIntent, 0);
-            finish();
+            this.finish();
         }
 
         //noinspection SimplifiableIfStatement

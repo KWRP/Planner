@@ -1,29 +1,28 @@
 #pragma once
 #ifndef DAY_H
 #define DAY_H
-#include<vector>
+
+#include "helpers.hpp"
+#include <vector>
 #include <iostream>
 #include <cstdlib>
-//#include <string>
-#include "event.hpp"
-#include "helpers.hpp"
-#include<ctime>
+#include <ctime>
 
-using namespace std;
+class Event;
 
 class Day {
 private:
-	string date;
-	vector<Event*> events; 
+    std::string date;
+    std::vector<Event*> events;
 
 public:
-	string getDate() { return date; }
-	void setDate(string date) { this->date = date; }
+    std::string getDate() { return date; }
+	void setDate(std::string date) { this->date = date; }
 	int numOfEvents() { return events.size(); }
 	Event *getEvent(int eventNumber);
-	void addEvent(string title, string description, int time, int duration);//will change when the xml for event is working
-	string toString();
-	Day(string);
+	void addEvent(std::string title, std::string description, int time, int duration);//will change when the xml for event is working
+    std::string toString();
+	Day(std::string);
 	Day();
 	~Day();
 };

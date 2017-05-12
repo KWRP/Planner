@@ -1,8 +1,8 @@
+#include "include/helpers.hpp"
 #include "include/week.hpp"
-#include <string>
+#include "include/day.hpp"
 
-using namespace std;
-int Week::dayOfWeek(string date) {
+int Week::dayOfWeek(std::string date) {
 	int day = atoi(date.substr(0, 2).data());
 	int mon = atoi(date.substr(3, 2).data());
 	int year = atoi(date.substr(6, 4).data());
@@ -19,7 +19,7 @@ int Week::dayOfWeek(string date) {
 //	std::cout << "I was born on (Sunday = 6) D.O.W. " << n << '\n';
 	return n;
 }
-int Week::numberOfDayInMonth(string date) {
+int Week::numberOfDayInMonth(std::string date) {
 	int mon = atoi(date.substr(3, 2).data());
 	int daysInMonth = 1;
 	if (mon == 04 || mon == 06 || mon == 9 || mon == 11) {
@@ -40,7 +40,7 @@ int Week::numberOfDayInMonth(string date) {
 	return daysInMonth;
 }
 
-string Week::changeDate(string date, bool forward) {
+std::string Week::changeDate(std::string date, bool forward) {
 	int month = atoi(date.substr(3, 2).data());
 	int year = atoi(date.substr(6, 4).data());
 	if (forward) {
@@ -70,7 +70,7 @@ string Week::changeDate(string date, bool forward) {
 	}
 	return date;
 }
-Week::Week(string date) {//might need to check that the substr is correct
+Week::Week(std::string date) {//might need to check that the substr is correct
 		this->date = date;
 		int dayChangeMon = atoi(date.substr(0, 2).data()) - dayOfWeek(date);
 		if (dayChangeMon < 0) {
@@ -85,7 +85,7 @@ Week::Week(string date) {//might need to check that the substr is correct
 				date = date.replace(0, 2, numToString(dayChangeMon));
 			}
 		}
-		string thedate = date;
+    std::string thedate = date;
 	int daysInMonth = numberOfDayInMonth(date);
 	for (int i = 0; i < 7; i++) {
 		int dateOfWeek = 0;
@@ -127,7 +127,7 @@ Week::Week() {
 							date = date.replace(0, 2, numToString(dayChangeMon));
 						}
 					}
-					string thedate = date;
+    std::string thedate = date;
 	int daysInMonth = numberOfDayInMonth(date);
 	for (int i = 0; i < 7; i++) {
 		int dateOfWeek = 0;
@@ -147,18 +147,18 @@ Week::Week() {
 				date = date.insert(0, numToString(dateOfWeek));
 		}
 		Day *dayx = new Day(date);
-		cout << "day to string " + dayx->toString() << endl;
+        std::cout << "day to string " + dayx->toString() << std::endl;
 		week[i] = dayx;
 	}
 	this->date = thedate;
 }
 Week::~Week() {
-	cout << "week of " + date + " destuctor was called" << endl;
+    std::cout << "week of " + date + " destuctor was called" << std::endl;
 	for (int i = 0; i < 7; i++) {
 		delete week[i];
 	}
 }
-Day* Week::getDay(string day) {
+Day* Week::getDay(std::string day) {
 	int dayOfWeek = 0;
 	int startDateOfWeek = atoi(date.substr(0,2).data());
 	int theDay = atoi(day.substr(0,2).data());
@@ -175,13 +175,13 @@ Day* Week::getDay(string day) {
 	if (startmon < mon) {
 		this->date = date;
 		//int year = atoi(date.substr(6, 4).data());
-		int mon = atoi(date.substr(3, 2).data());
+		mon = atoi(date.substr(3, 2).data());
 		int numDays = numberOfDayInMonth(date);
 		startDateOfWeek = numDays - theDay;
 	}
 	dayOfWeek = theDay - startDateOfWeek;
 	if (dayOfWeek < 0) {
-		cout << "please enter a valid date in the week " + toString() << endl;
+        std::cout << "please enter a valid date in the week " + toString() << std::endl;
 	}
 	return week[dayOfWeek];
 }
@@ -190,10 +190,11 @@ Day* Week::getDay(int day) {
 		if (atoi(week[i]->getDate().substr(0, 2).data()) == day)
 			return week[i];
 	}
-	cout << "day not found" << endl;
+    std::cout << "day not found" << std::endl;
+    return nullptr;
 }
-string Week::toString() {
-	string result = "";
+std::string Week::toString() {
+    std::string result = "";
 	result = date +"\n";
 	for (int i = 0; i < 7; i++) {
 		result += week[i]->toString();

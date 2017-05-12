@@ -1,12 +1,10 @@
-#include <jni.h>
-#include <string>
-#include <year.hpp>
-#include <iostream>
-#include "include/tinyxml2.h"
 #include "include/xml-dao.hpp"
+#include "include/year.hpp"
+#include "include/day.hpp"
+#include <jni.h>
 
 // DisplayMonth JNI calls
-extern "C"
+extern "C" {
 JNIEXPORT jstring JNICALL
 Java_com_kwrp_planner_1gui_DisplayMonth_stringFromJNI(
         JNIEnv *env,
@@ -15,7 +13,7 @@ Java_com_kwrp_planner_1gui_DisplayMonth_stringFromJNI(
     return env->NewStringUTF(hello.c_str());
 }
 
-extern "C"
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_testJNI(
         JNIEnv *env,
         jobject /* this */) {
@@ -26,7 +24,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_testJNI(
 
 
 // DisplayDay JNI calls
-extern "C"
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
@@ -34,7 +32,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDat
     return env->NewStringUTF((date->getDate()).data());
 }
 // DisplayDay JNI calls
-extern "C"
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
@@ -43,7 +41,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentD
 }
 
 
-extern "C"
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetEvents(
         JNIEnv *env,
         jobject /* this */) {
@@ -52,7 +50,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetEvents(
     return env->NewStringUTF(e.c_str());
 }
 
-extern "C"
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
         JNIEnv *env,
         jobject /* this */) {
@@ -61,7 +58,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
     return env->NewStringUTF(e.c_str());
 }
 
-extern "C"
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         JNIEnv *env, jobject t,
         jstring title, jstring description, jstring start, jstring duration, jstring dir) {
@@ -74,9 +71,8 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
 
     bool addDate = createXml(nativePath);
     bool getDate = checkDate(nativePath, "5", "5", "2017");
-
-    bool newEvent = addEvent(nativePath, "6", "5", "2017", nativeTitle,
-                             nativeDescription, nativeStart, nativeDuration);
+    //bool newEvent = addEvent(nativePath, "6", "5", "2017", nativeTitle,
+    //                         nativeDescription, nativeStart, nativeDuration);
 
     //bool getDate2 = checkDate(nativePath, "6", "5", "2017");
 
@@ -87,11 +83,12 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     (env)->ReleaseStringUTFChars(dir, nativePath);
 
     std::string confirm = "";
-    if (newEvent) {
+    if (getDate) {
         confirm = "Event Created!!";
     } else {
         confirm = "Event Creation Failed!!!";
     }
 
     return env->NewStringUTF(confirm.c_str());
+}
 }

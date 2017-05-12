@@ -1,7 +1,5 @@
-#include <iostream>
-#include <stdlib.h>
-#include "include/tinyxml2.h"
 #include "include/xml-dao.hpp"
+#include "include/tinyxml2.h"
 #include <android/log.h>
 
 using namespace tinyxml2;

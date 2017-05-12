@@ -4,10 +4,6 @@ package com.kwrp.planner_gui;
 https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java
 
  */
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -17,6 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class MonthAdapter extends BaseAdapter {
     private GregorianCalendar mCalendar;
@@ -48,7 +49,7 @@ public class MonthAdapter extends BaseAdapter {
      * @param position - position in item list
      * @param item - view for date
      */
-    protected void onDate(int[] date, int position, View item) {};
+    protected void onDate(int[] date, int position, View item) {}
 
     private void populateMonth() {
         mItems = new ArrayList<String>();
@@ -130,12 +131,9 @@ public class MonthAdapter extends BaseAdapter {
     }
 
     private boolean isToday(int day, int month, int year) {
-        if (mCalendarToday.get(Calendar.MONTH) == month
+        return mCalendarToday.get(Calendar.MONTH) == month
                 && mCalendarToday.get(Calendar.YEAR) == year
-                && mCalendarToday.get(Calendar.DAY_OF_MONTH) == day) {
-            return true;
-        }
-        return false;
+                && mCalendarToday.get(Calendar.DAY_OF_MONTH) == day;
     }
 
     private int[] getDate(int position) {

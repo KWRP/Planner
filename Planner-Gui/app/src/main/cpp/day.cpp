@@ -1,7 +1,7 @@
 #include "include/day.hpp"
-#include <string>
+#include "include/event.hpp"
 
-Day::Day(string date) {
+Day::Day(std::string date) {
 	this->date = date;
 }
 Day::Day() {
@@ -10,20 +10,20 @@ Day::Day() {
 	date =  numToString(now->tm_mday) +"/"+ numToString(1+now->tm_mon) +"/"+ numToString(now->tm_year +1900);
 }
 Day::~Day() {
-	cout << "day of " + date + " destructor was called" << endl;
+	std::cout << "day of " + date + " destructor was called" << std::endl;
 }
 
 Event* Day::getEvent(int eventNumber) {
 	return events.at(eventNumber-1);
 
 }
-string Day::toString() {
-	string result = "";
+std::string Day::toString() {
+	std::string result = "";
 	result = "Date : " + date + "\nnumber of Events : " + numToString(events.size()) + "\n";
 	return result;
 }
 
-void Day::addEvent(string title, string description, int time, int duration) {//will change when the xml for event is working
+void Day::addEvent(std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
 	Event *eventx = new Event(title, description, time, duration);
 	events.push_back(eventx);
 }
