@@ -4,9 +4,11 @@
 				
 =====================================================================================================*/
 #include <iostream>
-#include "inlcude/Year.h"
-#include "include/Month.h"
-#include<string>
+#include "include/year.hpp"
+#include "include/month.hpp"
+#include "include/event.hpp"
+#include "include/day.hpp"
+#include "include/week.hpp"
 
 using namespace std;
 /*need to change the methods parm for pointer*/
