@@ -69,12 +69,15 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     const char *nativeDuration = env->GetStringUTFChars(duration, 0);
     const char *nativePath = env->GetStringUTFChars(dir, 0);
 
-    bool addDate = createXml(nativePath);
-    bool getDate = checkDate(nativePath, "5", "5", "2017");
-    //bool newEvent = addEvent(nativePath, "6", "5", "2017", nativeTitle,
-    //                         nativeDescription, nativeStart, nativeDuration);
+    bool createFile = createXml(nativePath);
+    //bool newDate2 = createDate(nativePath, "3", "5", "2017");
+    bool newDate = createDate(nativePath, "1", "5", "2017");
+    bool newDate1 = createDate(nativePath, "2", "8", "2017");
+    bool newDate3 = createDate(nativePath, "3", "5", "2016");
+    bool checkDateCreated = checkDate(nativePath, "1", "5", "2017");
+    // bool createEvent = addEvent(nativePath, "6", "6", "2017", nativeTitle,
+    // nativeDescription, nativeStart, nativeDuration);
 
-    //bool getDate2 = checkDate(nativePath, "6", "5", "2017");
 
     (env)->ReleaseStringUTFChars(title, nativeTitle);
     (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -83,7 +86,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     (env)->ReleaseStringUTFChars(dir, nativePath);
 
     std::string confirm = "";
-    if (getDate) {
+    if (checkDateCreated) {
         confirm = "Event Created!!";
     } else {
         confirm = "Event Creation Failed!!!";

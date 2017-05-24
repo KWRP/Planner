@@ -1,11 +1,7 @@
 package com.kwrp.planner_gui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,10 +17,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import static com.kwrp.planner_gui.R.id.gridview;
 
@@ -62,7 +54,7 @@ public class DisplayMonth extends AppCompatActivity {
 
         GridView mGridView = (GridView) findViewById(gridview);
         mGridView.setAdapter(new MonthAdapter(
-                this, Integer.parseInt(systemDate[1])-1, Integer.parseInt(systemDate[2]), metrics));
+                this, Integer.parseInt(systemDate[1]) - 1, Integer.parseInt(systemDate[2]), metrics));
 
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
@@ -75,8 +67,10 @@ public class DisplayMonth extends AppCompatActivity {
                 Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
                 myIntent.putExtra("date", dateSelected);
                 startActivity(myIntent);
-                Log.d("TESTING!!!", getFilesDir().getAbsolutePath());
 
+                //File dir = getFilesDir();
+                //File file = new File(dir, "events.xml");
+                //boolean deleted = file.delete();
 /*
                 File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
                 if (!eventsXml.exists()) {
@@ -93,8 +87,9 @@ public class DisplayMonth extends AppCompatActivity {
                 }
                 Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
 */
-                File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
-                if (!eventsXml.exists()) Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
+                File eventsXml = new File(getFilesDir().getAbsolutePath() + "/events.xml");
+                if (!eventsXml.exists())
+                    Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
                 //Integer v = ((GridView) findViewById(gridview)).getChildCount();
                 //TextView view = (TextView)((GridView) findViewById(gridview)).getChildAt(arg2);
                 //view.setBackgroundColor(Color.rgb(255, 155, 155));
@@ -144,7 +139,7 @@ public class DisplayMonth extends AppCompatActivity {
             return true;
         }
 
-        if(id== R.id.action_exit){
+        if (id == R.id.action_exit) {
             AlertDialog dialog = DialogAction.exitButtonAction(this);
             dialog.show();
             return true;
@@ -152,11 +147,13 @@ public class DisplayMonth extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-        /**
+    /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+
     public native String jniGetCurrentDate();
+
     public native String testJNI();
 }

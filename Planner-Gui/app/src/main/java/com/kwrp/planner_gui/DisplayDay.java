@@ -24,16 +24,16 @@ import java.util.ArrayList;
 
 
 public class DisplayDay extends AppCompatActivity {
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("calender");
+    }
+
     private ArrayList<String> eventItems = new ArrayList<>();
     private String newEventTitle = "";
     private String newEventDescription = "";
     private String newEventStart = "";
     private String newEventDuration = "";
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("calender");
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +204,6 @@ public class DisplayDay extends AppCompatActivity {
         Log.d("---Java Test---", filePath);
         Log.d("Java Test createEvent", jniCreateEvent(
                 title, description, start, duration, filePath));
-
     }
 
 
