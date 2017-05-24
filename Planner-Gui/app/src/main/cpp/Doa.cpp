@@ -45,12 +45,13 @@ void setEvent(Week *week, string date, string title, string description, int tim
 
 int main() {
 	string quit;
-	string date = "01/06/2017";
+	string date = "22/06/2017";
 	string date2 = "30/05/2017";
 	cout << "hello world" << endl;
-	Month *month = new Month(date);
-	cout <<"months get week "+ month->getWeek(date)->toString() << endl;
-	//Week *week = new Week(date);
+	Month *month = new Month();
+	cout<< "months constructor done\n"<<endl;
+	cout <<""+ month->toString() << endl;
+//	Week *week = new Week(date);
 	//Day *day = new Day();
 //	setEvent(week,date2, "test", "testing a", 3243, 2);
 	//day->addEvent("test", "testing", 3456, 32);
@@ -61,6 +62,6 @@ int main() {
 	while (quit != "q") {
 		cin >> quit;
 	}
-	delete month;
+//	delete month;
 	return 0;
 }
