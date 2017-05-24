@@ -8,15 +8,14 @@ int Week::dayOfWeek(std::string date) {
 	int year = atoi(date.substr(6, 4).data());
 	std::tm time_in = { 0, 0, 0, // second, minute, hour
 	day, mon-1, year - 1900 }; // 1-based day, 0-based month, year since 1900
-
 	std::time_t time_temp = std::mktime(&time_in);
 
 	// the return value from localtime is a static global - do not call
 	// this function from more than one thread!
 	std::tm const *time_out = std::localtime(&time_temp);
-	int n = time_out->tm_wday + 6;
+	int n = time_out->tm_wday+6 ;
 	n =n % 7;
-//	std::cout << "I was born on (Sunday = 6) D.O.W. " << n << '\n';
+	//std::cout << "I was born on (Sunday = 6) D.O.W. " << n << '\n';
 	return n;
 }
 int Week::numberOfDayInMonth(std::string date) {
@@ -110,7 +109,7 @@ Week::Week(std::string date) {//might need to check that the substr is correct
 	}
 	this->date = thedate;
 }
-Week::Week() {
+Week::Week() {//need to check
 	time_t t = time(0);
 	struct tm *now = localtime(&t);
 	date = numToString(now->tm_mday) + "/" + numToString(1 + now->tm_mon) + "/" + numToString(now->tm_year + 1900);
@@ -147,13 +146,13 @@ Week::Week() {
 				date = date.insert(0, numToString(dateOfWeek));
 		}
 		Day *dayx = new Day(date);
-        std::cout << "day to string " + dayx->toString() << std::endl;
+   //     std::cout << "day to string " + dayx->toString() << std::endl;
 		week[i] = dayx;
 	}
 	this->date = thedate;
 }
 Week::~Week() {
-    std::cout << "week of " + date + " destuctor was called" << std::endl;
+   // std::cout << "week of " + date + " destuctor was called" << std::endl;
 	for (int i = 0; i < 7; i++) {
 		delete week[i];
 	}
@@ -181,7 +180,7 @@ Day* Week::getDay(std::string day) {
 	}
 	dayOfWeek = theDay - startDateOfWeek;
 	if (dayOfWeek < 0) {
-        std::cout << "please enter a valid date in the week " + toString() << std::endl;
+        std::cout <<date+ "please enter a valid date in the week " + toString() << std::endl;
 	}
 	return week[dayOfWeek];
 }

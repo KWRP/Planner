@@ -5,10 +5,22 @@ Day::Day(std::string date) {
 	this->date = date;
 }
 Day::Day() {
-		time_t t = time(0);
+	std::string dayDate="";
+	std::string monDate="";
+	time_t t = time(0);
 	struct tm *now = localtime(&t);
-	date =  numToString(now->tm_mday) +"/"+ numToString(1+now->tm_mon) +"/"+ numToString(now->tm_year +1900);
+	if (now->tm_mday < 10) {
+		 dayDate = "0" + numToString(now->tm_mday);
+	} else
+		 dayDate = numToString(now->tm_mday);
+
+	if (now->tm_mon + 1 < 10) {
+		monDate = "0" + numToString(1 + now->tm_mon);
+	} else
+		monDate = numToString(1 + now->tm_mon);
+	date = dayDate + "/" + monDate + "/" + numToString(now->tm_year + 1900);
 }
+
 Day::~Day() {
 	std::cout << "day of " + date + " destructor was called" << std::endl;
 }
