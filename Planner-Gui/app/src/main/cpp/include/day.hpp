@@ -17,7 +17,6 @@ private:
 
 public:
     std::string getDate() { return date; }
-	void setDate(std::string date) { this->date = date; }
 	int numOfEvents() { return events.size(); }
 	Event *getEvent(int eventNumber);
 	void addEvent(std::string title, std::string description, int time, int duration);//will change when the xml for event is working

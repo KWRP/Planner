@@ -14,7 +14,6 @@ protected:
 	int dayOfWeek(std::string date);
 public:
 	std::string getDate() { return date; }
-	void setDate(std::string date) { this->date = date; }
 	Day* getDay(std::string day);
 	Day* getDay(int day);
 	std::string toString();

@@ -185,12 +185,7 @@ Day* Week::getDay(std::string day) {
 	return week[dayOfWeek];
 }
 Day* Week::getDay(int day) {
-	for (int i=0; i < 7; i++) {
-		if (atoi(week[i]->getDate().substr(0, 2).data()) == day)
-			return week[i];
-	}
-    std::cout << "day not found" << std::endl;
-    return nullptr;
+   return week[day];
 }
 std::string Week::toString() {
     std::string result = "";

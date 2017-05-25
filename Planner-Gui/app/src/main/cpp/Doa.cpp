@@ -29,13 +29,10 @@ Day* getDay(Week *week, string date) {
 Event* getEventnum(Day *day, string date, int numberOfEvent) {
 	return day->getEvent(numberOfEvent - 1);
 }
-/*
-void setEvent(Year year,string date, string title, string description, int time, int duration) {//need to change for pointer/ references
-	Day day = getDay(year, date);
-	day.addEvent(title, description, time, duration);
-	cout << day.toString() << endl;
-	day = day;
-}*/
+
+void setEvent(Month *month,string date, string title, string description, int time, int duration) {
+	month->getDay(date)->addEvent(title, description, time, duration);
+}
 
 void setEvent(Week *week, string date, string title, string description, int time, int duration) {
     getDay(week, date)->addEvent(title, description, time, duration);
@@ -45,19 +42,14 @@ void setEvent(Week *week, string date, string title, string description, int tim
 
 int main() {
 	string quit;
-	string date = "22/06/2017";
+	string date = "29/06/2017";
 	string date2 = "30/05/2017";
-	cout << "hello world" << endl;
-	Month *month = new Month();
-	cout<< "months constructor done\n"<<endl;
-	cout <<""+ month->toString() << endl;
-//	Week *week = new Week(date);
-	//Day *day = new Day();
-//	setEvent(week,date2, "test", "testing a", 3243, 2);
-	//day->addEvent("test", "testing", 3456, 32);
-	//cout << day->getEvent(1)->getTitle() << endl;
-//	cout << day->toString() << endl;
-//	cout << "\n week tostring "+week->toString()+"\n\n" +week->getDay(date2)->getEvent(1)->toString() <<endl;
+  /*  Month *month =  new Month(date);
+    cout<<"month get week " + month->getWeek(date)->toString()<<endl;
+    cout<<"month get day " + month->getDay(date2)->toString()<<endl;
+    cout<<"week get day "<< month->getWeek(date2)->getDay(date2)->numOfEvents()<<endl;
+*/
+
 	cin >> quit;
 	while (quit != "q") {
 		cin >> quit;

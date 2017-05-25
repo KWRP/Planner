@@ -59,6 +59,7 @@ string Month::changeDate(string date, bool forward) {
 Month::Month(string date) {
     date= date.replace(0, 2, "01");
 	this->date = date;
+    string theDate = date;
 	for (int i = 0; i < 6; i++) {//need to change date for the weeks so date +7 for each week.
 		//cout << "num weeks " + numToString(i) + " date = " + date + "\n" << endl;
 		weeks[i] = new Week(date);
@@ -75,7 +76,7 @@ Month::Month(string date) {
 			date = date.replace(0, 2, "0" + numToString(atoi(date.substr(0, 2).data()) + dayDiffOfMonth));
 		}
 	}
-	this->date = date;
+	this->date = theDate;
 }
 
 Month::Month() {
@@ -97,7 +98,7 @@ Month::Month() {
 	date= date.replace(0, 2, "01");
 	std::string theDate = date;
 	for (int i = 0; i < 6; i++) {//need to change date for the weeks so date +7 for each week.
-		cout << "num weeks " + numToString(i) + " date = " + date + "\n" << endl;
+		//cout << "num weeks " + numToString(i) + " date = " + date + "\n" << endl;
 		weeks[i] = new Week(date);
 		//	cout << "after week call\n" << endl;
 		if (atoi(date.substr(0, 2).data()) + 7 < 10) {
@@ -122,11 +123,10 @@ Month::~Month() {
 }
 
 Day* Month::getDay(string date) {
-	bool foundDay = false;
-	for (int week = 0; week < 6|| foundDay; week++) {
-		for (int day=0; day < 7 ||foundDay; day++) {
-			if (weeks[week]->getDay(day)->getDate() == date) {
-				foundDay = true;
+	for (int week = 0; week < 6; week++) {
+		for (int day=0; day < 7 ; day++) {
+         //   cout << "date = "+ date<<endl;
+			if (weeks[week]->getDay(day)->getDate() == date) {//something is wrong here with getDay()
 				return weeks[week]->getDay(day);
 			}
 		}
@@ -150,7 +150,7 @@ Week* Month::getWeek(string date) {
 
 string Month::toString() {
 	string result = "";
-	result = "Date is " +date;
+	result = "Date is " +date +"\n";
 //	result += "hi";
 	for (int i = 0; i < 6; i++) {
 		result +=weeks[i]->toString() ;
