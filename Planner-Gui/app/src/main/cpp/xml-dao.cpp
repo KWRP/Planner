@@ -54,7 +54,7 @@ bool checkDate(const char *filePath, const char *day, const char *month, const c
 }
 
 bool createDate(const char *filePath, const char *day, const char *month, const char *year) {
-
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createDate: made it in");
     XMLElement *elementYear;
     XMLElement *elementMonth;
     XMLElement *elementDay;
@@ -187,36 +187,44 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
               const char *title, const char *description, const char *startTime,
               const char *duration) {
 
+    bool newDate = createDate(filePath, day, month, year);
 
     XMLDocument xml_doc;
     XMLError eResult = xml_doc.LoadFile(filePath);
     if (eResult != XML_SUCCESS) return false;
 
-    bool newDate = createDate(day, month, year);
-
     if (newDate) {
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: newDate was true");
-
         XMLElement *elementYear = xml_doc.FirstChildElement("planner")->FirstChildElement("year");
-        XMLElement *elementMonth = elementYear->FirstChildElement("month");
-        XMLElement *elementDay = elementMonth->FirstChildElement("day");
-        XMLElement *elementEvent = elementDay->FirstChildElement("event");
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: before year loop");
-        while (!(elementYear->Attribute("YID", year))) {
+        while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
             elementYear = elementYear->NextSiblingElement("year");
         }
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: before month loop");
-        while (!(elementMonth->Attribute("MID", month))) {
+
+        XMLElement *elementMonth = elementYear->FirstChildElement("month");
+        while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
             elementMonth = elementMonth->NextSiblingElement("month");
         }
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: before day loop");
-        while (!(elementDay->Attribute("DID", day))) {
+
+        XMLElement *elementDay = elementMonth->FirstChildElement("day");
+        while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
             elementDay = elementDay->NextSiblingElement("day");
         }
 
+        int eventNum = 0;
+        XMLElement *firstEvent = elementDay->FirstChildElement("event");
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: before!");
+        if (firstEvent == nullptr) {
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: after!");
+            eventNum = 0;
+        }else if(firstEvent != nullptr){
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: exists!");
+            eventNum = elementDay->LastChildElement("event")->IntAttribute("EID");
+            eventNum += 1;
+        }
+
+        XMLElement *elementEvent = xml_doc.NewElement("event");
         __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: add new event!");
-        int eventNum = elementDay->LastChildElement("event")->IntAttribute("EID");
-        eventNum += 1;
+
+
         elementEvent->SetAttribute("EID", eventNum);
 
         XMLElement *elementTit = xml_doc.NewElement("title");
@@ -235,11 +243,12 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
         elementDur->SetText(duration);
         elementEvent->InsertEndChild(elementDur);
 
+        elementDay->InsertEndChild(elementEvent);
+
         XMLPrinter printer;
         xml_doc.Accept(&printer);
         const char *xmlcstr = printer.CStr();
         __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", xmlcstr);
-
 
         eResult = xml_doc.SaveFile(filePath);
         XMLCheckResult(eResult);

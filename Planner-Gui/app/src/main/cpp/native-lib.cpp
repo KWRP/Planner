@@ -69,8 +69,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     const char *nativeStart = env->GetStringUTFChars(start, 0);
     const char *nativeDuration = env->GetStringUTFChars(duration, 0);
     const char *nativePath = env->GetStringUTFChars(dir, 0);
-
-    //bool createFile = createXml(nativePath);
+    bool createFile = createXml(nativePath);
     //bool checkDateCreated = checkDate(nativePath, "1", "1", "2017");
 
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "jniCreateEvent: %s -nativeTitle", nativeTitle);
