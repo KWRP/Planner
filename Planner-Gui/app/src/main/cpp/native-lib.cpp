@@ -1,6 +1,7 @@
 #include "include/xml-dao.hpp"
 #include "include/year.hpp"
 #include "include/day.hpp"
+#include "../../../../../../../AppData/Local/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include/android/log.h"
 #include <jni.h>
 
 // DisplayMonth JNI calls
@@ -69,14 +70,16 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     const char *nativeDuration = env->GetStringUTFChars(duration, 0);
     const char *nativePath = env->GetStringUTFChars(dir, 0);
 
-    bool createFile = createXml(nativePath);
-    //bool newDate2 = createDate(nativePath, "3", "5", "2017");
-    bool newDate = createDate(nativePath, "1", "5", "2017");
-    bool newDate1 = createDate(nativePath, "2", "8", "2017");
-    bool newDate3 = createDate(nativePath, "3", "5", "2016");
-    bool checkDateCreated = checkDate(nativePath, "1", "5", "2017");
-    // bool createEvent = addEvent(nativePath, "6", "6", "2017", nativeTitle,
-    // nativeDescription, nativeStart, nativeDuration);
+    //bool createFile = createXml(nativePath);
+    //bool checkDateCreated = checkDate(nativePath, "1", "1", "2017");
+
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "jniCreateEvent: %s -nativeTitle", nativeTitle);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "jniCreateEvent: %s -nativeDescription", nativeDescription);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "jniCreateEvent: %s -nativeStart", nativeStart);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "jniCreateEvent: %s -nativeDuration", nativeDuration);
+
+    bool createEvent = addEvent(nativePath, "10", "10", "2017", nativeTitle,
+                                nativeDescription, nativeStart, nativeDuration);
 
 
     (env)->ReleaseStringUTFChars(title, nativeTitle);
@@ -86,7 +89,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     (env)->ReleaseStringUTFChars(dir, nativePath);
 
     std::string confirm = "";
-    if (checkDateCreated) {
+    if (createEvent) {
         confirm = "Event Created!!";
     } else {
         confirm = "Event Creation Failed!!!";
