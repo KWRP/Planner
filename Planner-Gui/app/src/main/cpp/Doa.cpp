@@ -49,7 +49,8 @@ int main() {
     cout<<"month get day " + month->getDay(date2)->toString()<<endl;
     cout<<"week get day "<< month->getWeek(date2)->getDay(date2)->numOfEvents()<<endl;
 */
-
+    Month *month = new Month(date);
+    createXml("/Users/paulo/Documents");
 	cin >> quit;
 	while (quit != "q") {
 		cin >> quit;

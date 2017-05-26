@@ -36,6 +36,6 @@ std::string Day::toString() {
 }
 
 void Day::addEvent(std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
-	Event *eventx = new Event(title, description, time, duration);
+	Event *eventx = new Event(date, title, description, time, duration);
 	events.push_back(eventx);
 }
