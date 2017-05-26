@@ -106,35 +106,24 @@ public class DisplayDay extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            AlertDialog dialog = DialogAction.createSettingsDialog(this);
+            dialog.show();
             return true;
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sync) {
+            AlertDialog dialog = DialogAction.createSyncDialog(this);
+            dialog.show();
             return true;
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            AlertDialog aboutDialog = createAboutDialog();
-            aboutDialog.show();
+            AlertDialog dialog = DialogAction.createAboutDialog(this);
+            dialog.show();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
-    }
-
-    private AlertDialog createAboutDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
-        builder.setTitle("About us")
-                .setMessage("Master betrayed us. Wicked. Tricksy, False. We ought to " +
-                        "wring his filthy little neck. Kill him! Kill him! Kill them both! " +
-                        "And then we take the precious... and we be the master!");
-
-        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        return dialog;
     }
 
     private AlertDialog createEventDialog() {

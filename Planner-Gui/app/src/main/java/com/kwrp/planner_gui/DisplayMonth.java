@@ -139,11 +139,6 @@ public class DisplayMonth extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_exit) {
-            AlertDialog dialog = DialogAction.exitButtonAction(this);
-            dialog.show();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 

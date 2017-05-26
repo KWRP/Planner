@@ -55,28 +55,28 @@ public class DialogAction {
         return dialog;
     }
 
-    public static AlertDialog exitButtonAction(AppCompatActivity parent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
-        builder.setMessage("")
-                .setTitle("Exit")
-                .setMessage("Are you sure you want to exit?");
-
-        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNeutralButton("Exit", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-//                parent.finish();
-                System.exit(0);
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        return dialog;
-    }
+//    public static AlertDialog exitButtonAction(AppCompatActivity parent) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
+//        builder.setMessage("")
+//                .setTitle("Exit")
+//                .setMessage("Are you sure you want to exit?");
+//
+//        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        builder.setNeutralButton("Exit", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+////                parent.finish();
+//                System.exit(0);
+//            }
+//        });
+//
+//        AlertDialog dialog = builder.create();
+//        return dialog;
+//    }
 
 
 
