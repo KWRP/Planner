@@ -142,6 +142,7 @@ public class DialogAction {
                 String newEventDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
                 String newEventStart = ((EditText) dialogLayout.getChildAt(5)).getText().toString();
                 String newEventDuration = ((EditText) dialogLayout.getChildAt(7)).getText().toString();
+
                 Log.d("details:", newEventTitle + newEventDescription + newEventStart + newEventDuration);
             }
         });

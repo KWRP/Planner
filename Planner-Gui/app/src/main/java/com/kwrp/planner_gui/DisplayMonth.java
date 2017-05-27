@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -163,6 +164,23 @@ public class DisplayMonth extends AppCompatActivity {
                 return true;
             }
         });
+
+        mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            public void onSwipeTop() {
+                toastPrint("top");
+            }
+            public void onSwipeRight() {
+                toastPrint("drag right");
+            }
+            public void onSwipeLeft() {
+                toastPrint("drag left");
+
+            }
+            public void onSwipeBottom() {
+                toastPrint("bottom");
+            }
+
+        });
     }
 
     @Override
@@ -281,6 +299,11 @@ public class DisplayMonth extends AppCompatActivity {
     public void createEventSetDialog(){
         AlertDialog dialog = DialogAction.createEventSetDialog(this, positionList, jniGetCurrentDate() );
         dialog.show();
+    }
+
+    public void toastPrint(String s){
+        Log.d("     SWIPE     :", s);
+//        Toast.makeText(this, "right", Toast.LENGTH_SHORT).show();
     }
 
 
