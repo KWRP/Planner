@@ -1,6 +1,7 @@
 #include "include/event.hpp"
 
-Event::Event(char *filepath, std::string date, std::string title, std::string description, int startTime, int duration) {//will change when the xml for event is working
+Event::Event(const char *filepath, std::string date, std::string title, std::string description,
+             int startTime, int duration) {//will change when the xml for event is working
  //   char* filepath = new char[100];
   //  strcpy(filepath, "/Users/paulo/Documents");
 	this->description = description;
@@ -38,6 +39,7 @@ Event::Event(char *filepath, std::string date, std::string title, std::string de
     free(durationc);
 }
 Event::Event(std::string title, std::string description, int startTime, int duration){
+
     this->title = title;
     this->description = description;
     this->startTime = startTime;

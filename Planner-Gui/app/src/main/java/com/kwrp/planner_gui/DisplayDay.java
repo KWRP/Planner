@@ -34,9 +34,15 @@ public class DisplayDay extends AppCompatActivity {
     private String newEventDescription = "";
     private String newEventStart = "";
     private String newEventDuration = "";
+    private String filePath;
+    private Day selectedDay;
+    private ArrayAdapter<String> listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+        createNewEvent("hello", "ewfewf", "2", "1");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_day);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_day);
@@ -48,10 +54,8 @@ public class DisplayDay extends AppCompatActivity {
 
         // jniCall to get events associated with the date
         getEvents();
-        //
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                eventItems);
+
+        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventItems);
         ListView events = (ListView) findViewById(R.id.list_view_events);
         events.setAdapter(listAdapter);
 
@@ -70,12 +74,12 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     protected void getEvents() {
-        int cplusplusEvents = 3;
-        for (int event = 0; event < cplusplusEvents; event++) {
-            eventItems.add("Events o'clock");
-        }
-        String e = jniGetEvents();
-        eventItems.add(e);//jniGetEvents());
+        String s = jniGetDay(filePath);
+
+        //selectedDay = new Day(jniGetDay(filePath));
+        // for(Event event : selectedDay.getEvents()) {
+        //      eventItems.add(event.toString());
+        //  }
     }
 
     @Override
@@ -174,6 +178,8 @@ public class DisplayDay extends AppCompatActivity {
                 newEventStart = ((EditText) dialogLayout.getChildAt(5)).getText().toString();
                 newEventDuration = ((EditText) dialogLayout.getChildAt(7)).getText().toString();
                 createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration);
+                getEvents();
+                listAdapter.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -188,8 +194,6 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     private void createNewEvent(String title, String description, String start, String duration) {
-        String filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-
         Log.d("---Java Test---", filePath);
         Log.d("Java Test createEvent", jniCreateEvent(
                 title, description, start, duration, filePath));
@@ -202,7 +206,7 @@ public class DisplayDay extends AppCompatActivity {
      */
     public native String jniGetEvents();
 
+    public native String jniGetDay(String dir);
     public native String jniGetCurrentDate();
-
     public native String jniCreateEvent(String title, String description, String start, String duration, String dir);
 }

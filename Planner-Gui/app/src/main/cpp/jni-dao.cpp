@@ -78,11 +78,12 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
 
     const char *nativePath = env->GetStringUTFChars(dir, 0);
 
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! GetDay: ", "before");
     Day *day = new Day("10/10/2017", nativePath);
 
-    (env)->ReleaseStringUTFChars(dir, nativePath);
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! GetDay", "%s", day->toString().c_str());
+
+    (env)->ReleaseStringUTFChars(dir, nativePath);
+
     return env->NewStringUTF(day->toString().c_str());
 }
 }

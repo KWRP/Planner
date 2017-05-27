@@ -2,6 +2,7 @@ package com.kwrp.planner_gui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,7 +37,7 @@ public class DisplayMonth extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-        toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
+        toolbar.setSubtitle("Today's Date: " + "10/10/2017");
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -48,13 +49,22 @@ public class DisplayMonth extends AppCompatActivity {
             }
         });
 
-        String[] systemDate = jniGetCurrentDate().split("/");
+        String[] systemDate = {"10", "10", "2017"};
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         GridView mGridView = (GridView) findViewById(gridview);
         mGridView.setAdapter(new MonthAdapter(
                 this, Integer.parseInt(systemDate[1]) - 1, Integer.parseInt(systemDate[2]), metrics));
+
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
+                view2.setBackgroundColor(Color.rgb(255, 155, 155));
+            }
+        });
 
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
@@ -90,10 +100,7 @@ public class DisplayMonth extends AppCompatActivity {
                 File eventsXml = new File(getFilesDir().getAbsolutePath() + "/events.xml");
                 if (!eventsXml.exists())
                     Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
-                //Integer v = ((GridView) findViewById(gridview)).getChildCount();
-                //TextView view = (TextView)((GridView) findViewById(gridview)).getChildAt(arg2);
-                //view.setBackgroundColor(Color.rgb(255, 155, 155));
-                finish();
+
                 return true;
             }
         });

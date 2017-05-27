@@ -1,13 +1,18 @@
 #include "include/day.hpp"
 #include "include/event.hpp"
+#include <android/log.h>
 
 Day::Day(std::string date, const char* filepath) {
 	this->date = date;
     const char* day = date.substr(0,2).c_str();
     const char* month = date.substr(3,2).c_str();
-    const char* year = date.substr(5,4).c_str();
-    pullDay(this, filepath, day, month, year);
+    const char *year = date.substr(6, 4).c_str();
     this->filepath = filepath;
+
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! Day constructor", "%s :%s :%s :%s :%s : %s",
+                        this->date.c_str(), this->filepath, day, month, year, toString().c_str());
+
+    bool s = pullDay(this, filepath, day, month, year);
 }
 Day::Day(const char* filepath) {
 	std::string dayDate="";
@@ -49,7 +54,7 @@ std::string Day::toString() {
 }
 void Day:: setEvent(int id, std::string title, std::string description, int startTime, int duration) {
     Event *eventx = new Event(title, description, startTime, duration);
-    events.at(id) = (eventx);
+    events.push_back(eventx);
 }
 void Day::addEvent(char* filepath, std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
 	Event *eventx = new Event(filepath, date, title, description, time, duration);

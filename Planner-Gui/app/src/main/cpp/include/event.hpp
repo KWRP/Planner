@@ -24,7 +24,8 @@ public:
 	int getStartTime() const { return startTime; }
 	int getDuration() const { return duration; } */
 	std::string toString();
-	Event(char*, std::string, std::string, std::string, int, int);
+
+    Event(const char *, std::string, std::string, std::string, int, int);
     Event(std::string, std::string, int, int);
 };//will be changed with the xml api. 
 
