@@ -37,7 +37,7 @@ public class DisplayMonth extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-        toolbar.setSubtitle("Today's Date: " + "10/10/2017");
+        toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -49,7 +49,7 @@ public class DisplayMonth extends AppCompatActivity {
             }
         });
 
-        String[] systemDate = {"10", "10", "2017"};
+        String[] systemDate = jniGetCurrentDate().split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 

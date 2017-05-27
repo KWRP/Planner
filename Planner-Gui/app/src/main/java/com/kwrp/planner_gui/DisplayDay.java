@@ -74,12 +74,17 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     protected void getEvents() {
-        String s = jniGetDay(filePath);
-
-        //selectedDay = new Day(jniGetDay(filePath));
-        // for(Event event : selectedDay.getEvents()) {
-        //      eventItems.add(event.toString());
-        //  }
+        String getDay = jniGetDay(filePath);
+        if ("".equals(getDay) || getDay.isEmpty()) {
+            eventItems.clear();
+            eventItems.add("You have no saved events on this day :)");
+        } else {
+            selectedDay = new Day(getDay);
+            for (Event event : selectedDay.getEvents()) {
+                eventItems.clear();
+                eventItems.add(event.toString());
+            }
+        }
     }
 
     @Override
@@ -177,7 +182,14 @@ public class DisplayDay extends AppCompatActivity {
                 newEventDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
                 newEventStart = ((EditText) dialogLayout.getChildAt(5)).getText().toString();
                 newEventDuration = ((EditText) dialogLayout.getChildAt(7)).getText().toString();
-                createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration);
+
+                if (newEventTitle.equals("") || newEventDescription.equals("") ||
+                        newEventStart.equals("") || newEventDuration.equals("")) {
+                    Log.d("JAVA create event: ", "failed!!");
+                } else {
+                    createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration);
+                }
+
                 getEvents();
                 listAdapter.notifyDataSetChanged();
             }

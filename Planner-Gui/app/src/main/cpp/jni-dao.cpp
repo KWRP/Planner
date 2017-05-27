@@ -19,17 +19,19 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_testJNI(
 }
 
 
-
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
-    return env->NewStringUTF(NULL);
+    std::string date = getCurrentDate();
+    return env->NewStringUTF(date.c_str());
 }
+
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
-    return env->NewStringUTF(NULL);
+    std::string date = getCurrentDate();
+    return env->NewStringUTF(date.c_str());
 }
 
 

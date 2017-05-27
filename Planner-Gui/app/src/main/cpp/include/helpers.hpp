@@ -7,4 +7,7 @@
 #include <iostream>
 
 std::string numToString (long l);
+
+std::string getCurrentDate();
+
 #endif	
