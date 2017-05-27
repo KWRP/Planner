@@ -1,7 +1,7 @@
 #include "include/xml-dao.hpp"
 #include "include/year.hpp"
 #include "include/day.hpp"
-#include "../../../../../../../AppData/Local/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include/android/log.h"
+#include <android/log.h>
 #include <jni.h>
 
 // DisplayMonth JNI calls
