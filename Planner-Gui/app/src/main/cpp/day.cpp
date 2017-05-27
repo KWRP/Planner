@@ -33,12 +33,16 @@ std::string Day::toString() {
 	std::string result = "";
 	for(int i = 0; i < events.size(); i++){
         result+= numToString(+1);
+        result+= ";";
         result+= events[i]->toString();
     }
 	return result;
 }
-
-void Day::addEvent(std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
-	Event *eventx = new Event(date, title, description, time, duration);
+void Day:: setEvent(int id, std::string title, std::string description, int startTime, int duration) {
+    Event *eventx = new Event(title, description, startTime, duration);
+    events.at(id) = (eventx);
+}
+void Day::addEvent(char* filepath, std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
+	Event *eventx = new Event(filepath, date, title, description, time, duration);
 	events.push_back(eventx);
 }

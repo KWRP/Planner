@@ -19,7 +19,8 @@ public:
     std::string getDate() { return date; }
 	int numOfEvents() { return events.size(); }
 	Event *getEvent(int eventNumber);
-	void addEvent(std::string title, std::string description, int time, int duration);//will change when the xml for event is working
+	void addEvent(char*,std::string title, std::string description, int time, int duration);//will change when the xml for event is working
+    void setEvent(int id, std::string title, std::string description, int time, int duration);
     std::string toString();
 	Day(std::string);
 	Day();

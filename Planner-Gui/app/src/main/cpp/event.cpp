@@ -37,6 +37,12 @@ Event::Event(char *filepath, std::string date, std::string title, std::string de
     free(startTimec);
     free(durationc);
 }
+Event::Event(int id, std::string title, std::string description, int startTime, int duration){
+    this->title = title;
+    this->description = description;
+    this->startTime = startTime;
+    this->duration = duration;
+}
 std::string Event::toString() {
 	std::string result = "";
 	result = ";" + title + ";" + description + ";" +
