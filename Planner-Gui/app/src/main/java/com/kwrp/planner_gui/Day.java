@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 
 public class Day {
+
     private String date;
     private ArrayList<Event> events = new ArrayList<>();
 
