@@ -276,7 +276,6 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
 
     int eventCurr = elementDay->FirstChildElement("event")->IntAttribute("EID");
     int eventLast = elementDay->LastChildElement("event")->IntAttribute("EID");
-    XMLElement* elementEventCurr = elementDay->FirstChildElement("event");
 
     while (eventCurr <= eventLast) {
 
