@@ -269,12 +269,15 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
         elementDay = elementDay->NextSiblingElement("day");
     }
 
-    int eventCurr = elementDay->FirstChildElement("event")->IntAttribute("EID");
-    int eventLast = elementDay->LastChildElement("event")->IntAttribute("EID");
+
     XMLElement* elementEventCurr = elementDay->FirstChildElement("event");
 
-    while (eventCurr <= eventLast) {
+    if (elementEventCurr == nullptr)return false;
 
+    int eventCurr = elementDay->FirstChildElement("event")->IntAttribute("EID");
+    int eventLast = elementDay->LastChildElement("event")->IntAttribute("EID");
+
+    while (eventCurr <= eventLast) {
         const char* title = elementEventCurr->FirstChildElement("title")->GetText();
         const char* description = elementEventCurr->FirstChildElement("description")->GetText();
         const char* startTime = elementEventCurr->FirstChildElement("startTime")->GetText();
@@ -287,7 +290,6 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
             break;
         }
         eventCurr = elementEventCurr->IntAttribute("EID");
-
     }
 
     eResult = xmlDoc.SaveFile(filepath);
