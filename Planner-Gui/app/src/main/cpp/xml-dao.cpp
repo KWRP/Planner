@@ -55,6 +55,11 @@ bool checkDate(const char *filePath, const char *day, const char *month, const c
 
 bool createDate(const char *filePath, const char *day, const char *month, const char *year) {
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createDate: made it in");
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createDate: %s", filePath);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createDate: %s", day);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createDate: %s", month);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createDate: %s", year);
+
     XMLElement *elementYear;
     XMLElement *elementMonth;
     XMLElement *elementDay;
@@ -189,12 +194,12 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
 
     bool newDate = createDate(filePath, day, month, year);
 
-    XMLDocument xml_doc;
-    XMLError eResult = xml_doc.LoadFile(filePath);
+    XMLDocument xmlDoc;
+    XMLError eResult = xmlDoc.LoadFile(filePath);
     if (eResult != XML_SUCCESS) return false;
 
     if (newDate) {
-        XMLElement *elementYear = xml_doc.FirstChildElement("planner")->FirstChildElement("year");
+        XMLElement *elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
         while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
             elementYear = elementYear->NextSiblingElement("year");
         }
@@ -222,54 +227,53 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
             eventNum += 1;
         }
 
-        XMLElement *elementEvent = xml_doc.NewElement("event");
+        XMLElement *elementEvent = xmlDoc.NewElement("event");
         __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: add new event!");
 
 
         elementEvent->SetAttribute("EID", eventNum);
 
-        XMLElement *elementTit = xml_doc.NewElement("title");
+        XMLElement *elementTit = xmlDoc.NewElement("title");
         elementTit->SetText(title);
         elementEvent->InsertEndChild(elementTit);
 
-        XMLElement *elementDesc = xml_doc.NewElement("description");
+        XMLElement *elementDesc = xmlDoc.NewElement("description");
         elementDesc->SetText(description);
         elementEvent->InsertEndChild(elementDesc);
 
-        XMLElement *elementST = xml_doc.NewElement("startTime");
+        XMLElement *elementST = xmlDoc.NewElement("startTime");
         elementST->SetText(startTime);
         elementEvent->InsertEndChild(elementST);
 
-        XMLElement *elementDur = xml_doc.NewElement("duration");
+        XMLElement *elementDur = xmlDoc.NewElement("duration");
         elementDur->SetText(duration);
         elementEvent->InsertEndChild(elementDur);
 
         elementDay->InsertEndChild(elementEvent);
 
         XMLPrinter printer;
-        xml_doc.Accept(&printer);
+        xmlDoc.Accept(&printer);
         const char *xmlcstr = printer.CStr();
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", xmlcstr);
+        __android_log_print(ANDROID_LOG_DEBUG, "TEST C++!!!", "%s", xmlcstr);
 
-        eResult = xml_doc.SaveFile(filePath);
+        eResult = xmlDoc.SaveFile(filePath);
         XMLCheckResult(eResult);
         return true;
     }
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: createDate was false!");
-    eResult = xml_doc.SaveFile(filePath);
+    eResult = xmlDoc.SaveFile(filePath);
     return false;
 }
 
-Day* pullDay(const char *filePath, const char *day, const char *month, const char *year) {
+Day *
+pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, const char *year) {
 
     XMLDocument xmlDoc;
 
-    XMLError eResult = xmlDoc.LoadFile(filePath);
-    if (eResult != XML_SUCCESS) return false;
+    XMLError eResult = xmlDoc.LoadFile(filepath);
+    if (eResult != XML_SUCCESS) return dayObj;
 
-    Day* dayObj = new Day();
-
-    bool dateExist = checkDate(day,month,year);
+    bool dateExist = checkDate(filepath, day, month, year);
 
     if (!dateExist){
         return dayObj;
@@ -312,7 +316,7 @@ Day* pullDay(const char *filePath, const char *day, const char *month, const cha
     //end testing section
 
 
-    eResult = xmlDoc.SaveFile(filePath);
+    eResult = xmlDoc.SaveFile(filepath);
 
     return dayObj;
 }
