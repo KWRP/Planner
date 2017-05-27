@@ -67,6 +67,12 @@ public class DisplayMonth extends AppCompatActivity {
 
         fab = (FloatingActionButton) findViewById(R.id.fabconfirm);
         fab.setVisibility(View.GONE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createEventSetDialog();
+            }
+        });
 
 
 
@@ -272,6 +278,10 @@ public class DisplayMonth extends AppCompatActivity {
 
     }
 
+    public void createEventSetDialog(){
+        AlertDialog dialog = DialogAction.createEventSetDialog(this, positionList, jniGetCurrentDate() );
+        dialog.show();
+    }
 
 
     /**
