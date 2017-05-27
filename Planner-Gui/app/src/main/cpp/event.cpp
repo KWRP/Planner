@@ -1,8 +1,8 @@
 #include "include/event.hpp"
 
-Event::Event(std::string date, std::string title, std::string description, int startTime, int duration) {//will change when the xml for event is working
-    char* filepath = new char[100];
-    strcpy(filepath, "/Users/paulo/Documents");
+Event::Event(char *filepath, std::string date, std::string title, std::string description, int startTime, int duration) {//will change when the xml for event is working
+ //   char* filepath = new char[100];
+  //  strcpy(filepath, "/Users/paulo/Documents");
 	this->description = description;
 	this->title = title;
 	this->startTime = startTime;
@@ -39,7 +39,7 @@ Event::Event(std::string date, std::string title, std::string description, int s
 }
 std::string Event::toString() {
 	std::string result = "";
-	result = "title :" + title + "\ndescription :" + description + "\nstart time :" +
-			numToString(startTime) + "\nduration :"+ numToString(duration);//will change when the xml for event is working
+	result = ";" + title + ";" + description + ";" +
+			numToString(startTime) + ";"+ numToString(duration) +":";//will change when the xml for event is working
 	return result;
 }

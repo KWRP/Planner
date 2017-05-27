@@ -31,7 +31,10 @@ Event* Day::getEvent(int eventNumber) {
 }
 std::string Day::toString() {
 	std::string result = "";
-	result = "Date : " + date + "\nnumber of Events : " + numToString(events.size()) + "\n";
+	for(int i = 0; i < events.size(); i++){
+        result+= numToString(+1);
+        result+= events[i]->toString();
+    }
 	return result;
 }
 
