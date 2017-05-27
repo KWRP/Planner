@@ -53,6 +53,9 @@ public class DisplayDay extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         String selectedDay = myIntent.getStringExtra("date");
+        if (selectedDay.length() == 1) {
+            selectedDay = "0" + selectedDay;
+        }
 
         selectedDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
         String currentDate = selectedDate;
