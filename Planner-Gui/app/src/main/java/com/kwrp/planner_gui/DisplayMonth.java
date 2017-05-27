@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,21 +30,25 @@ public class DisplayMonth extends AppCompatActivity {
     //private Calendar currentDate;
     //private ArrayList<Integer> currentDay = new ArrayList<>();
 
-    private boolean editAvailable = true;
-    private int daysSelected = 0;
-    private Collection<Integer> positionList = new ArrayList<>();
-
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("calender");
     }
+
+    private boolean editAvailable = true;
+    private int daysSelected = 0;
+    private Collection<Integer> positionList = new ArrayList<>();
+    private String currentDate;
+    private int month = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-        toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
+
+        currentDate = jniGetCurrentDate();
+        toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -71,16 +73,12 @@ public class DisplayMonth extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 createEventSetDialog();
-
             }
         });
 
 
-
-
-        String[] systemDate = jniGetCurrentDate().split("/");
+        String[] systemDate = currentDate.split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -138,6 +136,7 @@ public class DisplayMonth extends AppCompatActivity {
                     String dateSelected = view.getText().toString();
                     Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
                     myIntent.putExtra("date", dateSelected);
+                    myIntent.putExtra("month", Integer.toString(month));
                     startActivity(myIntent);
 
                     //File dir = getFilesDir();
@@ -173,15 +172,17 @@ public class DisplayMonth extends AppCompatActivity {
             public void onSwipeRight() {
                 if(editAvailable) {
                     toastPrint("drag right");
+                    month -= 1;
+                    updateMonthView(month);
                 }
             }
             public void onSwipeLeft() {
                 if(editAvailable) {
                     toastPrint("drag left");
+                    month += 1;
+                    updateMonthView(month);
                 }
-
             }
-
         });
     }
 
@@ -293,9 +294,19 @@ public class DisplayMonth extends AppCompatActivity {
             daysSelected = 0;
             editAvailable = true;
         }
+    }
 
+    public void updateMonthView(int month) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
+        toolbar.setSubtitle("Today's Date: " + currentDate);
 
+        String[] systemDate = currentDate.split("/");
+        final DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
+        GridView mGridView = (GridView) findViewById(gridview);
+        mGridView.setAdapter(new MonthAdapter(
+                this, Integer.parseInt(systemDate[1]) - 1 + month, Integer.parseInt(systemDate[2]), metrics));
     }
 
     public void createEventSetDialog(){

@@ -38,7 +38,6 @@ public class DisplayDay extends AppCompatActivity {
     private Day selectedDay;
     private ArrayAdapter<String> listAdapter;
     private String currentDate = jniGetCurrentDate();
-    private String selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +56,18 @@ public class DisplayDay extends AppCompatActivity {
             selectedDay = "0" + selectedDay;
         }
 
-        selectedDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
-        String currentDate = selectedDate;
+        String month = myIntent.getStringExtra("month");
+        int monthValue = Integer.parseInt(month);
+
+        String[] splitDate = currentDate.split("/");
+        Integer m = Integer.parseInt(splitDate[1]);
+        m += monthValue;
+
+        splitDate[1] = m.toString();
+        String newDate = splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2];
+        currentDate = newDate;
+
+        currentDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
 
         // jniCall to get events associated with the date
         getEvents();
@@ -82,7 +91,7 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     protected void getEvents() {
-        String getDay = jniGetDay(filePath, selectedDate);
+        String getDay = jniGetDay(filePath, currentDate);
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
@@ -216,7 +225,7 @@ public class DisplayDay extends AppCompatActivity {
     private void createNewEvent(String title, String description, String start, String duration) {
         Log.d("---Java Test---", filePath);
         Log.d("Java Test createEvent", jniCreateEvent(
-                title, description, start, duration, filePath, selectedDate));
+                title, description, start, duration, filePath, currentDate));
     }
 
 
