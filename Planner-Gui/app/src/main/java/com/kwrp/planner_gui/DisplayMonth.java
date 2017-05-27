@@ -3,6 +3,8 @@ package com.kwrp.planner_gui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +21,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static com.kwrp.planner_gui.R.id.gridview;
 
@@ -26,6 +31,9 @@ public class DisplayMonth extends AppCompatActivity {
     //private Calendar currentDate;
     //private ArrayList<Integer> currentDay = new ArrayList<>();
 
+    private boolean editAvailable = true;
+    private int daysSelected = 0;
+    private Collection<Integer> positionList = new ArrayList<>();
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -44,10 +52,24 @@ public class DisplayMonth extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startEditState();
             }
         });
+
+        fab = (FloatingActionButton) findViewById(R.id.fab_close);
+        fab.setVisibility(View.GONE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startEditState();
+            }
+        });
+
+        fab = (FloatingActionButton) findViewById(R.id.fabconfirm);
+        fab.setVisibility(View.GONE);
+
+
+
 
         String[] systemDate = jniGetCurrentDate().split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
@@ -59,12 +81,43 @@ public class DisplayMonth extends AppCompatActivity {
 
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
-                view2.setBackgroundColor(Color.rgb(255, 155, 155));
+                if (!editAvailable) {
+                    TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
+
+                    Drawable background = view2.getBackground();
+                    if (background instanceof ColorDrawable) {
+                        int color = ((ColorDrawable) background).getColor();
+                        if (color == Color.LTGRAY) {
+                            view2.setBackgroundColor(Color.rgb(244, 244, 244));
+
+                            Integer v = new Integer(position);
+                            positionList.remove(v);
+                            daysSelected -= 1;
+                        } else if (color== Color.rgb(244, 244, 244)){
+                            view2.setBackgroundColor(Color.LTGRAY);
+
+                            Integer v = new Integer(position);
+                            positionList.add(v);
+
+                            daysSelected += 1;
+                        }
+                    }
+                    FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
+                    if(daysSelected > 0 ) {
+                        fabconfirm.setVisibility(View.VISIBLE);
+                    } else {
+                        fabconfirm.setVisibility(View.GONE);
+                    }
+
+                }
+
             }
+
         });
+
 
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
@@ -109,7 +162,31 @@ public class DisplayMonth extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem item1 = menu.findItem(R.id.action_display_week);
+        MenuItem item2 = menu.findItem(R.id.action_settings);
+        MenuItem item3 = menu.findItem(R.id.action_sync);
+        MenuItem item4 = menu.findItem(R.id.action_about);
+        MenuItem item5 = menu.findItem(R.id.action_help);
+
+        if(!editAvailable){
+
+            item1.setVisible(false);
+            item2.setVisible(false);
+            item3.setVisible(false);
+            item4.setVisible(false);
+
+            item5.setVisible(true);
+        } else {
+            item1.setVisible(true);
+            item2.setVisible(true);
+            item3.setVisible(true);
+            item4.setVisible(true);
+
+            item5.setVisible(false);
+        }
         return true;
     }
 
@@ -146,8 +223,56 @@ public class DisplayMonth extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_help) {
+            AlertDialog dialog = DialogAction.createHelpDialog(this);
+            dialog.show();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    private void startEditState(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab_close = (FloatingActionButton) findViewById(R.id.fab_close);
+        if(editAvailable){
+
+            fab_close.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.GONE);
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
+            toolbar.setTitle("Add new events");
+            toolbar.setSubtitle("");
+            setSupportActionBar(toolbar);
+
+            editAvailable = false;
+        } else {
+
+            fab_close.setVisibility(View.GONE);
+            fab.setVisibility(View.VISIBLE);
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
+            toolbar.setTitle("Planner");
+            toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
+            setSupportActionBar(toolbar);
+
+            FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
+            fabconfirm.setVisibility(View.GONE);
+
+            for(int pos : positionList){
+                TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(pos);
+                view2.setBackgroundColor(Color.rgb(244, 244, 244));
+            }
+            positionList = new ArrayList<>();
+            daysSelected = 0;
+            editAvailable = true;
+        }
+
+
+
+    }
+
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,

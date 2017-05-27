@@ -2,8 +2,10 @@
 <resources>
     <color name="colorPrimary">#2a4af8</color>
     <color name="colorPrimaryDark">#303f9f</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="background_blue">#eaeafa</color>
     <color name="days_of_week_blue">#640a50ff</color>
-
+    <color name="red">#ff0000</color>
+    <color name="blue">#ff33b5e5</color>
+    <color name="green">#ff669900</color>
 </resources>

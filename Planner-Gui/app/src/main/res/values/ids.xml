@@ -8,4 +8,5 @@
     <item type="id" name="toolbar_week"/>
     <item type="id" name="toolbar_day"/>
     <item type="id" name="bottom_nav"/>
+    <item type="id" name="toolbar_month_edit"/>
 </resources>

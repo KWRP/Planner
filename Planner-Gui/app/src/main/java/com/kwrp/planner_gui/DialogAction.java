@@ -55,6 +55,24 @@ public class DialogAction {
         return dialog;
     }
 
+    public static AlertDialog createHelpDialog(AppCompatActivity parent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
+        builder.setMessage("")
+                .setTitle("Help")
+                .setMessage("This option is to add one, or a series of events." +
+                        "\nTo add an event for a single day, simply tap the selected day." +
+                        "\nTo add an event for several days, simply hold and drag the selected days." +
+                        "\n");
+
+        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        return dialog;
+    }
+
 //    public static AlertDialog exitButtonAction(AppCompatActivity parent) {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
 //        builder.setMessage("")
