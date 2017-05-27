@@ -1,8 +1,6 @@
 #include "include/xml-dao.hpp"
 #include "include/tinyxml2.h"
 #include <android/log.h>
-#include "include/day.hpp"
-#include "include/event.hpp"
 
 using namespace tinyxml2;
 #ifndef XMLCheckResult
