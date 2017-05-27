@@ -43,19 +43,29 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetEvents(
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         JNIEnv *env, jobject t,
-        jstring title, jstring description, jstring start, jstring duration, jstring dir) {
+        jstring title, jstring description, jstring start, jstring duration, jstring dir,
+        jstring date) {
 
     const char *nativeTitle = env->GetStringUTFChars(title, 0);
     const char *nativeDescription = env->GetStringUTFChars(description, 0);
     const char *nativeStart = env->GetStringUTFChars(start, 0);
     const char *nativeDuration = env->GetStringUTFChars(duration, 0);
     const char *nativePath = env->GetStringUTFChars(dir, 0);
+    const char *nativeDate = env->GetStringUTFChars(date, 0);
 
+    std::string selectedDate = nativeDate;
+    std::string delimiter = "/";
+    std::string day = selectedDate.substr(0, selectedDate.find(delimiter));
+    std::string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+    std::string month = rest.substr(0, selectedDate.find(delimiter));
+    std::string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-    bool createFile = createXml(nativePath);
-    bool createEvent = addEvent(nativePath, "10", "10", "2017", nativeTitle,
+    //bool createFile = createXml(nativePath);
+
+    bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(), nativeTitle,
                                 nativeDescription, nativeStart, nativeDuration);
-    bool cd = checkDate(nativePath, "10", "10", "2017");
+
+    bool cd = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
 
     (env)->ReleaseStringUTFChars(title, nativeTitle);
     (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -75,16 +85,17 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
 }
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
-        JNIEnv *env,
-        jobject obj, jstring dir) {
+        JNIEnv *env, jobject obj, jstring dir, jstring date) {
 
     const char *nativePath = env->GetStringUTFChars(dir, 0);
+    const char *nativeDate = env->GetStringUTFChars(date, 0);
 
-    Day *day = new Day("10/10/2017", nativePath);
+    Day *day = new Day(nativeDate, nativePath);
 
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! GetDay", "%s", day->toString().c_str());
 
     (env)->ReleaseStringUTFChars(dir, nativePath);
+    (env)->ReleaseStringUTFChars(date, nativeDate);
 
     return env->NewStringUTF(day->toString().c_str());
 }

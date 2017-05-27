@@ -123,7 +123,6 @@ bool createDate(const char *filePath, const char *day, const char *month, const 
             }
         }
 
-
     }
     eResult = xmlDoc.SaveFile(filePath);
 
@@ -134,41 +133,15 @@ bool createDate(const char *filePath, const char *day, const char *month, const 
 bool createXml(const char *filePath) {
 
     XMLDocument *xmlDoc;
-    xmlDoc = new XMLDocument();
 
-    XMLNode *planner = xmlDoc->NewElement("planner");
-    xmlDoc->InsertFirstChild(planner);
-
-    XMLElement *year = xmlDoc->NewElement("year");
-    XMLElement *month = xmlDoc->NewElement("month");
-    XMLElement *day = xmlDoc->NewElement("day");
-    XMLElement *event = xmlDoc->NewElement("event");
-    XMLElement *title = xmlDoc->NewElement("title");
-    XMLElement *description = xmlDoc->NewElement("description");
-    XMLElement *startTime = xmlDoc->NewElement("startTime");
-    XMLElement *duration = xmlDoc->NewElement("duration");
-
-    year->SetAttribute("YID", "2017");
-    month->SetAttribute("MID", "5");
-    day->SetAttribute("DID", "5");
-    event->SetAttribute("EID", "1");
-    title->SetText("Awesome test Event");
-    description->SetText("I lied it is only an assignment!!");
-    startTime->SetText("12");
-    duration->SetText("1");
-
-    planner->InsertEndChild(year);
-    year->InsertEndChild(month);
-    month->InsertEndChild(day);
-    day->InsertEndChild(event);
-
-    event->InsertEndChild(title);
-    event->InsertEndChild(description);
-    event->InsertEndChild(startTime);
-    event->InsertEndChild(duration);
-
-    XMLError eResult = xmlDoc->SaveFile(filePath);
-    XMLCheckResult(eResult);
+    XMLError eResult = xmlDoc->LoadFile(filePath);
+    if (eResult != XML_SUCCESS) {
+        xmlDoc = new XMLDocument();
+        XMLNode *planner = xmlDoc->NewElement("planner");
+        xmlDoc->InsertFirstChild(planner);
+        XMLError eResult = xmlDoc->SaveFile(filePath);
+        XMLCheckResult(eResult);
+    }
     return true;
 }
 

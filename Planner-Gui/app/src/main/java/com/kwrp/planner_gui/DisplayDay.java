@@ -37,20 +37,25 @@ public class DisplayDay extends AppCompatActivity {
     private String filePath;
     private Day selectedDay;
     private ArrayAdapter<String> listAdapter;
+    private String currentDate = jniGetCurrentDate();
+    private String selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-        createNewEvent("hello", "ewfewf", "2", "1");
+        //createNewEvent("Create Event", "New event called", "2", "1");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_day);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_day);
-        toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
+        toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
 
         Intent myIntent = getIntent();
-        String selectedDate = myIntent.getStringExtra("date");
+        String selectedDay = myIntent.getStringExtra("date");
+
+        selectedDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
+        String currentDate = selectedDate;
 
         // jniCall to get events associated with the date
         getEvents();
@@ -60,7 +65,7 @@ public class DisplayDay extends AppCompatActivity {
         events.setAdapter(listAdapter);
 
         EditText dateField = (EditText) findViewById(R.id.output_selected_date);
-        String currentDate = selectedDate + "/month/year";
+
         dateField.setText(currentDate);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -74,14 +79,14 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     protected void getEvents() {
-        String getDay = jniGetDay(filePath);
-        if ("".equals(getDay) || getDay.isEmpty()) {
+        String getDay = jniGetDay(filePath, selectedDate);
+        if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
         } else {
+            eventItems.clear();
             selectedDay = new Day(getDay);
             for (Event event : selectedDay.getEvents()) {
-                eventItems.clear();
                 eventItems.add(event.toString());
             }
         }
@@ -160,7 +165,7 @@ public class DisplayDay extends AppCompatActivity {
         startLabel.setText("Start Time:");
         dialogLayout.addView(startLabel, 4);
         final EditText startInput = new EditText(this);
-        startInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        startInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         startInput.setHint("e.g. 0800");
         dialogLayout.addView(startInput, 5);
 
@@ -168,7 +173,7 @@ public class DisplayDay extends AppCompatActivity {
         durationLabel.setText("Duration");
         dialogLayout.addView(durationLabel, 6);
         final EditText durationInput = new EditText(this);
-        durationInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        durationInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         durationInput.setHint("Number of hours");
         dialogLayout.addView(durationInput, 7);
 
@@ -208,7 +213,7 @@ public class DisplayDay extends AppCompatActivity {
     private void createNewEvent(String title, String description, String start, String duration) {
         Log.d("---Java Test---", filePath);
         Log.d("Java Test createEvent", jniCreateEvent(
-                title, description, start, duration, filePath));
+                title, description, start, duration, filePath, selectedDate));
     }
 
 
@@ -218,7 +223,9 @@ public class DisplayDay extends AppCompatActivity {
      */
     public native String jniGetEvents();
 
-    public native String jniGetDay(String dir);
+    public native String jniGetDay(String dir, String currentDate);
     public native String jniGetCurrentDate();
-    public native String jniCreateEvent(String title, String description, String start, String duration, String dir);
+
+    public native String jniCreateEvent(String title, String description, String start,
+                                        String duration, String dir, String selectedDate);
 }
