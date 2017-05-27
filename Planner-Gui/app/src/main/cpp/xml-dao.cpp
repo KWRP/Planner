@@ -1,6 +1,8 @@
 #include "include/xml-dao.hpp"
 #include "include/tinyxml2.h"
 #include <android/log.h>
+#include "include/day.hpp"
+#include "include/event.hpp"
 
 using namespace tinyxml2;
 #ifndef XMLCheckResult
@@ -216,7 +218,7 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
         if (firstEvent == nullptr) {
             __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: after!");
             eventNum = 0;
-        }else if(firstEvent != nullptr){
+        }else {
             __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "addEvent: exists!");
             eventNum = elementDay->LastChildElement("event")->IntAttribute("EID");
             eventNum += 1;
@@ -260,33 +262,60 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
     return false;
 }
 
-bool pullDay(const char *filePath, const char *day, const char *month, const char *year) {
+Day* pullDay(const char *filePath, const char *day, const char *month, const char *year) {
 
     XMLDocument xmlDoc;
 
     XMLError eResult = xmlDoc.LoadFile(filePath);
     if (eResult != XML_SUCCESS) return false;
 
+    Day* dayObj = new Day();
+
+    bool dateExist = checkDate(day,month,year);
+
+    if (!dateExist){
+        return dayObj;
+    }
+
     XMLElement *elementYear = xmlDoc.FirstChildElement("year");
     while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
         elementYear->NextSiblingElement("year");
-        if (elementYear == nullptr) return false;
     }
 
     XMLElement *elementMonth = elementYear->FirstChildElement("month");
     while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
         elementMonth = elementMonth->NextSiblingElement("month");
-        if (elementMonth == nullptr) return false;
     }
 
     XMLElement *elementDay = elementMonth->FirstChildElement("day");
     while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
         elementDay = elementDay->NextSiblingElement("day");
-        if (elementDay == nullptr) return false;
     }
 
+    int eventCurr = elementDay->FirstChildElement("event")->IntAttribute("EID");
+    int eventLast = elementDay->LastChildElement("event")->IntAttribute("EID");
+    XMLElement* elementEventCurr = elementDay->FirstChildElement("event");
+
+    while(eventCurr != eventLast){
+
+        const char* title = elementEventCurr->FirstChildElement("title")->GetText();
+        const char* description = elementEventCurr->FirstChildElement("description")->GetText();
+        const char* startTime = elementEventCurr->FirstChildElement("startTime")->GetText();
+        const char* duration = elementEventCurr->FirstChildElement("duration")->GetText();
+
+        //add event to day
+        dayObj->setEvent(eventCurr,title,description,startTime,duration);
+
+        //increment event
+        elementEventCurr = elementEventCurr->NextSiblingElement("event");
+        eventCurr = elementEventCurr->IntAttribute("EID");
+    }
+
+    //end testing section
+
+
     eResult = xmlDoc.SaveFile(filePath);
-    XMLCheckResult(eResult);
-    return true;
+
+    return dayObj;
 }
 
