@@ -1,10 +1,14 @@
 #include "include/day.hpp"
 #include "include/event.hpp"
 
-Day::Day(std::string date) {
+Day::Day(std::string date, const char* filepath) {
 	this->date = date;
+    const char* day = date.substr(0,2).c_str();
+    const char* month = date.substr(3,2).c_str();
+    const char* year = date.substr(5,4).c_str();
+    pullDay(filepath,day, month, year);
 }
-Day::Day() {
+Day::Day(const char* filepath) {
 	std::string dayDate="";
 	std::string monDate="";
 	time_t t = time(0);
@@ -19,6 +23,11 @@ Day::Day() {
 	} else
 		monDate = numToString(1 + now->tm_mon);
 	date = dayDate + "/" + monDate + "/" + numToString(now->tm_year + 1900);
+    this->date = date;
+    const char* day = date.substr(0,2).c_str();
+    const char* month = date.substr(3,2).c_str();
+    const char* year = date.substr(5,4).c_str();
+    pullDay(filepath,day, month, year);
 }
 
 Day::~Day() {

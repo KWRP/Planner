@@ -302,7 +302,7 @@ Day* pullDay(const char *filePath, const char *day, const char *month, const cha
         const char* duration = elementEventCurr->FirstChildElement("duration")->GetText();
 
         //add event to day
-        dayObj->setEvent(eventCurr,title,description,startTime,duration);
+        dayObj->setEvent(eventCurr,title,description,atoi(startTime),atoi(duration));
 
         //increment event
         elementEventCurr = elementEventCurr->NextSiblingElement("event");
