@@ -16,7 +16,7 @@ cmake_minimum_required(VERSION 3.4.1)
              # Sets the library as a shared library.
 #             SHARED
              # Provides a relative path to your source file(s).
- #            src/main/cpp/native-lib.cpp )
+ #            src/main/cpp/jni-dao.cpp )
 
 
 #add_library( year SHARED src/main/cpp/year.cpp )
@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.4.1)
 #add_library( week SHARED src/main/cpp/week.cpp )
 #add_library( day SHARED src/main/cpp/day.cpp )
 #add_library( event SHARED src/main/cpp/event.cpp )
-#add_library( event SHARED src/main/cpp/event.cpp )
+
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
