@@ -14,6 +14,7 @@ class Day {
 private:
     std::string date;
     std::vector<Event*> events;
+    const char *filepath;
 
 public:
     std::string getDate() { return date; }

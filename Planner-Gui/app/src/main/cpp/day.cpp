@@ -6,7 +6,8 @@ Day::Day(std::string date, const char* filepath) {
     const char* day = date.substr(0,2).c_str();
     const char* month = date.substr(3,2).c_str();
     const char* year = date.substr(5,4).c_str();
-    pullDay(filepath,day, month, year);
+    pullDay(this, filepath, day, month, year);
+    this->filepath = filepath;
 }
 Day::Day(const char* filepath) {
 	std::string dayDate="";
@@ -27,7 +28,7 @@ Day::Day(const char* filepath) {
     const char* day = date.substr(0,2).c_str();
     const char* month = date.substr(3,2).c_str();
     const char* year = date.substr(5,4).c_str();
-    pullDay(filepath,day, month, year);
+    pullDay(this, filepath, day, month, year);
 }
 
 Day::~Day() {
@@ -41,8 +42,7 @@ Event* Day::getEvent(int eventNumber) {
 std::string Day::toString() {
 	std::string result = "";
 	for(int i = 0; i < events.size(); i++){
-        result+= numToString(+1);
-        result+= ";";
+        result += numToString(i + 1);
         result+= events[i]->toString();
     }
 	return result;
