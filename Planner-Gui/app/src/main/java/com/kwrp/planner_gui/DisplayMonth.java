@@ -71,7 +71,9 @@ public class DisplayMonth extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 createEventSetDialog();
+
             }
         });
 
@@ -131,16 +133,16 @@ public class DisplayMonth extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int arg2, long arg3) {
+                if(editAvailable) {
+                    TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(arg2);
+                    String dateSelected = view.getText().toString();
+                    Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
+                    myIntent.putExtra("date", dateSelected);
+                    startActivity(myIntent);
 
-                TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(arg2);
-                String dateSelected = view.getText().toString();
-                Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
-                myIntent.putExtra("date", dateSelected);
-                startActivity(myIntent);
-
-                //File dir = getFilesDir();
-                //File file = new File(dir, "events.xml");
-                //boolean deleted = file.delete();
+                    //File dir = getFilesDir();
+                    //File file = new File(dir, "events.xml");
+                    //boolean deleted = file.delete();
 /*
                 File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
                 if (!eventsXml.exists()) {
@@ -157,27 +159,27 @@ public class DisplayMonth extends AppCompatActivity {
                 }
                 Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
 */
-                File eventsXml = new File(getFilesDir().getAbsolutePath() + "/events.xml");
-                if (!eventsXml.exists())
-                    Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
-
+                    File eventsXml = new File(getFilesDir().getAbsolutePath() + "/events.xml");
+                    if (!eventsXml.exists())
+                        Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
+                }
                 return true;
+
             }
+
         });
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
-            public void onSwipeTop() {
-                toastPrint("top");
-            }
             public void onSwipeRight() {
-                toastPrint("drag right");
+                if(editAvailable) {
+                    toastPrint("drag right");
+                }
             }
             public void onSwipeLeft() {
-                toastPrint("drag left");
+                if(editAvailable) {
+                    toastPrint("drag left");
+                }
 
-            }
-            public void onSwipeBottom() {
-                toastPrint("bottom");
             }
 
         });
