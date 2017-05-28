@@ -3,6 +3,10 @@
 #include "include/day.hpp"
 
 
+Week::Week(){
+
+}
+
 Week::Week(std::string date, const char* filepath) {//might need to check that the substr is correct
 		this->date = date;
 		int dayChangeMon = atoi(date.substr(0, 2).data()) - dayOfWeek(date);
@@ -39,6 +43,8 @@ Week::Week(std::string date, const char* filepath) {//might need to check that t
 		}
 		Day *dayx = new Day(date, filepath);
 		week[i] =dayx;
+        std::cout<<"day of week :" <<i<<std::endl;
+        dayx->toString();
 	}
 	this->date = thedate;
 }
