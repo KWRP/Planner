@@ -30,10 +30,6 @@ public class DisplayMonth extends AppCompatActivity {
     //private Calendar currentDate;
     //private ArrayList<Integer> currentDay = new ArrayList<>();
 
-    private static int month = 0;
-    private static int thisYear = 0;
-    private static int thisMonthIndex = 0;
-
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("calender");
@@ -299,7 +295,7 @@ public class DisplayMonth extends AppCompatActivity {
             fab.setVisibility(View.VISIBLE);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-            toolbar.setTitle(monthList[thisMonthIndex + month]);
+            toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
             toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
             setSupportActionBar(toolbar);
 
