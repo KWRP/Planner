@@ -7,7 +7,7 @@ Event::Event(const char *filepath, std::string date, std::string title, std::str
     this->startTime = startTime;
     this->duration = duration;
     std::string time = numToString(startTime);
-    std::string durations = numToString(duration);    const char* month = date.substr(3,2).c_str();
+    std::string durations = numToString(duration); 
    
  
     const char* day = date.substr(0,2).c_str();
