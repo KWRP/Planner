@@ -24,28 +24,87 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
-
+/** Defines the display day activity where the user is shown
+ *  the events for a single day, and what the ability to add
+ *   an event for a specific day.
+ *
+ * @author KWRP
+ */
 public class DisplayDay extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
+    /**
+     * Loads the native library "calender" on start up
+     */
     static {
         System.loadLibrary("calender");
     }
 
+    /**
+     * List of eventItems
+     */
     private ArrayList<String> eventItems = new ArrayList<>();
+
+    /**
+     * The new event title
+     */
     private String newEventTitle = "";
+
+    /**
+     * The new event description
+     */
     private String newEventDescription = "";
+
+    /**
+     * The new event start time
+     */
     private String newEventStart = "";
+
+    /**
+     * The new event duration
+     */
     private String newEventDuration = "";
+
+    /**
+     * The file path to the file where events are being stored
+     */
     private String filePath;
+
+    /**
+     * The listview for events
+     */
     private ArrayAdapter<String> listAdapter;
+
+    /**
+     * The current date
+     */
     private String currentDate = jniGetCurrentDate();
+
+    /**
+     * The selected date
+     */
     private String selectedDate;
+
+    /**
+     *  Text from the month box
+     */
     private String selectDay;
+
+    /**
+     * The day object
+     */
     private Day selectedDay = null;
+
+    /**
+     * selected event Id (for removal)
+     */
     private String eventId = "";
 
 
+    /** Called when the activity is first created. Sets up buttons, labels, and initialises variables.
+     *
+     * @param savedInstanceState defines the action such as screen rotation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +151,10 @@ public class DisplayDay extends AppCompatActivity {
         getEvents();
     }
 
+    /**
+     * Gets the events from the .xml file and adds them to the
+     * eventItems list.
+     */
     protected void getEvents() {
         filePath = getFilesDir().getAbsolutePath() + "/events.xml";
         String getDay = jniGetDay(filePath, selectedDate);
@@ -107,6 +170,13 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
+    /** Creates a new event accordingly
+     *
+     * @param title title of the new event
+     * @param description description of then new event
+     * @param start start time of the new event
+     * @param duration duration of the new event
+     */
     private void createNewEvent(String title, String description, String start, String duration) {
 
         String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
@@ -120,6 +190,11 @@ public class DisplayDay extends AppCompatActivity {
         listAdapter.notifyDataSetChanged();
     }
 
+    /** Modifies the date to fit format DD/MM/YYYY
+     *
+     * @param context the intent
+     * @return a string in format DD/MM/YYYY
+     */
     private String modifyDate(Intent context) {
         selectDay = context.getStringExtra("date");
 
@@ -143,6 +218,10 @@ public class DisplayDay extends AppCompatActivity {
                 Integer.parseInt(context.getStringExtra("year")));
     }
 
+    /**
+     * Checks if the XML file where events are stored exists
+     *  and create a file if not.
+     */
     private void checkXmlExists() {
         File dir = getFilesDir();
         File file = new File(dir, "events.xml");
@@ -154,6 +233,11 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
+    /** Called when the options menu on the toolbar is created or updated.
+     *
+     * @param menu The menu on the toolbar
+     * @return true boolean type
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -161,6 +245,12 @@ public class DisplayDay extends AppCompatActivity {
         return true;
     }
 
+    /** Called when an item in the menu has been selected. Will find which action it is
+     * and then spawn a dialog box (or change view) accordingly.
+     *
+     * @param item The menu item that was selected
+     * @return boolean type
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -201,6 +291,11 @@ public class DisplayDay extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /** Creates the CREATE EVENT dialog box that pops up when the user wants to
+     * add an event.
+     *
+     * @return the dialog.
+     */
     private AlertDialog createEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
         builder.setTitle("New Event");
@@ -271,7 +366,11 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
-
+    /** Creates the DELETE EVENT dialog box that pops up when the user wants to
+     * add an event. (It gives you the choice of deletion)
+     *
+     * @return the dialog.
+     */
     private AlertDialog removeEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
         builder.setTitle("Remove Event")
@@ -299,19 +398,49 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
-
-
-
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String jniGetCurrentDate();
+
+    /** Gets the events on a given day
+     *
+     * @param filePath path/to/file
+     * @param currentDate the day to search
+     * @return the events
+     */
     public native String jniGetDay(String filePath, String currentDate);
+
+    /** Creates an xml file for the device if it doesn't exist
+     *
+     * @param filePath the path/to/file
+     * @return the path/to/file
+     */
     public native String jniCreateXml(String filePath);
+
+    /** A JNI function that pushes event details through to the back-end to create
+     *  and store events. This is defined outside this class.
+     *
+     * @param title The event title
+     * @param description The event description
+     * @param start The time the event starts
+     * @param duration How long (in hours) the event will go for
+     * @param dir The file path to a .xml file where the events are stored
+     * @param selectedDate A collection containing the dates (DD/MM/YYYY) the event occurs on
+     * @return string confirming action
+     */
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 
+    /** A JNI function that removes an event from the .xml file rendering it
+     * non-existent.
+     *
+     * @param filePath path/to/file
+     * @param selectedDate the date to remove the event from
+     * @param eventId the event id number
+     * @return string confirming action
+     */
     public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);
 
 }
