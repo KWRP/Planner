@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -39,12 +40,10 @@ public class DisplayDay extends AppCompatActivity {
     private ArrayAdapter<String> listAdapter;
     private String currentDate = jniGetCurrentDate();
     private String selectedDate;
+    private String selectDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-        //createNewEvent("Create Event", "New event called", "2", "1");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_day);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_day);
@@ -52,28 +51,9 @@ public class DisplayDay extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent myIntent = getIntent();
-        String selectedDay = myIntent.getStringExtra("date");
-        if (selectedDay.length() == 1) {
-            selectedDay = "0" + selectedDay;
-        }
+        currentDate = modifyDate(myIntent);
+        selectedDate = selectDay + currentDate.substring(currentDate.indexOf("/"));
 
-        String month = myIntent.getStringExtra("month");
-        int monthValue = Integer.parseInt(month);
-
-        String[] splitDate = currentDate.split("/");
-        Integer m = Integer.parseInt(splitDate[1]);
-        m += monthValue;
-
-        splitDate[1] = m.toString();
-        if (splitDate[1].length() == 1) {
-            splitDate[1] = "0" + splitDate[1];
-        }
-
-        currentDate = splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2];
-        selectedDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
-
-        // jniCall to get events associated with the date
-        getEvents();
 
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventItems);
         ListView events = (ListView) findViewById(R.id.list_view_events);
@@ -91,14 +71,40 @@ public class DisplayDay extends AppCompatActivity {
                 dialog.show();
             }
         });
+        /*File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
+        if (!eventsXml.exists()) {
+            try {
+                eventsXml.createNewFile();
+                eventsXml.mkdir();
+            }catch(IOException e) {
+                e.printStackTrace();
+                Log.d("---JAVA TESTING!!!---", "File not created!");
+            }
+            if (eventsXml.exists()) Log.d("---JAVA TESTING!!!---", "File created!");
+        } else {
+            Log.d("---JAVA TESTING!!!---", "File already exists!");
+        }
+        Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());*/
+
+        File dir = getFilesDir();
+        File file = new File(dir, "events.xml");
+        //file.delete();
+
+        if (!file.exists()) {
+            filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+            String newFile = jniCreateXml(filePath);
+            Log.d("JAVA TEST!!!: ", newFile);
+        }
+        getEvents();
     }
 
     protected void getEvents() {
-        String getDay = jniGetDay(filePath, currentDate);
+        filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+        String getDay = jniGetDay(filePath, selectedDate);
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
-        } else {
+       } else {
             eventItems.clear();
             Day selectedDay = new Day(getDay);
             for (Event event : selectedDay.getEvents()) {
@@ -209,9 +215,6 @@ public class DisplayDay extends AppCompatActivity {
                 } else {
                     createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration);
                 }
-
-                getEvents();
-                listAdapter.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -226,9 +229,32 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     private void createNewEvent(String title, String description, String start, String duration) {
-        Log.d("---Java Test---", filePath);
-        Log.d("Java Test createEvent", jniCreateEvent(
-                title, description, start, duration, filePath, currentDate));
+        Log.d("Java Test createEvent: ", "Before");
+        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
+        Log.d("Java Test cretEv after:", newEvent);
+        getEvents();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    private String modifyDate(Intent context) {
+        selectDay = context.getStringExtra("date");
+        if (selectDay.length() == 1) {
+            selectDay = "0" + selectDay;
+        }
+
+        String month = context.getStringExtra("month");
+        int monthValue = Integer.parseInt(month);
+
+        String[] splitDate = currentDate.split("/");
+        Integer m = Integer.parseInt(splitDate[1]);
+        m += monthValue;
+
+        splitDate[1] = m.toString();
+        if (splitDate[1].length() == 1) {
+            splitDate[1] = "0" + splitDate[1];
+        }
+
+        return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
     }
 
 
@@ -236,11 +262,11 @@ public class DisplayDay extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String jniGetEvents();
+    //public native String jniGetEvents();
 
     public native String jniGetDay(String dir, String currentDate);
     public native String jniGetCurrentDate();
-
+    public native String jniCreateXml(String filePath);
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 }
