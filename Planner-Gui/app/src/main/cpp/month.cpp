@@ -3,8 +3,6 @@
 
 #include "include/week.hpp"
 #include "include/day.hpp"
-
-
 using namespace std;
 
 Month::Month(string date, const char* filepath) {
@@ -46,10 +44,8 @@ Month::Month(const char* filepath) {
 
 	date= date.replace(0, 2, "01");
 	std::string theDate = date;
-	for (int i = 0; i < 6; i++) {//need to change date for the weeks so date +7 for each week.
-		//cout << "num weeks " + numToString(i) + " date = " + date + "\n" << endl;
+	for (int i = 0; i < 6; i++) {
 		weeks[i] = new Week(date, filepath);
-		//	cout << "after week call\n" << endl;
 		if (atoi(date.substr(0, 2).data()) + 7 < 10) {
 			date = date.replace(0, 2, "0" + numToString(atoi(date.substr(0, 2).data()) + 7));
 		}
@@ -95,4 +91,11 @@ string Month::toString() {
 	}
 
 	return result;
+}
+
+Month::~Month(){
+	for(int i =6; i<0; i--){
+		free(weeks[i]);
+	}
+	free(this);
 }
