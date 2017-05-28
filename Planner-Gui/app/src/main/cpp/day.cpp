@@ -1,3 +1,8 @@
+/**
+ * Day is used to hold a vector of events,
+ */
+
+
 #include "include/day.hpp"
 #include "include/event.hpp"
 #include <android/log.h>
