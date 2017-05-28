@@ -88,7 +88,7 @@ public class DisplayDay extends AppCompatActivity {
 
         File dir = getFilesDir();
         File file = new File(dir, "events.xml");
-        //file.delete();
+        file.delete();
 
         if (!file.exists()) {
             filePath = getFilesDir().getAbsolutePath() + "/events.xml";
@@ -232,7 +232,6 @@ public class DisplayDay extends AppCompatActivity {
         Log.d("Java Test createEvent: ", "Before");
         String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
         Log.d("Java Test cretEv after:", newEvent);
-
         getEvents();
         listAdapter.notifyDataSetChanged();
     }

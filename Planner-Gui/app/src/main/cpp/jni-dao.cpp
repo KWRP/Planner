@@ -122,7 +122,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
         JNIEnv *env, jobject obj, jstring dir, jstring date) {
-    std::string dayString = "1;title;descp;time;duration";
+    std::string dayString = "";
     try {
 
         const char *nativePath = env->GetStringUTFChars(dir, 0);
@@ -132,10 +132,10 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
         __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", nativeDate);
         __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", nativePath);
 
-        //Day *day = new Day(nativeDate, nativePath);
-        //std::string dayString = day->toString();
+        Day *day = new Day(nativeDate, nativePath);
+        dayString = day->toString();
 
-        //free(day);
+        free(day);
         (env)->ReleaseStringUTFChars(dir, nativePath);
         (env)->ReleaseStringUTFChars(date, nativeDate);
 

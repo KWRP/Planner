@@ -3,26 +3,8 @@
 #include <android/log.h>
 
 Day::Day(std::string date1, const char *filepath) {
-
     this->date = date1;
-    //const char *day = date1.substr(0, 2).c_str();
-    // const char *month = date1.substr(3, 2).c_str();
-    // const char *year = date1.substr(6, 4).c_str();
-
-    /*std::string dayString = day;
-    std::string monthString = month;
-    if (std::atoi(day)< 10) {
-        std::string dayString = "0";
-        dayString.append(day);
-    }
-    if (std::atoi(month) < 10) {
-        std::string monthString = "0";
-        monthString.append(month);
-    }
-    date = dayString + "/" + monthString + "/" + year;
-     */
-    // __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! Day constructor", "%s :%s :%s :%s : %s",
-    //                     this->date.c_str(), this->filepath, day, month, year);
+    this->filepath = filepath;
 
     std::string delimiter = "/";
     std::string day1 = date.substr(0, date.find(delimiter));
@@ -36,6 +18,7 @@ Day::Day(std::string date1, const char *filepath) {
 
     bool getDay = pullDay(this, filepath, day1.c_str(), month1.c_str(), year1.c_str());
 }
+
 Day::Day(const char* filepath) {
 	std::string dayDate="";
 	std::string monDate="";

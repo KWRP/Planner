@@ -143,7 +143,6 @@ bool createXml(const char *filePath) {
     xmlDoc = new XMLDocument();
     XMLNode *planner = xmlDoc->NewElement("planner");
     xmlDoc->InsertFirstChild(planner);
-
     XMLElement *year = xmlDoc->NewElement("year");
     XMLElement *month = xmlDoc->NewElement("month");
     XMLElement *day = xmlDoc->NewElement("day");
@@ -153,10 +152,10 @@ bool createXml(const char *filePath) {
     XMLElement *startTime = xmlDoc->NewElement("startTime");
     XMLElement *duration = xmlDoc->NewElement("duration");
 
-    year->SetAttribute("YID", "-2017");
-    month->SetAttribute("MID", "-5");
-    day->SetAttribute("DID", "-5");
-    event->SetAttribute("EID", "-1");
+    year->SetAttribute("YID", "2017");
+    month->SetAttribute("MID", "05");
+    day->SetAttribute("DID", "05");
+    event->SetAttribute("EID", "0");
     title->SetText("Awesome test Event");
     description->SetText("I lied it is only an assignment!!");
     startTime->SetText("12");
@@ -171,6 +170,7 @@ bool createXml(const char *filePath) {
     event->InsertEndChild(description);
     event->InsertEndChild(startTime);
     event->InsertEndChild(duration);
+
     XMLError eResult = xmlDoc->SaveFile(filePath);
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createXml end");
 
