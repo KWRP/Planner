@@ -286,10 +286,6 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
     XMLElement *elementEventCurr = elementDay->FirstChildElement("event");
 
     if (elementEventCurr == nullptr) {
-        free(elementYear);
-        free(elementMonth);
-        free(elementDay);
-        free(elementEventCurr);
         return false;
     }
 
