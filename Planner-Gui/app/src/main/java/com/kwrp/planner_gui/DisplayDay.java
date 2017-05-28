@@ -43,7 +43,6 @@ public class DisplayDay extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-        //createNewEvent("Create Event", "New event called", "2", "1");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_day);
@@ -72,7 +71,6 @@ public class DisplayDay extends AppCompatActivity {
         currentDate = splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2];
         selectedDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
 
-        // jniCall to get events associated with the date
         getEvents();
 
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventItems);
@@ -98,7 +96,7 @@ public class DisplayDay extends AppCompatActivity {
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
-        } else {
+       } else {
             eventItems.clear();
             Day selectedDay = new Day(getDay);
             for (Event event : selectedDay.getEvents()) {
@@ -209,9 +207,6 @@ public class DisplayDay extends AppCompatActivity {
                 } else {
                     createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration);
                 }
-
-                getEvents();
-                listAdapter.notifyDataSetChanged();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -227,8 +222,10 @@ public class DisplayDay extends AppCompatActivity {
 
     private void createNewEvent(String title, String description, String start, String duration) {
         Log.d("---Java Test---", filePath);
-        Log.d("Java Test createEvent", jniCreateEvent(
-                title, description, start, duration, filePath, currentDate));
+      //Log.d("Java Test createEvent", jniCreateEvent(
+       //         title, description, start, duration, filePath, currentDate));
+        getEvents();
+        listAdapter.notifyDataSetChanged();
     }
 
 
@@ -236,11 +233,11 @@ public class DisplayDay extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String jniGetEvents();
+   // public native String jniGetEvents();
 
     public native String jniGetDay(String dir, String currentDate);
     public native String jniGetCurrentDate();
 
-    public native String jniCreateEvent(String title, String description, String start,
-                                        String duration, String dir, String selectedDate);
+  //public native String jniCreateEvent(String title, String description, String start,
+  //                                      String duration, String dir, String selectedDate);
 }

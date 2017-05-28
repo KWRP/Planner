@@ -91,7 +91,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
     const char *nativePath = env->GetStringUTFChars(dir, 0);
     const char *nativeDate = env->GetStringUTFChars(date, 0);
 
-    bool createFile = createXml(nativePath);
+    //bool createFile = createXml(nativePath);
 
     //Day *day = new Day(nativeDate, nativePath);
     //std::string dayString = day->toString();
