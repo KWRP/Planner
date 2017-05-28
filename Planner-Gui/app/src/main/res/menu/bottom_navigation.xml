@@ -3,12 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     tools:context="com.kwrp.planner_gui.DisplayWeek">
-    <item android:id="@+id/action_search"
-        android:title="First Item"
-        android:enabled="true"
-        app:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_settings"
-        android:title="Second Item"
-        android:enabled="true"
-        app:showAsAction="ifRoom"/>
+
+    <!--<item android:id="@+id/action_settings"-->
+        <!--android:title="Second Item"-->
+        <!--android:enabled="true"-->
+        <!--app:showAsAction="ifRoom"/>-->
 </menu>

@@ -23,7 +23,7 @@
     <include
         android:id="@+id/include"
         layout="@layout/content_display_month"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -48,7 +48,6 @@
         app:layout_anchor="@id/fab"
         app:layout_anchorGravity="left"
         app:srcCompat="@drawable/ic_done"
-
         />
 
         <android.support.design.widget.FloatingActionButton
@@ -60,4 +59,5 @@
             app:backgroundTint="#ff0000"
             app:srcCompat="@drawable/ic_close" />
     </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>
