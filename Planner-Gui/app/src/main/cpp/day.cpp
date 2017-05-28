@@ -62,7 +62,7 @@ void Day:: setEvent(int id, std::string title, std::string description, int star
     Event *eventx = new Event(title, description, startTime, duration);
     events.push_back(eventx);
 }
-void Day::addEvent(char* filepath, std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
+void Day::addEvent( std::string title, std::string description, int time, int duration) {//will change when the xml for event is working
 	Event *eventx = new Event(filepath, date, title, description, time, duration);
 	events.push_back(eventx);
 }
