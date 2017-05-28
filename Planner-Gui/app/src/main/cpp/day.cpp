@@ -5,11 +5,9 @@
 Day::Day(std::string date1, const char *filepath) {
 
     this->date = date1;
-    const char *day = date1.substr(0, 2).c_str();
-    const char *month = date1.substr(3, 2).c_str();
-    const char *year = date1.substr(6, 4).c_str();
-
-    this->filepath = filepath;
+    //const char *day = date1.substr(0, 2).c_str();
+    // const char *month = date1.substr(3, 2).c_str();
+    // const char *year = date1.substr(6, 4).c_str();
 
     /*std::string dayString = day;
     std::string monthString = month;
@@ -23,21 +21,20 @@ Day::Day(std::string date1, const char *filepath) {
     }
     date = dayString + "/" + monthString + "/" + year;
      */
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! Day constructor", "%s :%s :%s :%s : %s",
-                        this->date.c_str(), this->filepath, day, month, year);
+    // __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! Day constructor", "%s :%s :%s :%s : %s",
+    //                     this->date.c_str(), this->filepath, day, month, year);
 
     std::string delimiter = "/";
     std::string day1 = date.substr(0, date.find(delimiter));
     std::string rest1 = date.substr(date.find(delimiter) + 1);
     std::string month1 = rest1.substr(0, date.find(delimiter));
-
     std::string year1 = rest1.substr(date.find(delimiter) + 1);
 
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! Day constructor", "%s :%s :%s :%s : %s",
                         this->date.c_str(), this->filepath, day1.c_str(), month1.c_str(),
                         year1.c_str());
 
-    bool s = pullDay(this, filepath, day1.c_str(), month1.c_str(), year1.c_str());
+    bool getDay = pullDay(this, filepath, day1.c_str(), month1.c_str(), year1.c_str());
 }
 Day::Day(const char* filepath) {
 	std::string dayDate="";
@@ -69,6 +66,7 @@ Event* Day::getEvent(int eventNumber) {
 	return events.at(eventNumber-1);
 
 }
+
 std::string Day::toString() {
 	std::string result = "";
 	for(int i = 0; i < events.size(); i++){

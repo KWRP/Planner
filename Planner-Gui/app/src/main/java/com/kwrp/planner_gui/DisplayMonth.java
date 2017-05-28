@@ -47,6 +47,15 @@ public class DisplayMonth extends AppCompatActivity {
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
 
+        File dir = getFilesDir();
+        File file = new File(dir, "events.xml");
+        if (!file.exists()) {
+            Log.d("JAVA create file", "In loop");
+            String filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+            jniCreateXml(filePath);
+
+        }
+
         currentDate = jniGetCurrentDate();
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
@@ -139,9 +148,9 @@ public class DisplayMonth extends AppCompatActivity {
                     myIntent.putExtra("month", Integer.toString(month));
                     startActivity(myIntent);
 
-                    //File dir = getFilesDir();
-                    //File file = new File(dir, "events.xml");
-                    //boolean deleted = file.delete();
+                    // File dir = getFilesDir();
+                    // File file = new File(dir, "events.xml");
+                    // boolean deleted = file.delete();
 /*
                 File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
                 if (!eventsXml.exists()) {
@@ -324,9 +333,7 @@ public class DisplayMonth extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
-
     public native String jniGetCurrentDate();
 
-    public native String testJNI();
+    public native String jniCreateXml(String filepath);
 }

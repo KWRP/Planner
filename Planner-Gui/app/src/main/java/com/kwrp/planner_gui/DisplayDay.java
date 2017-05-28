@@ -38,6 +38,7 @@ public class DisplayDay extends AppCompatActivity {
     private Day selectedDay;
     private ArrayAdapter<String> listAdapter;
     private String currentDate = jniGetCurrentDate();
+    private String selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +65,12 @@ public class DisplayDay extends AppCompatActivity {
         m += monthValue;
 
         splitDate[1] = m.toString();
-        String newDate = splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2];
-        currentDate = newDate;
+        if (splitDate[1].length() == 1) {
+            splitDate[1] = "0" + splitDate[1];
+        }
 
-        currentDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
+        currentDate = splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2];
+        selectedDate = selectedDay + currentDate.substring(currentDate.indexOf("/"));
 
         // jniCall to get events associated with the date
         getEvents();
@@ -78,7 +81,7 @@ public class DisplayDay extends AppCompatActivity {
 
         EditText dateField = (EditText) findViewById(R.id.output_selected_date);
 
-        dateField.setText(currentDate);
+        dateField.setText(selectedDate);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +100,7 @@ public class DisplayDay extends AppCompatActivity {
             eventItems.add("You have no saved events on this day :)");
         } else {
             eventItems.clear();
-            selectedDay = new Day(getDay);
+            Day selectedDay = new Day(getDay);
             for (Event event : selectedDay.getEvents()) {
                 eventItems.add(event.toString());
             }
