@@ -2,16 +2,32 @@ package com.kwrp.planner_gui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static android.graphics.Color.parseColor;
+import static com.kwrp.planner_gui.R.id.gridview;
 
 /**
  * Created by KurtsPC on 9/05/2017.
@@ -36,11 +52,74 @@ public class DialogAction {
 
     public static AlertDialog createSettingsDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
-        builder.setMessage("")
-                .setTitle("Settings")
-                .setMessage("Change Colour scheme what else?");
+        final AppCompatActivity parentf = parent;
+//    <color name="colorPrimary">#2a4af8</color>
+//    <color name="colorPrimaryDark">#303f9f</color>
+//    <color name="colorAccent">#ff4081</color>
+//    <color name="background_blue">#eaeafa</color>
+//    <color name="days_of_week_blue">#640a50ff</color>
+//    <color name="red">#ff0000</color>
+//    <color name="blue">#ff33b5e5</color>
+//    <color name="green">#ff669900</color>
+        builder.setTitle("Settings");
 
-        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
+        final LinearLayout dialogLayout = new LinearLayout(parent);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+
+
+        TextView title = new TextView(parent);
+        title.setText("Select a colour scheme:");
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(Color.rgb(0, 0, 0));
+        title.setTextSize(14);
+        dialogLayout.addView(title, 0);
+
+        ArrayList<String> spinnerArray = new ArrayList<>();
+        spinnerArray.add("Select...");
+        spinnerArray.add("Green");
+        spinnerArray.add("Red");
+        spinnerArray.add("Blue");
+
+        Spinner spinner = new Spinner(parent);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(parent, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        spinner.setAdapter(spinnerArrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toolbar toolbar = (Toolbar) parentf.findViewById(R.id.toolbar_month);
+//                parent.removeView(view);
+                switch (position) {
+                    case 1:
+                        toolbar.setBackgroundColor(Color.GREEN);
+                        Log.d("CASE 0 ZIP", "CASE 0 ZIP\n\n\n");
+                        break;
+                    case 2:
+                        toolbar.setBackgroundColor(Color.RED);
+                        break;
+                    case 3:
+                        toolbar.setBackgroundColor(Color.BLUE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+        });
+        spinner.setPadding(100,20,100,20);
+
+        spinner.setDropDownHorizontalOffset(90);
+        spinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        //spinner.setBackgroundColor(parseColor("#FAFAFA"));
+        dialogLayout.addView(spinner);
+        dialogLayout.setPadding(100, 50, 100, 50);
+
+        builder.setView(dialogLayout);
+        builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
@@ -51,9 +130,78 @@ public class DialogAction {
 
     public static AlertDialog createSyncDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
-        builder.setMessage("")
-                .setTitle("Synchronise")
-                .setMessage("Synchronise with:\n-Evision\n-Google Calendar\n-Hotmail Calendar\n-Facebook Calendar");
+        builder.setTitle("Synchronise");
+
+        final LinearLayout dialogLayout = new LinearLayout(parent);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+
+
+        TextView evisionTitle = new TextView(parent);
+        evisionTitle.setText("Evision:");
+        evisionTitle.setPadding(10, 10, 10, 10);
+        evisionTitle.setGravity(Gravity.CENTER);
+        evisionTitle.setTextColor(Color.rgb(0, 0, 0));
+        evisionTitle.setTextSize(14);
+
+        Button button = new Button(parent);
+        button.setText("Otago Timetable");
+        button.setLayoutParams(new Toolbar.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        dialogLayout.addView(evisionTitle, 0);
+        dialogLayout.addView(button, 1);
+
+        TextView googleTitle = new TextView(parent);
+        googleTitle.setText("Google Calendar:");
+        googleTitle.setPadding(10, 10, 10, 10);
+        googleTitle.setGravity(Gravity.CENTER);
+        googleTitle.setTextColor(Color.rgb(0, 0, 0));
+        googleTitle.setTextSize(14);
+
+        button = new Button(parent);
+        button.setText("Google Calendar");
+        button.setLayoutParams(new Toolbar.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        dialogLayout.addView(googleTitle, 2);
+        dialogLayout.addView(button, 3);
+
+
+        TextView hotmailTitle = new TextView(parent);
+        hotmailTitle.setText("Hotmail Calendar:");
+        hotmailTitle.setPadding(10, 10, 10, 10);
+        hotmailTitle.setGravity(Gravity.CENTER);
+        hotmailTitle.setTextColor(Color.rgb(0, 0, 0));
+        hotmailTitle.setTextSize(14);
+
+        button = new Button(parent);
+        button.setText("Hotmail Calendar");
+        button.setLayoutParams(new Toolbar.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        dialogLayout.addView(hotmailTitle, 4);
+        dialogLayout.addView(button, 5);
+
+
+
+        TextView facebookTitle = new TextView(parent);
+        facebookTitle.setText("Facebook Events:");
+        facebookTitle.setPadding(10, 10, 10, 10);
+        facebookTitle.setGravity(Gravity.CENTER);
+        facebookTitle.setTextColor(Color.rgb(0, 0, 0));
+        facebookTitle.setTextSize(14);
+
+        button = new Button(parent);
+        button.setText("Facebook Events");
+        button.setLayoutParams(new Toolbar.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        dialogLayout.addView(facebookTitle, 6);
+        dialogLayout.addView(button, 7);
+
+        dialogLayout.setPadding(70,10,70,10);
+        builder.setView(dialogLayout);
 
         builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -68,12 +216,11 @@ public class DialogAction {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage("")
                 .setTitle("Help")
-                .setMessage("This option is to add one, or a series of events." +
+                .setMessage("This option is to add one event to multiple days." +
                         "\nTo add an event for a single day, simply tap the selected day." +
-                        "\nTo add an event for several days, simply hold and drag the selected days." +
-                        "\n");
+                        " and click the the green tick button");
 
-        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("Got it!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
@@ -88,7 +235,7 @@ public class DialogAction {
 
         final LinearLayout dialogLayout = new LinearLayout(parent);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
-
+        dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(parent);
         titleLabel.setText("Event Title:");
         dialogLayout.addView(titleLabel, 0);

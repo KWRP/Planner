@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Planner</string>
+    <string name="app_name">UPlanner</string>
     <string name="action_display_month">Month View</string>
     <string name="action_display_week">Week View</string>
     <string name="action_settings">Settings</string>
