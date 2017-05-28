@@ -1,6 +1,9 @@
-##include "include/helpers.hpp"
+#include "include/helpers.hpp"
 #include "include/week.hpp"
 #include "include/day.hpp"
+
+
+
 
 Week::Week(std::string date, const char* filepath) {//might need to check that the substr is correct
 		this->date = date;
@@ -121,7 +124,7 @@ std::string Week::toString() {
 	return result;
 }
 
-Week::~Week(){
+Week:: ~Week(){
 	for(int i= 7; i>0; i--){
 		free(week[i]);
 	}
