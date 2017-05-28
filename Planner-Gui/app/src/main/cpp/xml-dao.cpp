@@ -1,5 +1,6 @@
 #include "include/xml-dao.hpp"
 #include "include/tinyxml2.h"
+#include "../../../../../../../Library/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include/android/log.h"
 //#include <android/log.h>
 
 using namespace tinyxml2;
@@ -282,21 +283,32 @@ bool removeEvent(const char *filePath, const char *day, const char *month, const
     }
 
     XMLElement *elementEventTemp = elementEvent->NextSiblingElement("event");
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "next sibling");
 
-    int lastEvent = 0;
-    elementDay->LastChildElement("event")->QueryIntAttribute("EID",&lastEvent);
+    if (elementEventTemp != nullptr) {
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "eventtemp is not null");
 
-    elementDay->DeleteChild(elementEvent);
-    int tempEID= 0;
+        elementDay->DeleteChild(elementEvent);
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "deleted child");
+        int tempEID = 0;
 
-    while (elementEventTemp != nullptr){
-        tempEID = elementEventTemp->QueryAttribute("EID",&tempEID) -1;
-        elementEventTemp->SetAttribute("EID",tempEID);
-        elementEventTemp = elementEventTemp->NextSiblingElement("event");
+        while (elementEventTemp != nullptr) {
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "temp event not null yet");
+            tempEID = elementEventTemp->QueryAttribute("EID", &tempEID) - 1;
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "deduct event id");
+            elementEventTemp->SetAttribute("EID", tempEID);
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "set new id");
+            elementEventTemp = elementEventTemp->NextSiblingElement("event");
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "assign next event");
+        }
+
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "ended loop");
+    } else {
+        elementDay->DeleteChild(elementEvent);
     }
-
     eResult = xmlDoc.SaveFile(filePath);
     XMLCheckResult(eResult);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "Saved");
     return true;
 }
 
@@ -304,21 +316,17 @@ bool
 pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, const char *year) {
 
     XMLDocument xmlDoc;
-
     XMLError eResult = xmlDoc.LoadFile(filepath);
     if (eResult != XML_SUCCESS) return false;
-
     bool dateExist = checkDate(filepath, day, month, year);
-
     if (!dateExist) {
         return false;
     }
-
     XMLElement *elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
     while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
-        elementYear->NextSiblingElement("year");
+        elementYear = elementYear->NextSiblingElement("year");
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", elementYear->Value());
     }
-
     XMLElement *elementMonth = elementYear->FirstChildElement("month");
     while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
         elementMonth = elementMonth->NextSiblingElement("month");
@@ -358,9 +366,7 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
     }
 
     eResult = xmlDoc.SaveFile(filepath);
-
     XMLCheckResult(eResult);
-
     return true;
 }
 

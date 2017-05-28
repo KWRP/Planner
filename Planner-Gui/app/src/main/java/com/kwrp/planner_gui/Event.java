@@ -67,9 +67,9 @@ public class Event {
     @Override
     public String toString() {
         return "Event " +eventId+ " :\n" +
-                "\t\tTitle : '" + title + '\'' +
-                ", \n\t\tDescription : '" + description + '\'' +
-                ", \n\t\tStartTime : '" + startTime + " oclock"+'\'' +
-                ", \n\t\tDuration : 'For " + duration +" hour"+ '\'';
+                "\t\tTitle : " + title +
+                ", \n\t\tDescription : " + description +
+                ", \n\t\tStartTime : " + startTime + " oclock" +
+                ", \n\t\tDuration : " + duration + " hour(s)";
     }
 }

@@ -60,7 +60,7 @@ Event* Day::getEvent(int eventNumber) {
 std::string Day::toString() {
 	std::string result = "";
 	for(int i = 0; i < events.size(); i++){
-        result += numToString(i + 1);
+        result += numToString(i);
         result+= events[i]->toString();
     }
 	return result;

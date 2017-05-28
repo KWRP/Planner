@@ -68,6 +68,83 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetEvents(
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         JNIEnv *env, jobject t,
         jstring title, jstring description, jstring start, jstring duration, jstring dir,
+        jstring date, jstring eventId, jboolean removeEve) {
+
+    std::string confirm = "";
+
+    try {
+        bool nativeEditEvent = (bool) removeEve;
+        const char *nativeTitle = env->GetStringUTFChars(title, 0);
+        const char *nativeDescription = env->GetStringUTFChars(description, 0);
+        const char *nativeStart = env->GetStringUTFChars(start, 0);
+        const char *nativeDuration = env->GetStringUTFChars(duration, 0);
+        const char *nativePath = env->GetStringUTFChars(dir, 0);
+        const char *nativeDate = env->GetStringUTFChars(date, 0);
+        const char *nativeEventId = env->GetStringUTFChars(eventId, 0);
+
+        std::string selectedDate = nativeDate;
+        std::string delimiter = "/";
+        std::string day = selectedDate.substr(0, selectedDate.find(delimiter));
+        std::string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        std::string month = rest.substr(0, selectedDate.find(delimiter));
+        std::string year = rest.substr(selectedDate.find(delimiter) + 1);
+
+        if (nativeEditEvent) {
+            bool deleteEvent = removeEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
+                                           nativeEventId);
+        } else {
+            bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
+                                        nativeTitle, nativeDescription, nativeStart,
+                                        nativeDuration);
+        }
+
+        bool check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
+
+        (env)->ReleaseStringUTFChars(title, nativeTitle);
+        (env)->ReleaseStringUTFChars(description, nativeDescription);
+        (env)->ReleaseStringUTFChars(start, nativeStart);
+        (env)->ReleaseStringUTFChars(duration, nativeDuration);
+        (env)->ReleaseStringUTFChars(dir, nativePath);
+        (env)->ReleaseStringUTFChars(eventId, nativeEventId);
+
+        if (check) {
+            confirm = "Event Created!!";
+        } else {
+            confirm = "Event Deleted!!!";
+        }
+    }
+    catch (std::exception e) {
+        throwJavaException(env, e.what());
+    }
+    return env->NewStringUTF(confirm.c_str());
+
+}
+
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
+        JNIEnv *env, jobject obj, jstring dir, jstring date) {
+    std::string dayString = "";
+    try {
+
+        const char *nativePath = env->GetStringUTFChars(dir, 0);
+        const char *nativeDate = env->GetStringUTFChars(date, 0);
+
+        Day *day = new Day(nativeDate, nativePath);
+        dayString = day->toString();
+
+        free(day);
+        (env)->ReleaseStringUTFChars(dir, nativePath);
+        (env)->ReleaseStringUTFChars(date, nativeDate);
+
+    }
+    catch (std::exception e) {
+        throwJavaException(env, e.what());
+    }
+    return env->NewStringUTF(dayString.c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent(
+        JNIEnv *env, jobject t,
+        jstring title, jstring description, jstring start, jstring duration, jstring dir,
         jstring date) {
 
     std::string confirm = "";
@@ -88,103 +165,9 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         std::string month = rest.substr(0, selectedDate.find(delimiter));
         std::string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-        bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
-                                    nativeTitle,  nativeDescription, nativeStart, nativeDuration);
-
-        bool check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
-
-        (env)->ReleaseStringUTFChars(title, nativeTitle);
-        (env)->ReleaseStringUTFChars(description, nativeDescription);
-        (env)->ReleaseStringUTFChars(start, nativeStart);
-        (env)->ReleaseStringUTFChars(duration, nativeDuration);
-        (env)->ReleaseStringUTFChars(dir, nativePath);
-
-        if (check) {
-            confirm = "Event Created!!";
-        } else {
-            confirm = "Event Creation Failed!!!";
-        }
-    }
-    catch (std::exception e) {
-        throwJavaException(env, e.what());
-    }
-    return env->NewStringUTF(confirm.c_str());
-
-}
-
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEvent(
-        JNIEnv *env, jobject obj, jstring dir, jstring date) {
-    std::string dayString = "";
-    try {
-
-        const char *nativePath = env->GetStringUTFChars(dir, 0);
-        const char *nativeDate = env->GetStringUTFChars(date, 0);
-
-
-    }
-    catch (std::exception e) {
-        throwJavaException(env, e.what());
-    }
-    return env->NewStringUTF(dayString.c_str());
-}
-
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
-        JNIEnv *env, jobject obj, jstring dir, jstring date) {
-    std::string dayString = "";
-    try {
-
-        const char *nativePath = env->GetStringUTFChars(dir, 0);
-        const char *nativeDate = env->GetStringUTFChars(date, 0);
-
-        //bool createFile = createXml(nativePath);
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", nativeDate);
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", nativePath);
-
-        Day *day = new Day(nativeDate, nativePath);
-        dayString = day->toString();
-
-        free(day);
-        (env)->ReleaseStringUTFChars(dir, nativePath);
-        (env)->ReleaseStringUTFChars(date, nativeDate);
-
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! GetDay", "%s", dayString.c_str());
-    }
-    catch (std::exception e) {
-        throwJavaException(env, e.what());
-    }
-    return env->NewStringUTF(dayString.c_str());
-}
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent(
-        JNIEnv *env, jobject t,
-        jstring title, jstring description, jstring start, jstring duration, jstring dir,
-        jstring date, jboolean editEvent) {
-
-    std::string confirm = "";
-
-    try {
-
-        const char *nativeTitle = env->GetStringUTFChars(title, 0);
-        const char *nativeDescription = env->GetStringUTFChars(description, 0);
-        const char *nativeStart = env->GetStringUTFChars(start, 0);
-        const char *nativeDuration = env->GetStringUTFChars(duration, 0);
-        const char *nativePath = env->GetStringUTFChars(dir, 0);
-        const char *nativeDate = env->GetStringUTFChars(date, 0);
-        bool nativeEditEvent = (bool) editEvent;
-
-        std::string selectedDate = nativeDate;
-        std::string delimiter = "/";
-        std::string day = selectedDate.substr(0, selectedDate.find(delimiter));
-        std::string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
-        std::string month = rest.substr(0, selectedDate.find(delimiter));
-        std::string year = rest.substr(selectedDate.find(delimiter) + 1);
-
-
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", day.c_str());
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", month.c_str());
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", year.c_str());
 
         bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
-                                    nativeTitle,  nativeDescription, nativeStart, nativeDuration);
+                                    nativeTitle, nativeDescription, nativeStart, nativeDuration);
 
 
         bool check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
@@ -194,7 +177,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent
         (env)->ReleaseStringUTFChars(start, nativeStart);
         (env)->ReleaseStringUTFChars(duration, nativeDuration);
         (env)->ReleaseStringUTFChars(dir, nativePath);
-
 
         if (check) {
             confirm = "Event Created!!";

@@ -43,7 +43,8 @@ public class DisplayDay extends AppCompatActivity {
     private String selectedDate;
     private String selectDay;
     private Day selectedDay = null;
-    private boolean editEvent = false;
+    private boolean removeEvent = false;
+    private String eventId = "";
 
 
     @Override
@@ -72,12 +73,15 @@ public class DisplayDay extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
 
-                if (selectedDay.getEvent(position) != null) {
+                if (selectedDay != null && selectedDay.getEvent(position) != null) {
+
                     newEventTitle = selectedDay.getEvent(position).getTitle();
                     newEventDescription = selectedDay.getEvent(position).getDescription();
                     newEventStart = selectedDay.getEvent(position).getStartTime();
                     newEventDuration = selectedDay.getEvent(position).getDuration();
-                    editEvent = true;
+                    eventId = selectedDay.getEvent(position).getEventId();
+                    removeEvent = true;
+
                     Dialog dialog = createEventDialog();
                     dialog.show();
                 }
@@ -109,6 +113,57 @@ public class DisplayDay extends AppCompatActivity {
             for (Event event : selectedDay.getEvents()) {
                 eventItems.add(event.toString());
             }
+        }
+    }
+
+    private void createNewEvent(String title, String description, String start, String duration) {
+
+        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate,
+                eventId, removeEvent);
+
+        removeEvent = false;
+        eventId = "";
+        newEventTitle = "";
+        newEventDescription = "";
+        newEventStart = "";
+        newEventDuration = "";
+        selectedDay = null;
+        getEvents();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    private String modifyDate(Intent context) {
+        selectDay = context.getStringExtra("date");
+
+        if (selectDay.length() == 1) {
+            selectDay = "0" + selectDay;
+        }
+
+        String month = context.getStringExtra("month");
+        int monthValue = Integer.parseInt(month);
+
+        String[] splitDate = currentDate.split("/");
+        Integer m = Integer.parseInt(splitDate[1]);
+        m += monthValue;
+
+        splitDate[1] = m.toString();
+        if (splitDate[1].length() == 1) {
+            splitDate[1] = "0" + splitDate[1];
+        }
+
+        return (splitDate[0] + "/" + splitDate[1] + "/" +
+                Integer.parseInt(context.getStringExtra("year")));
+    }
+
+    private void checkXmlExists() {
+        File dir = getFilesDir();
+        File file = new File(dir, "events.xml");
+        //file.delete();
+
+        if (!file.exists()) {
+            filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+            String newFile = jniCreateXml(filePath);
+            Log.d("JAVA TEST!!!: ", newFile);
         }
     }
 
@@ -231,79 +286,16 @@ public class DisplayDay extends AppCompatActivity {
         return dialog;
     }
 
-    private void createNewEvent(String title, String description, String start, String duration) {
-        Log.d("Java Test createEvent: ", "Before");
-        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate, editEvent);
-        editEvent = false;
-        Log.d("Java Test cretEv after:", newEvent);
-        getEvents();
-        listAdapter.notifyDataSetChanged();
-    }
-
-    private String modifyDate(Intent context) {
-        selectDay = context.getStringExtra("date");
-
-        if (selectDay.length() == 1) {
-            selectDay = "0" + selectDay;
-        }
-
-        String month = context.getStringExtra("month");
-        int monthValue = Integer.parseInt(month);
-
-        String[] splitDate = currentDate.split("/");
-        Integer m = Integer.parseInt(splitDate[1]);
-        m += monthValue;
-
-        splitDate[1] = m.toString();
-        if (splitDate[1].length() == 1) {
-            splitDate[1] = "0" + splitDate[1];
-        }
-
-        return (splitDate[0] + "/" + splitDate[1] + "/" +
-                Integer.parseInt(context.getStringExtra("year")));
-    }
-
-    private void checkXmlExists() {
-        File dir = getFilesDir();
-        File file = new File(dir, "events.xml");
-        //file.delete();
-
-        if (!file.exists()) {
-            filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-            String newFile = jniCreateXml(filePath);
-            Log.d("JAVA TEST!!!: ", newFile);
-        }
-    }
-
-
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    //public native String jniGetEvents();
-    public native String jniGetDay(String filePath, String currentDate);
-
     public native String jniGetCurrentDate();
-
+    public native String jniGetDay(String filePath, String currentDate);
     public native String jniCreateXml(String filePath);
-
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate,
-                                        boolean editEvent);
+                                        String eventId, boolean removeEvent);
 
 }
 
-        /*File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
-        if (!eventsXml.exists()) {
-            try {
-                eventsXml.createNewFile();
-                eventsXml.mkdir();
-            }catch(IOException e) {
-                e.printStackTrace();
-                Log.d("---JAVA TESTING!!!---", "File not created!");
-            }
-            if (eventsXml.exists()) Log.d("---JAVA TESTING!!!---", "File created!");
-        } else {
-            Log.d("---JAVA TESTING!!!---", "File already exists!");
-        }
-        Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());*/
