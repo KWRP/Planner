@@ -40,12 +40,14 @@ public class DisplayMonth extends AppCompatActivity {
             "November", "December"};
     private boolean editAvailable = true;
     private int daysSelected = 0;
+    private Collection<String> dayList = new ArrayList<>();
     private Collection<Integer> positionList = new ArrayList<>();
     private String currentDate;
     private static int month = 0;
     private static int year = 0;
     private static int thisYear = 0;
     private static int thisMonthIndex = 0;
+    private String filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class DisplayMonth extends AppCompatActivity {
         currentDate = jniGetCurrentDate();
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
+        filePath = getFilesDir().getAbsolutePath() + "/events.xml";
 
         int index = 0;
         for(int i =0;i<currentDate.length();i++){
@@ -119,15 +122,19 @@ public class DisplayMonth extends AppCompatActivity {
                         if (color == Color.LTGRAY) {
                             view2.setBackgroundColor(Color.rgb(244, 244, 244));
 
-                            Integer v = new Integer(position);
-                            positionList.remove(v);
+                            Integer pos = new Integer(position);
+
+                            positionList.remove(pos);
+                            String day = view2.getText().toString();
+                            dayList.remove(day);
                             daysSelected -= 1;
                         } else if (color== Color.rgb(244, 244, 244)){
                             view2.setBackgroundColor(Color.LTGRAY);
 
-                            Integer v = new Integer(position);
-                            positionList.add(v);
-
+                            Integer pos = new Integer(position);
+                            positionList.add(pos);
+                            String day = view2.getText().toString();
+                            dayList.add(day);
                             daysSelected += 1;
                         }
                     }
@@ -156,6 +163,7 @@ public class DisplayMonth extends AppCompatActivity {
                     Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
                     myIntent.putExtra("date", dateSelected);
                     myIntent.putExtra("month", Integer.toString(month));
+                    myIntent.putExtra("year", Integer.toString(thisYear));
                     startActivity(myIntent);
                 }
                 return true;
@@ -287,7 +295,7 @@ public class DisplayMonth extends AppCompatActivity {
             fab.setVisibility(View.VISIBLE);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-            toolbar.setTitle(monthList[thisMonthIndex + month]);
+            toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
             toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
             setSupportActionBar(toolbar);
 
@@ -298,7 +306,7 @@ public class DisplayMonth extends AppCompatActivity {
                 TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(pos);
                 view2.setBackgroundColor(Color.rgb(244, 244, 244));
             }
-            positionList = new ArrayList<>();
+            dayList = new ArrayList<>();
             daysSelected = 0;
             editAvailable = true;
         }
@@ -317,8 +325,13 @@ public class DisplayMonth extends AppCompatActivity {
     }
 
     public void createEventSetDialog(){
-        AlertDialog dialog = DialogAction.createEventSetDialog(this, positionList, jniGetCurrentDate() );
+        DialogAction a = new DialogAction();
+        String eventMonth =  ""+(thisMonthIndex+month+1);
+        String eventYear = ""+thisYear;
+
+        AlertDialog dialog = a.createEventSetDialog(this, dayList, eventMonth, eventYear, filePath );
         dialog.show();
+        startEditState();
     }
 
     public void toastPrint(String s){
@@ -332,6 +345,4 @@ public class DisplayMonth extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String jniGetCurrentDate();
-
-    public native String jniCreateXml(String filepath);
 }
