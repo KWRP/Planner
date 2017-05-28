@@ -1,9 +1,11 @@
 package com.kwrp.planner_gui;
 
-import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -12,35 +14,32 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static android.graphics.Color.parseColor;
+import static com.kwrp.planner_gui.R.id.gridview;
 
 /**
  * Created by KurtsPC on 9/05/2017.
  */
 
-public class DialogAction extends AppCompatActivity{
-
-    static {
-        System.loadLibrary("calender");
-    }
-    private String filePath;
-    private String selectedDate;
+public class DialogAction {
 
     public static AlertDialog createAboutDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage("")
                 .setTitle("About us")
-                .setMessage("This application is designed for Otago University students. This" +
-                        " application was created by students.");
+                .setMessage("Cyka Blyat Idi Nahoi");
 
         builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -54,6 +53,14 @@ public class DialogAction extends AppCompatActivity{
     public static AlertDialog createSettingsDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         final AppCompatActivity parentf = parent;
+//    <color name="colorPrimary">#2a4af8</color>
+//    <color name="colorPrimaryDark">#303f9f</color>
+//    <color name="colorAccent">#ff4081</color>
+//    <color name="background_blue">#eaeafa</color>
+//    <color name="days_of_week_blue">#640a50ff</color>
+//    <color name="red">#ff0000</color>
+//    <color name="blue">#ff33b5e5</color>
+//    <color name="green">#ff669900</color>
         builder.setTitle("Settings");
 
         final LinearLayout dialogLayout = new LinearLayout(parent);
@@ -213,7 +220,7 @@ public class DialogAction extends AppCompatActivity{
                         "\nTo add an event for a single day, simply tap the selected day." +
                         " and click the the green tick button");
 
-        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("Got it!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
@@ -222,16 +229,13 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
-    public AlertDialog createEventSetDialog(AppCompatActivity parent, Collection<String> dayList, String month, String year, String filePath) {
-
-        this.filePath = filePath;
+    public static AlertDialog createEventSetDialog(AppCompatActivity parent, Collection<Integer> positionList, String date) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setTitle("Create Event Set");
 
         final LinearLayout dialogLayout = new LinearLayout(parent);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
         dialogLayout.setPadding(50, 50, 50, 50);
-
         final TextView titleLabel = new TextView(parent);
         titleLabel.setText("Event Title:");
         dialogLayout.addView(titleLabel, 0);
@@ -250,7 +254,7 @@ public class DialogAction extends AppCompatActivity{
         startLabel.setText("Start Time:");
         dialogLayout.addView(startLabel, 4);
         final EditText startInput = new EditText(parent);
-        startInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        startInput.setInputType(InputType.TYPE_CLASS_TEXT);
         startInput.setHint("e.g. 0800");
         dialogLayout.addView(startInput, 5);
 
@@ -258,17 +262,26 @@ public class DialogAction extends AppCompatActivity{
         durationLabel.setText("Duration");
         dialogLayout.addView(durationLabel, 6);
         final EditText durationInput = new EditText(parent);
-        durationInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        durationInput.setInputType(InputType.TYPE_CLASS_TEXT);
         durationInput.setHint("Number of hours");
         dialogLayout.addView(durationInput, 7);
 
         builder.setView(dialogLayout);
 
-        final ArrayList<String> dateList = new ArrayList<>();
-        for(String day : dayList) {
-
-            dateList.add(day + "/"+month+"/"+year);
+        //get month and year
+        String dateSuffix = "DialogAction.java ERROR";
+        for(int i =0;i<date.length(); i++){
+            if(date.charAt(i) == '/'){
+                dateSuffix = date.substring(i);
+                break;
+            }
         }
+        ArrayList<String> dateList = new ArrayList<>();
+        for(Integer i : positionList) {
+            i -=6;
+            dateList.add(i.toString() + dateSuffix);
+        }
+
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -277,21 +290,9 @@ public class DialogAction extends AppCompatActivity{
                 String newEventStart = ((EditText) dialogLayout.getChildAt(5)).getText().toString();
                 String newEventDuration = ((EditText) dialogLayout.getChildAt(7)).getText().toString();
 
-                if (newEventTitle.equals("") || newEventDescription.equals("") ||
-                        newEventStart.equals("") || newEventDuration.equals("")) {
-                    Log.d("JAVA create event: ", "failed!!");
-                } else {
-
-                    createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration, dateList);
-
-
-                }
-
-
                 Log.d("details:", newEventTitle + newEventDescription + newEventStart + newEventDuration);
             }
         });
-
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -304,35 +305,7 @@ public class DialogAction extends AppCompatActivity{
     }
 
 
-    private void createNewEvent(String title, String description, String start, String duration, ArrayList<String> dates) {
-        String s;
-        for(String selectedDate : dates) {
-            s = modifyDate(selectedDate);
-            jniCreateEvent(title, description, start, duration, filePath, s);
 
-        }
-
-    }
-
-    private String modifyDate(String date) {
-
-        String[] splitDate = date.split("/");
-
-        //prefixing zero fix (day)
-        if(splitDate[0].length() == 1){
-            splitDate[0] = "0" + splitDate[0];
-        }
-
-        //prefixing zero fix (month)
-        if (splitDate[1].length() == 1) {
-            splitDate[1] = "0" + splitDate[1];
-        }
-
-        return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
-    }
-
-    public native String jniCreateEvent(String title, String description, String start,
-                                        String duration, String dir, String selectedDate);
 
 
 }
