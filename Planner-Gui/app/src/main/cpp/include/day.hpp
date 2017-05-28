@@ -18,7 +18,7 @@ private:
 
 public:
     std::string getDate() { return date; }
-	int numOfEvents() { return events.size(); }
+	int numOfEvents() { return events.size();}
 	Event *getEvent(int eventNumber);
 	void addEvent(std::string title, std::string description, int time, int duration);
     void setEvent(int id, std::string title, std::string description, int time, int duration);

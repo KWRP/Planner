@@ -27,11 +27,6 @@ import static com.kwrp.planner_gui.R.id.gridview;
 
 public class DisplayMonth extends AppCompatActivity {
 
-    private static int month = 0;
-    private static int year = 0;
-    private static int thisYear = 0;
-    private static int thisMonthIndex = 0;
-
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("calender");
@@ -45,6 +40,10 @@ public class DisplayMonth extends AppCompatActivity {
     private Collection<String> dayList = new ArrayList<>();
     private Collection<Integer> positionList = new ArrayList<>();
     private String currentDate;
+    private static int month = 0;
+    private static int year = 0;
+    private static int thisYear = 0;
+    private static int thisMonthIndex = 0;
     private String filePath;
 
     @Override
@@ -149,6 +148,7 @@ public class DisplayMonth extends AppCompatActivity {
 
         });
 
+
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
@@ -164,7 +164,9 @@ public class DisplayMonth extends AppCompatActivity {
                     startActivity(myIntent);
                 }
                 return true;
+
             }
+
         });
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
@@ -290,7 +292,7 @@ public class DisplayMonth extends AppCompatActivity {
             fab.setVisibility(View.VISIBLE);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-            toolbar.setTitle(monthList[thisMonthIndex + month]);
+            toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
             toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
             setSupportActionBar(toolbar);
 

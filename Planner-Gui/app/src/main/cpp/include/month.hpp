@@ -17,9 +17,8 @@ public:
     Day *getDay(std::string theDay);
     Week *getWeek(std::string theWeek);
     Week *getWeek(int theWeek) {return weeks[theWeek];}
-    Month(std::string, const char* ) {}
-    Month(const char*) {}
-    ~Month();
+    Month(std::string, const char* );
+    Month(const char*) ;
 };
 
 #endif

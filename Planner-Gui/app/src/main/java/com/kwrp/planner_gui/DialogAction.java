@@ -308,11 +308,6 @@ public class DialogAction extends AppCompatActivity{
         String s;
         for(String selectedDate : dates) {
             s = modifyDate(selectedDate);
-            Log.d("","");
-            Log.d("","");
-            Log.d("-----------------------", s);
-            Log.d("","");
-            Log.d("","");
             jniCreateEvent(title, description, start, duration, filePath, s);
 
         }
