@@ -19,6 +19,7 @@ public:
     Week *getWeek(int theWeek) {return weeks[theWeek];}
     Month(std::string, const char* );
     Month(const char*) ;
+    ~Mouth();
 };
 
 #endif
