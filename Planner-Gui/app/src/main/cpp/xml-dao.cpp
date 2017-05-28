@@ -23,6 +23,7 @@ bool checkDate(const char *filePath, const char *day, const char *month, const c
     xmlDoc.Accept(&printer);
     const char *xmlcstr = printer.CStr();
     __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", xmlcstr);
+    free((void *) xmlcstr);
 
     // -----------------------------------------------
 
@@ -30,25 +31,44 @@ bool checkDate(const char *filePath, const char *day, const char *month, const c
     elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
     while (!(elementYear->Attribute("YID", year))) {
         elementYear = elementYear->NextSiblingElement("year");
-        if (elementYear == nullptr) return false;
+        if (elementYear == nullptr) {
+            free(elementDay);
+            free(elementMonth);
+            free(elementYear);
+            return false;
+        }
     }
 
     //find month
     elementMonth = elementYear->FirstChildElement("month");
     while (!(elementMonth->Attribute("MID", month))) {
         elementMonth = elementMonth->NextSiblingElement("month");
-        if (elementMonth == nullptr) return false;
+        if (elementMonth == nullptr) {
+            free(elementDay);
+            free(elementMonth);
+            free(elementYear);
+            return false;
+        }
     }
 
     // find day
     elementDay = elementMonth->FirstChildElement("day");
     while (!(elementDay->Attribute("DID", day))) {
         elementDay = elementDay->NextSiblingElement("day");
-        if (elementDay == nullptr) return false;
+        if (elementDay == nullptr) {
+            free(elementDay);
+            free(elementMonth);
+            free(elementYear);
+            return false;
+        }
     }
 
 
     eResult = xmlDoc.SaveFile(filePath);
+    free(elementDay);
+    free(elementMonth);
+    free(elementYear);
+
     XMLCheckResult(eResult);
     return true;
 }
@@ -62,14 +82,21 @@ bool createDate(const char *filePath, const char *day, const char *month, const 
     XMLDocument xmlDoc;
     XMLError eResult = xmlDoc.LoadFile(filePath);
     if (eResult != XML_SUCCESS) return false;
+
     int yearInt = atoi(year);
     int monthInt = atoi(month);
     int dayInt = atoi(day);
     bool datecheck = checkDate(day, month, year);
 
     if (yearInt <= 0 || monthInt <= 0 || monthInt > 12 || dayInt <= 0 || dayInt > 31) {
+        free(elementDay);
+        free(elementMonth);
+        free(elementYear);
         return false;
     } else if (datecheck) {
+        free(elementDay);
+        free(elementMonth);
+        free(elementYear);
         return true;
     } else {
 
@@ -122,26 +149,68 @@ bool createDate(const char *filePath, const char *day, const char *month, const 
                 elementMonth->InsertEndChild(elementDay);
             }
         }
+        eResult = xmlDoc.SaveFile(filePath);
 
+        free(elementDay);
+        free(elementMonth);
+        free(elementYear);
+        free(rootNode);
+
+        XMLCheckResult(eResult);
+        return true;
     }
-    eResult = xmlDoc.SaveFile(filePath);
-
-    XMLCheckResult(eResult);
-    return true;
 }
 
 bool createXml(const char *filePath) {
 
     XMLDocument *xmlDoc;
+    xmlDoc = new XMLDocument();
+    XMLNode *planner = xmlDoc->NewElement("planner");
+    xmlDoc->InsertFirstChild(planner);
 
-    XMLError eResult = xmlDoc->LoadFile(filePath);
-    if (eResult != XML_SUCCESS) {
-        xmlDoc = new XMLDocument();
-        XMLNode *planner = xmlDoc->NewElement("planner");
-        xmlDoc->InsertFirstChild(planner);
-        XMLError eResult = xmlDoc->SaveFile(filePath);
-        XMLCheckResult(eResult);
-    }
+    XMLElement *year = xmlDoc->NewElement("year");
+    XMLElement *month = xmlDoc->NewElement("month");
+    XMLElement *day = xmlDoc->NewElement("day");
+    XMLElement *event = xmlDoc->NewElement("event");
+    XMLElement *title = xmlDoc->NewElement("title");
+    XMLElement *description = xmlDoc->NewElement("description");
+    XMLElement *startTime = xmlDoc->NewElement("startTime");
+    XMLElement *duration = xmlDoc->NewElement("duration");
+
+    year->SetAttribute("YID", "-2017");
+    month->SetAttribute("MID", "-5");
+    day->SetAttribute("DID", "-5");
+    event->SetAttribute("EID", "-1");
+    title->SetText("Awesome test Event");
+    description->SetText("I lied it is only an assignment!!");
+    startTime->SetText("12");
+    duration->SetText("1");
+
+    planner->InsertEndChild(year);
+    year->InsertEndChild(month);
+    month->InsertEndChild(day);
+    day->InsertEndChild(event);
+
+    event->InsertEndChild(title);
+    event->InsertEndChild(description);
+    event->InsertEndChild(startTime);
+    event->InsertEndChild(duration);
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "vergereber");
+    XMLError eResult = xmlDoc->SaveFile(filePath);
+
+
+    free(planner);
+    free(year);
+    free(month);
+    free(day);
+    free(event);
+    free(title);
+    free(description);
+    free(startTime);
+    free(duration);
+    free(xmlDoc);
+
+    XMLCheckResult(eResult);
     return true;
 }
 
@@ -176,7 +245,7 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
         XMLElement *firstEvent = elementDay->FirstChildElement("event");
         if (firstEvent == nullptr) {
             eventNum = 0;
-        }else {
+        } else {
             eventNum = elementDay->LastChildElement("event")->IntAttribute("EID");
             eventNum += 1;
         }
@@ -204,9 +273,21 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
         elementDay->InsertEndChild(elementEvent);
 
         eResult = xmlDoc.SaveFile(filePath);
+
+        free(elementDur);
+        free(elementST);
+        free(elementDesc);
+        free(elementTit);
+        free(elementEvent);
+        free(firstEvent);
+        free(elementDay);
+        free(elementMonth);
+        free(elementYear);
+
         XMLCheckResult(eResult);
         return true;
     }
+
     eResult = xmlDoc.SaveFile(filePath);
     XMLCheckResult(eResult);
     return false;
@@ -222,7 +303,7 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
 
     bool dateExist = checkDate(filepath, day, month, year);
 
-    if (!dateExist){
+    if (!dateExist) {
         return false;
     }
 
@@ -243,21 +324,27 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
     }
 
 
-    XMLElement* elementEventCurr = elementDay->FirstChildElement("event");
+    XMLElement *elementEventCurr = elementDay->FirstChildElement("event");
 
-    if (elementEventCurr == nullptr)return false;
+    if (elementEventCurr == nullptr) {
+        free(elementYear);
+        free(elementMonth);
+        free(elementDay);
+        free(elementEventCurr);
+        return false;
+    }
 
     int eventCurr = elementDay->FirstChildElement("event")->IntAttribute("EID");
     int eventLast = elementDay->LastChildElement("event")->IntAttribute("EID");
 
     while (eventCurr <= eventLast) {
 
-        const char* title = elementEventCurr->FirstChildElement("title")->GetText();
-        const char* description = elementEventCurr->FirstChildElement("description")->GetText();
-        const char* startTime = elementEventCurr->FirstChildElement("startTime")->GetText();
-        const char* duration = elementEventCurr->FirstChildElement("duration")->GetText();
+        const char *title = elementEventCurr->FirstChildElement("title")->GetText();
+        const char *description = elementEventCurr->FirstChildElement("description")->GetText();
+        const char *startTime = elementEventCurr->FirstChildElement("startTime")->GetText();
+        const char *duration = elementEventCurr->FirstChildElement("duration")->GetText();
 
-        dayObj->setEvent(eventCurr,title,description,atoi(startTime),atoi(duration));
+        dayObj->setEvent(eventCurr, title, description, atoi(startTime), atoi(duration));
         elementEventCurr = elementEventCurr->NextSiblingElement("event");
 
         if (elementEventCurr == nullptr) {
@@ -268,6 +355,11 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
     }
 
     eResult = xmlDoc.SaveFile(filepath);
+    free(elementYear);
+    free(elementMonth);
+    free(elementDay);
+    free(elementEventCurr);
+
     XMLCheckResult(eResult);
 
     return true;
