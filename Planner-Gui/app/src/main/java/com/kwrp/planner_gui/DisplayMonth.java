@@ -33,6 +33,19 @@ public class DisplayMonth extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
 
     /**
+     * month offset from current, if sees into the future, this month number will increase
+     */
+    private static int month_offset = 0;
+    /**
+     * The current shown year
+     */
+    private static int thisYear = 0;
+    /**
+     * The index of the current month
+     */
+    private static int thisMonthIndex = 0;
+
+    /**
      * Loads the native library "calender" on start up
      */
     static {
@@ -45,48 +58,27 @@ public class DisplayMonth extends AppCompatActivity {
     private String[] monthList = {"January", "February", "March", "April",
             "May", "June", "July", "August", "September", "October",
             "November", "December"};
-
     /**
      * Defines whether the "edit" pencil has been selected.
      * Consider it "edit mode".
      */
     private boolean editAvailable = true;
-
     /**
      * Number of days selected if in edit mode
      */
     private int daysSelected = 0;
-
     /**
      * A list of days selected in edit mode
      */
     private Collection<String> dayList = new ArrayList<>();
-
     /**
      * A list of positions selected in edit mode
      */
     private Collection<Integer> positionList = new ArrayList<>();
-
     /**
      * The current date (system date)
      */
     private String currentDate;
-
-    /**
-     * month offset from current, if sees into the future, this month number will increase
-     */
-    private static int month_offset = 0;
-
-    /**
-     * The current shown year
-     */
-    private static int thisYear = 0;
-
-    /**
-     * The index of the current month
-     */
-    private static int thisMonthIndex = 0;
-
     /**
      * The filepath where events are stored on the device
      */
@@ -115,9 +107,11 @@ public class DisplayMonth extends AppCompatActivity {
                 } else {
                     thisMonthIndex = (Integer.parseInt(currentDate.substring(index+1,i))-1);
                     thisYear = (Integer.parseInt(currentDate.substring(i+1)));
+                    break;
                 }
             }
         }
+
         this.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
         toolbar.setTitle(monthList[thisMonthIndex +month_offset] + " - " + thisYear);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -209,7 +203,7 @@ public class DisplayMonth extends AppCompatActivity {
                     String dateSelected = view.getText().toString();
                     Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
                     myIntent.putExtra("date", dateSelected);
-                    myIntent.putExtra("month", Integer.toString(thisMonthIndex+month_offset+1));
+                    myIntent.putExtra("month", Integer.toString(month_offset));
                     myIntent.putExtra("year", Integer.toString(thisYear));
                     startActivity(myIntent);
                 }

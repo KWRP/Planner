@@ -1,4 +1,5 @@
 package com.kwrp.planner_gui;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -324,11 +326,7 @@ public class DialogAction extends AppCompatActivity{
                 } else {
 
                     createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration, dateList);
-
-
                 }
-
-
                 Log.d("details:", newEventTitle + newEventDescription + newEventStart + newEventDuration);
             }
         });
@@ -357,10 +355,9 @@ public class DialogAction extends AppCompatActivity{
         String s;
         for(String selectedDate : dates) {
             s = modifyDate(selectedDate);
-            jniCreateEvent(title, description, start, duration, filePath, s);
-
+            String createEvent = jniCreateEvent(title, description, start, duration, filePath, s);
+            Log.d("CreateEvent: %s %s %s", createEvent);
         }
-
     }
 
     /** Helper function that makes sure the format of the date strings

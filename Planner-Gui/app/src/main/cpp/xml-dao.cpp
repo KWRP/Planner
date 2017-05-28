@@ -171,8 +171,11 @@ bool createXml(const char *filePath) {
     event->InsertEndChild(duration);
 
     XMLError eResult = xmlDoc->SaveFile(filePath);
-
     XMLCheckResult(eResult);
+
+    xmlDoc->DeleteChildren();
+    delete xmlDoc;
+
     return true;
 }
 

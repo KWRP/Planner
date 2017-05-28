@@ -19,7 +19,8 @@ public:
 	std::string toString() ;
 	Week(const char*) ;
 	Week(std::string date, const char*) ;
-	~Day();
+
+	~Week();
 
 };
 #endif

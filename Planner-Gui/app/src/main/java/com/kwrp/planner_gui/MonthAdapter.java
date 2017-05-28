@@ -22,69 +22,57 @@ import java.util.List;
  */
 public class MonthAdapter extends BaseAdapter {
     /**
+     * An array mapping indexes (days of the week) to Strings (the day)
+     */
+    private final String[] mDays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+    /**
+     * The number of days in each month.
+     */
+    private final int[] mDaysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    /**
      * An instance of GregorianCalendar
      */
     private GregorianCalendar mCalendar;
-
     /**
      * Calendar for today
      */
     private Calendar mCalendarToday;
-
     /**
      * The current month context
      */
     private Context mContext;
-
     /**
      * this months display metrics
      */
     private DisplayMetrics mDisplayMetrics;
-
     /**
      * A list of days in the month
      */
     private List<String> mItems;
-
     /**
      * month index
      */
     private int mMonth;
-
     /**
      * this months year
      */
     private int mYear;
-
     /**
      * number of days shown
      */
     private int mDaysShown;
-
     /**
      * number of days last month
      */
     private int mDaysLastMonth;
-
     /**
      * number of days next month
      */
     private int mDaysNextMonth;
-
     /**
      * title and day height for a particular day
      */
     private int mTitleHeight, mDayHeight;
-
-    /**
-     * An array mapping indexes (days of the week) to Strings (the day)
-     */
-    private final String[] mDays = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
-
-    /**
-     * The number of days in each month.
-     */
-    private final int[] mDaysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     /** Called on swipe, when the adapter needs to be updated for a new month
      *
@@ -281,7 +269,9 @@ public class MonthAdapter extends BaseAdapter {
                 // current month
                 view.setBackgroundColor(Color.rgb(244, 244, 244));
                 if (isToday(date[0], date[1], date[2] )) {
-                    view.setTextColor(Color.RED);
+                    view.setTextColor(Color.BLACK);
+                    view.setBackgroundColor(Color.rgb(192, 242, 192));
+
                 }
             }
         } else {
