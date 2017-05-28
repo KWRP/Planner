@@ -43,7 +43,6 @@ public class DisplayDay extends AppCompatActivity {
     private String selectedDate;
     private String selectDay;
     private Day selectedDay = null;
-    private boolean removeEvent = false;
     private String eventId = "";
 
 
@@ -72,17 +71,9 @@ public class DisplayDay extends AppCompatActivity {
         eventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-
                 if (selectedDay != null && selectedDay.getEvent(position) != null) {
-
-                    newEventTitle = selectedDay.getEvent(position).getTitle();
-                    newEventDescription = selectedDay.getEvent(position).getDescription();
-                    newEventStart = selectedDay.getEvent(position).getStartTime();
-                    newEventDuration = selectedDay.getEvent(position).getDuration();
                     eventId = selectedDay.getEvent(position).getEventId();
-                    removeEvent = true;
-
-                    Dialog dialog = createEventDialog();
+                    Dialog dialog = removeEventDialog();
                     dialog.show();
                 }
             }
@@ -118,10 +109,7 @@ public class DisplayDay extends AppCompatActivity {
 
     private void createNewEvent(String title, String description, String start, String duration) {
 
-        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate,
-                eventId, removeEvent);
-
-        removeEvent = false;
+        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
         eventId = "";
         newEventTitle = "";
         newEventDescription = "";
@@ -163,7 +151,6 @@ public class DisplayDay extends AppCompatActivity {
         if (!file.exists()) {
             filePath = getFilesDir().getAbsolutePath() + "/events.xml";
             String newFile = jniCreateXml(filePath);
-            Log.d("JAVA TEST!!!: ", newFile);
         }
     }
 
@@ -189,7 +176,6 @@ public class DisplayDay extends AppCompatActivity {
         if (id == R.id.action_display_week) {
             Intent myIntent = new Intent(this, DisplayWeek.class); /** Class name here */
             startActivity(myIntent);
-            //startActivityForResult(myIntent, 0);
             this.finish();
         }
 
@@ -282,9 +268,39 @@ public class DisplayDay extends AppCompatActivity {
             }
         });
 
-        AlertDialog dialog = builder.create();
-        return dialog;
+        return builder.create();
     }
+
+
+    private AlertDialog removeEventDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
+        builder.setTitle("Remove Event")
+                .setMessage("Do you wish to delete this event?")
+                .setIcon(getResources().getDrawable(android.R.drawable.ic_dialog_alert, null));
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String deleteEvent = jniRemoveEvent(filePath, selectedDate, eventId);
+                selectedDay = null;
+                getEvents();
+                listAdapter.notifyDataSetChanged();
+                Log.d("Delete Event: %s", deleteEvent);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        return builder.create();
+    }
+
+
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
@@ -294,8 +310,9 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniGetDay(String filePath, String currentDate);
     public native String jniCreateXml(String filePath);
     public native String jniCreateEvent(String title, String description, String start,
-                                        String duration, String dir, String selectedDate,
-                                        String eventId, boolean removeEvent);
+                                        String duration, String dir, String selectedDate);
+
+    public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);
 
 }
 

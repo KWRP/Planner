@@ -17,4 +17,5 @@
     <string name="label_friday">Fri</string>
     <string name="label_saturday">Sat</string>
     <string name="label_sunday">Sun</string>
+    <string name="label_ok">Sun</string>
 </resources>

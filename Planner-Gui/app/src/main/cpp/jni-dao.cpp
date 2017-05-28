@@ -1,16 +1,12 @@
 #include "include/xml-dao.hpp"
-#include <android/log.h>
 #include <jni.h>
 
 void throwJavaException(JNIEnv *env, const char *msg) {
-    // You can put your own exception here
     jclass c = env->FindClass("java/lang/RuntimeException");
 
     if (NULL == c) {
-        //B plan: null pointer ...
         c = env->FindClass("java/lang/NullPointerException");
     }
-
     env->ThrowNew(c, msg);
 }
 
@@ -26,14 +22,13 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentD
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateXml(
         JNIEnv *env,
-        jobject jobject1, jstring dir) {
+        jobject /* this */, jstring dir) {
     std::string confirm = "";
 
     try {
         const char *nativePath = env->GetStringUTFChars(dir, 0);
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createFile before");
+
         bool createFile = createXml(nativePath);
-        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "createFile before");
 
         (env)->ReleaseStringUTFChars(dir, nativePath);
 
@@ -66,21 +61,19 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetEvents(
 }
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
-        JNIEnv *env, jobject t,
-        jstring title, jstring description, jstring start, jstring duration, jstring dir,
-        jstring date, jstring eventId, jboolean removeEve) {
+        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        jstring duration, jstring filepath, jstring date) {
 
     std::string confirm = "";
 
     try {
-        bool nativeEditEvent = (bool) removeEve;
+
         const char *nativeTitle = env->GetStringUTFChars(title, 0);
         const char *nativeDescription = env->GetStringUTFChars(description, 0);
         const char *nativeStart = env->GetStringUTFChars(start, 0);
         const char *nativeDuration = env->GetStringUTFChars(duration, 0);
-        const char *nativePath = env->GetStringUTFChars(dir, 0);
+        const char *nativePath = env->GetStringUTFChars(filepath, 0);
         const char *nativeDate = env->GetStringUTFChars(date, 0);
-        const char *nativeEventId = env->GetStringUTFChars(eventId, 0);
 
         std::string selectedDate = nativeDate;
         std::string delimiter = "/";
@@ -89,23 +82,20 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         std::string month = rest.substr(0, selectedDate.find(delimiter));
         std::string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-        if (nativeEditEvent) {
-            bool deleteEvent = removeEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
-                                           nativeEventId);
+        bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
+                                    nativeTitle, nativeDescription, nativeStart, nativeDuration);
+        bool check;
+        if (createEvent) {
+            check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
         } else {
-            bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
-                                        nativeTitle, nativeDescription, nativeStart,
-                                        nativeDuration);
+            check = false;
         }
-
-        bool check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
         (env)->ReleaseStringUTFChars(start, nativeStart);
         (env)->ReleaseStringUTFChars(duration, nativeDuration);
-        (env)->ReleaseStringUTFChars(dir, nativePath);
-        (env)->ReleaseStringUTFChars(eventId, nativeEventId);
+        (env)->ReleaseStringUTFChars(filepath, nativePath);
 
         if (check) {
             confirm = "Event Created!!";
@@ -120,9 +110,49 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
 
 }
 
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEvent(
+        JNIEnv *env, jobject /* this */, jstring filepath, jstring date, jstring eventId) {
+
+    std::string confirm = "";
+    try {
+
+        const char *nativePath = env->GetStringUTFChars(filepath, 0);
+        const char *nativeDate = env->GetStringUTFChars(date, 0);
+        const char *nativeEventId = env->GetStringUTFChars(eventId, 0);
+
+        std::string selectedDate = nativeDate;
+        std::string delimiter = "/";
+        std::string day = selectedDate.substr(0, selectedDate.find(delimiter));
+        std::string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        std::string month = rest.substr(0, selectedDate.find(delimiter));
+        std::string year = rest.substr(selectedDate.find(delimiter) + 1);
+
+
+        bool deleteEvent = removeEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
+                                       nativeEventId);
+
+
+        (env)->ReleaseStringUTFChars(filepath, nativePath);
+        (env)->ReleaseStringUTFChars(date, nativeDate);
+        (env)->ReleaseStringUTFChars(eventId, nativeEventId);
+
+        if (deleteEvent) {
+            confirm = "Event Deleted!!";
+        } else {
+            confirm = "Event Deletion Failed!!!";
+        }
+    }
+    catch (std::exception e) {
+        throwJavaException(env, e.what());
+    }
+    return env->NewStringUTF(confirm.c_str());
+}
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
-        JNIEnv *env, jobject obj, jstring dir, jstring date) {
+        JNIEnv *env, jobject /* this */, jstring dir, jstring date) {
+
     std::string dayString = "";
+
     try {
 
         const char *nativePath = env->GetStringUTFChars(dir, 0);
@@ -143,7 +173,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
 }
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent(
-        JNIEnv *env, jobject t,
+        JNIEnv *env, jobject /* this */,
         jstring title, jstring description, jstring start, jstring duration, jstring dir,
         jstring date) {
 
@@ -169,8 +199,12 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent
         bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
                                     nativeTitle, nativeDescription, nativeStart, nativeDuration);
 
-
-        bool check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
+        bool check;
+        if (createEvent) {
+            check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
+        } else {
+            check = false;
+        }
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -188,6 +222,5 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent
         throwJavaException(env, e.what());
     }
     return env->NewStringUTF(confirm.c_str());
-
 }
 }
