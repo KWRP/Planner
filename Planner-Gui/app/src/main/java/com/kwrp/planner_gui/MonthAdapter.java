@@ -1,10 +1,5 @@
 package com.kwrp.planner_gui;
 
-/*
-https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java
-
- */
-
 import android.content.Context;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
@@ -19,21 +14,85 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+/**
+ * MonthAdapter handles all of the data surrounding date generation
+ *  for a particular month, and ensuring it is correctly displayed.
+ *  As well as ensuring each day is classified into a day of the week.
+ * @author https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java
+ */
 public class MonthAdapter extends BaseAdapter {
+    /**
+     * An instance of GregorianCalendar
+     */
     private GregorianCalendar mCalendar;
+
+    /**
+     * Calendar for today
+     */
     private Calendar mCalendarToday;
+
+    /**
+     * The current month context
+     */
     private Context mContext;
+
+    /**
+     * this months display metrics
+     */
     private DisplayMetrics mDisplayMetrics;
+
+    /**
+     * A list of days in the month
+     */
     private List<String> mItems;
+
+    /**
+     * month index
+     */
     private int mMonth;
+
+    /**
+     * this months year
+     */
     private int mYear;
+
+    /**
+     * number of days shown
+     */
     private int mDaysShown;
+
+    /**
+     * number of days last month
+     */
     private int mDaysLastMonth;
+
+    /**
+     * number of days next month
+     */
     private int mDaysNextMonth;
+
+    /**
+     * title and day height for a particular day
+     */
     private int mTitleHeight, mDayHeight;
+
+    /**
+     * An array mapping indexes (days of the week) to Strings (the day)
+     */
     private final String[] mDays = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+
+    /**
+     * The number of days in each month.
+     */
     private final int[] mDaysInMonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+    /** Called on swipe, when the adapter needs to be updated for a new month
+     *
+     * @param c the context where the months are shown
+     * @param month the month to generate for
+     * @param year the year to generate for
+     * @param metrics the dimensions
+     */
     public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics) {
         mContext = c;
         mMonth = month;
@@ -51,6 +110,9 @@ public class MonthAdapter extends BaseAdapter {
      */
     protected void onDate(int[] date, int position, View item) {}
 
+    /**
+     * Populates the month with appropriate number of days
+     */
     private void populateMonth() {
         mItems = new ArrayList<String>();
         for (String day : mDays) {
@@ -89,6 +151,11 @@ public class MonthAdapter extends BaseAdapter {
                 - (rows * 8) - getBarHeight()) / (rows - 1);
     }
 
+    /** Finds the number of days in the month
+     *
+     * @param month the month to find the number of days in
+     * @return the number of days in that month
+     */
     private int daysInMonth(int month) {
         int daysInMonth = mDaysInMonth[month];
         if (month == 1 && mCalendar.isLeapYear(mYear))
@@ -96,6 +163,10 @@ public class MonthAdapter extends BaseAdapter {
         return daysInMonth;
     }
 
+    /** Gets the bar height
+     *
+     * @return bar height
+     */
     private int getBarHeight() {
         switch (mDisplayMetrics.densityDpi) {
             case DisplayMetrics.DENSITY_HIGH:
@@ -109,6 +180,11 @@ public class MonthAdapter extends BaseAdapter {
         }
     }
 
+    /** Gets a day
+     *
+     * @param day the day
+     * @return int 0-6) where 0 = MONDAY, and 6 = SUNDAY
+     */
     private int getDay(int day) {
         switch (day) {
             case Calendar.MONDAY:
@@ -130,12 +206,24 @@ public class MonthAdapter extends BaseAdapter {
         }
     }
 
+    /** Determines if the given date is the current date
+     *
+     * @param day given day
+     * @param month given month
+     * @param year given year
+     * @return true is they are the same
+     */
     private boolean isToday(int day, int month, int year) {
         return mCalendarToday.get(Calendar.MONTH) == month
                 && mCalendarToday.get(Calendar.YEAR) == year
                 && mCalendarToday.get(Calendar.DAY_OF_MONTH) == day;
     }
 
+    /** Get's the date at position n
+     *
+     * @param position in the grid
+     * @return the date
+     */
     private int[] getDate(int position) {
         int date[] = new int[3];
         if (position <= 6) {
@@ -169,6 +257,13 @@ public class MonthAdapter extends BaseAdapter {
         return date;
     }
 
+    /** Retrieves the view
+     *
+     * @param position the position
+     * @param convertView the view to convert
+     * @param parent where the views are being spawned
+     * @return the new view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final TextView view = new TextView(mContext);
@@ -198,16 +293,30 @@ public class MonthAdapter extends BaseAdapter {
         return view;
     }
 
+    /** Gets the number of days in the month
+     *
+     * @return the number of days
+     */
     @Override
     public int getCount() {
         return mItems.size();
     }
 
+    /** Gets an item at position
+     *
+     * @param position the position
+     * @return an item
+     */
     @Override
     public Object getItem(int position) {
         return mItems.get(position);
     }
 
+    /** Gets the id of an item at position
+     *
+     * @param position the position
+     * @return the id
+     */
     @Override
     public long getItemId(int position) {
         return position;

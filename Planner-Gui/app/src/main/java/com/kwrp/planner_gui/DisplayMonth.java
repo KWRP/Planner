@@ -1,5 +1,4 @@
 package com.kwrp.planner_gui;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,27 +23,79 @@ import java.util.Collection;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 
+/** Defines the displaymonth activity where the user is shown
+ *  every day in the month.
+ *
+ * @author KWRP
+ */
 public class DisplayMonth extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
+
+    /**
+     * Loads the native library "calender" on start up
+     */
     static {
         System.loadLibrary("calender");
     }
 
+    /**
+     * An ordered list of months to map month numbers to it's string counterpart
+     */
     private String[] monthList = {"January", "February", "March", "April",
             "May", "June", "July", "August", "September", "October",
             "November", "December"};
+
+    /**
+     * Defines whether the "edit" pencil has been selected.
+     * Consider it "edit mode".
+     */
     private boolean editAvailable = true;
+
+    /**
+     * Number of days selected if in edit mode
+     */
     private int daysSelected = 0;
+
+    /**
+     * A list of days selected in edit mode
+     */
     private Collection<String> dayList = new ArrayList<>();
+
+    /**
+     * A list of positions selected in edit mode
+     */
     private Collection<Integer> positionList = new ArrayList<>();
+
+    /**
+     * The current date (system date)
+     */
     private String currentDate;
-    private static int month = 0;
-    private static int year = 0;
+
+    /**
+     * month offset from current, if sees into the future, this month number will increase
+     */
+    private static int month_offset = 0;
+
+    /**
+     * The current shown year
+     */
     private static int thisYear = 0;
+
+    /**
+     * The index of the current month
+     */
     private static int thisMonthIndex = 0;
+
+    /**
+     * The filepath where events are stored on the device
+     */
     private String filePath;
 
+    /** Called when the activity is first created. Sets up buttons, labels, and initialises variables.
+     *
+     * @param savedInstanceState defines the action such as screen rotation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +118,8 @@ public class DisplayMonth extends AppCompatActivity {
                 }
             }
         }
-        this.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
-        toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
+        this.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+        toolbar.setTitle(monthList[thisMonthIndex +month_offset] + " - " + thisYear);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +209,7 @@ public class DisplayMonth extends AppCompatActivity {
                     String dateSelected = view.getText().toString();
                     Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
                     myIntent.putExtra("date", dateSelected);
-                    myIntent.putExtra("month", Integer.toString(month));
+                    myIntent.putExtra("month", Integer.toString(thisMonthIndex+month_offset+1));
                     myIntent.putExtra("year", Integer.toString(thisYear));
                     startActivity(myIntent);
                 }
@@ -172,33 +222,40 @@ public class DisplayMonth extends AppCompatActivity {
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
                 if(editAvailable) {
-                    toastPrint("drag right");
-                    month -= 1;
-                    if((thisMonthIndex + month) < 0){
-                        month = 11 - thisMonthIndex;
+
+                    month_offset -= 1;
+                    if((thisMonthIndex + month_offset) < 0){
+                        month_offset = 11 - thisMonthIndex;
                         thisYear --;
                     }
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-                    toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
-                    updateMonthView(month);
+                    toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+                    updateMonthView(month_offset);
                 }
             }
             public void onSwipeLeft() {
                 if(editAvailable) {
-                    toastPrint("drag left");
-                    month += 1;
-                    if((thisMonthIndex + month) > 11){
-                        month = -thisMonthIndex;
+
+                    month_offset += 1;
+                    if((thisMonthIndex + month_offset) > 11){
+                        month_offset = -thisMonthIndex;
                         thisYear++;
                     }
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-                    toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
-                    updateMonthView(month);
+                    toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+                    updateMonthView(month_offset);
                 }
             }
         });
     }
 
+    /** Called when the options menu on the toolbar is created or updated.
+     * Contains visibility toggling for menu items when going in and out
+     * of edit mode.
+     *
+     * @param menu The menu on the toolbar
+     * @return true boolean type
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -230,6 +287,12 @@ public class DisplayMonth extends AppCompatActivity {
         return true;
     }
 
+    /** Called when an item in the menu has been selected. Will find which action it is
+     * and then spawn a dialog box (or change view) accordingly.
+     *
+     * @param item The menu item that was selected
+     * @return boolean type
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -272,6 +335,11 @@ public class DisplayMonth extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Toggles edit mode, each time this method is called, it will toggle between edit mode.
+     *  It essentially disables some listeners and actions to minimise action clashing and
+     *  notifies the user that they are able to add an event to a series of days.
+     */
     private void startEditState(){
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         FloatingActionButton fab_close = (FloatingActionButton) findViewById(R.id.fab_close);
@@ -292,7 +360,7 @@ public class DisplayMonth extends AppCompatActivity {
             fab.setVisibility(View.VISIBLE);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-            toolbar.setTitle(monthList[thisMonthIndex + month] + " - " + thisYear);
+            toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
             toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
             setSupportActionBar(toolbar);
 
@@ -309,6 +377,11 @@ public class DisplayMonth extends AppCompatActivity {
         }
     }
 
+    /** Updates the month view when the user swipes left or swipes right by
+     * updating the gridview adapter.
+     *
+     * @param month the month offset from the initial month.
+     */
     public void updateMonthView(int month) {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
 //        toolbar.setSubtitle("Today's Date: " + currentDate);
@@ -321,21 +394,18 @@ public class DisplayMonth extends AppCompatActivity {
                 this, Integer.parseInt(systemDate[1]) - 1 + month, thisYear, metrics));
     }
 
+    /** When the user confirms their selection of dates in edit mode
+     *  it creates a dialog asking for event details.
+     */
     public void createEventSetDialog(){
         DialogAction a = new DialogAction();
-        String eventMonth =  ""+(thisMonthIndex+month+1);
+        String eventMonth =  ""+(thisMonthIndex+month_offset+1);
         String eventYear = ""+thisYear;
 
         AlertDialog dialog = a.createEventSetDialog(this, dayList, eventMonth, eventYear, filePath );
         dialog.show();
         startEditState();
     }
-
-    public void toastPrint(String s){
-        Log.d("     SWIPE     :", s);
-//        Toast.makeText(this, "right", Toast.LENGTH_SHORT).show();
-    }
-
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
