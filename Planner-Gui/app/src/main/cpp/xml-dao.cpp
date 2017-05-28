@@ -251,6 +251,54 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
     XMLCheckResult(eResult);
     return false;
 }
+bool removeEvent(const char *filePath, const char *day, const char *month, const char *year,
+                 const char *eid) {
+
+    bool isDate = checkDate(filePath, day, month, year);
+    if (!isDate) return true;
+
+    XMLDocument xmlDoc;
+    XMLError eResult = xmlDoc.LoadFile(filePath);
+    if (eResult != XML_SUCCESS) return false;
+
+    XMLElement *elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
+    while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
+        elementYear = elementYear->NextSiblingElement("year");
+    }
+
+    XMLElement *elementMonth = elementYear->FirstChildElement("month");
+    while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
+        elementMonth = elementMonth->NextSiblingElement("month");
+    }
+
+    XMLElement *elementDay = elementMonth->FirstChildElement("day");
+    while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
+        elementDay = elementDay->NextSiblingElement("day");
+    }
+
+    XMLElement *elementEvent = elementDay->FirstChildElement("event");
+    while (elementEvent != nullptr && !(elementEvent->Attribute("EID",eid))){
+        elementEvent = elementEvent->NextSiblingElement("event");
+    }
+
+    XMLElement *elementEventTemp = elementEvent->NextSiblingElement("event");
+
+    int lastEvent = 0;
+    elementDay->LastChildElement("event")->QueryIntAttribute("EID",&lastEvent);
+
+    elementDay->DeleteChild(elementEvent);
+    int tempEID= 0;
+
+    while (elementEventTemp != nullptr){
+        tempEID = elementEventTemp->QueryAttribute("EID",&tempEID) -1;
+        elementEventTemp->SetAttribute("EID",tempEID);
+        elementEventTemp = elementEventTemp->NextSiblingElement("event");
+    }
+
+    eResult = xmlDoc.SaveFile(filePath);
+    XMLCheckResult(eResult);
+    return true;
+}
 
 bool
 pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, const char *year) {
