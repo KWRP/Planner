@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -28,10 +29,6 @@ import static com.kwrp.planner_gui.R.id.gridview;
 public class DisplayMonth extends AppCompatActivity {
     //private Calendar currentDate;
     //private ArrayList<Integer> currentDay = new ArrayList<>();
-
-    private static int month = 0;
-    private static int thisYear = 0;
-    private static int thisMonthIndex = 0;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -45,6 +42,10 @@ public class DisplayMonth extends AppCompatActivity {
     private int daysSelected = 0;
     private Collection<Integer> positionList = new ArrayList<>();
     private String currentDate;
+    private static int month = 0;
+    private static int year = 0;
+    private static int thisYear = 0;
+    private static int thisMonthIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +156,6 @@ public class DisplayMonth extends AppCompatActivity {
                     Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
                     myIntent.putExtra("date", dateSelected);
                     myIntent.putExtra("month", Integer.toString(month));
-                    myIntent.putExtra("year", Integer.toString(thisYear));
                     startActivity(myIntent);
                 }
                 return true;
@@ -332,4 +332,6 @@ public class DisplayMonth extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String jniGetCurrentDate();
+
+    public native String jniCreateXml(String filepath);
 }

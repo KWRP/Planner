@@ -20,7 +20,7 @@ public:
     std::string getDate() { return date; }
 	int numOfEvents() { return events.size(); }
 	Event *getEvent(int eventNumber);
-	void addEvent(std::string title, std::string description, int time, int duration);
+	void addEvent(char*,std::string title, std::string description, int time, int duration);
     void setEvent(int id, std::string title, std::string description, int time, int duration);
     std::string toString();
 	Day(std::string, const char*);

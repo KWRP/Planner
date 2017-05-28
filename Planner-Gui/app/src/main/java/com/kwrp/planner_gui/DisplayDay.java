@@ -36,6 +36,7 @@ public class DisplayDay extends AppCompatActivity {
     private String newEventStart = "";
     private String newEventDuration = "";
     private String filePath;
+    private Day selectedDay;
     private ArrayAdapter<String> listAdapter;
     private String currentDate = jniGetCurrentDate();
     private String selectedDate;
@@ -70,6 +71,20 @@ public class DisplayDay extends AppCompatActivity {
                 dialog.show();
             }
         });
+        /*File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
+        if (!eventsXml.exists()) {
+            try {
+                eventsXml.createNewFile();
+                eventsXml.mkdir();
+            }catch(IOException e) {
+                e.printStackTrace();
+                Log.d("---JAVA TESTING!!!---", "File not created!");
+            }
+            if (eventsXml.exists()) Log.d("---JAVA TESTING!!!---", "File created!");
+        } else {
+            Log.d("---JAVA TESTING!!!---", "File already exists!");
+        }
+        Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());*/
 
         File dir = getFilesDir();
         File file = new File(dir, "events.xml");
@@ -223,7 +238,6 @@ public class DisplayDay extends AppCompatActivity {
 
     private String modifyDate(Intent context) {
         selectDay = context.getStringExtra("date");
-
         if (selectDay.length() == 1) {
             selectDay = "0" + selectDay;
         }
@@ -240,8 +254,7 @@ public class DisplayDay extends AppCompatActivity {
             splitDate[1] = "0" + splitDate[1];
         }
 
-        return (splitDate[0] + "/" + splitDate[1] + "/" +
-                Integer.parseInt(context.getStringExtra("year")));
+        return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
     }
 
 
@@ -257,18 +270,3 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 }
-
-        /*File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
-        if (!eventsXml.exists()) {
-            try {
-                eventsXml.createNewFile();
-                eventsXml.mkdir();
-            }catch(IOException e) {
-                e.printStackTrace();
-                Log.d("---JAVA TESTING!!!---", "File not created!");
-            }
-            if (eventsXml.exists()) Log.d("---JAVA TESTING!!!---", "File created!");
-        } else {
-            Log.d("---JAVA TESTING!!!---", "File already exists!");
-        }
-        Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());*/
