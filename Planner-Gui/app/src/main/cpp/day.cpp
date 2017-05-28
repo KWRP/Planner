@@ -1,5 +1,7 @@
 /**
- * Day is used to hold a vector of events,
+ * Day is used to hold a vector of events, and hold the date for
+ * that day.
+ *
  */
 
 
@@ -7,7 +9,7 @@
 #include "include/event.hpp"
 #include <android/log.h>
 
-Day::Day(std::string date1, const char *filepath) {
+Day::Day(std::string date1, const char *filepath){
     this->date = date1;
     this->filepath = filepath;
 

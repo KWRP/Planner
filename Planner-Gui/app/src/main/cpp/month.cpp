@@ -91,7 +91,7 @@ string Month::toString() {
 	string result = "";
 	result = "Date is " +date +"\n";
 	for (int i = 0; i < 6; i++) {
-		result +=weeks[i]->toString() ;
+		result +=weeks[i]->toString();
 	}
 
 	return result;

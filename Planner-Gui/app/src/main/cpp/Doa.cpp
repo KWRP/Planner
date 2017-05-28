@@ -41,7 +41,7 @@ using namespace std;
 
 
 
-int main() {
+int main(){
     string s = "events.xml";
     createXml(s.c_str());
 	string quit;
