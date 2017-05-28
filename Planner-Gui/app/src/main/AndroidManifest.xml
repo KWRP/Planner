@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/test_icon"
+        android:icon="@mipmap/ic_uplanner"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/uplanner_icon"
+        android:roundIcon="@mipmap/ic_uplanner"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -26,12 +26,6 @@
             android:label="Day View"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
-
-        </activity>
-        <activity
-            android:name=".DisplayWeek"
-            android:label="@string/title_activity_display_week"
-            android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
 

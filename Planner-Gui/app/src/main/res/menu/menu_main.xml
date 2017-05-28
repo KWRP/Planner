@@ -3,13 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.kwrp.planner_gui.DisplayMonth">
 
-
-
-
-    <item
-        android:id="@+id/action_display_week"
-        android:orderInCategory="100"
-        android:title="@string/action_display_week" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

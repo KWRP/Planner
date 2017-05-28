@@ -256,27 +256,24 @@ public class DisplayMonth extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
 
         inflater.inflate(R.menu.menu_main, menu);
-        MenuItem item1 = menu.findItem(R.id.action_display_week);
-        MenuItem item2 = menu.findItem(R.id.action_settings);
-        MenuItem item3 = menu.findItem(R.id.action_sync);
-        MenuItem item4 = menu.findItem(R.id.action_about);
-        MenuItem item5 = menu.findItem(R.id.action_help);
+        MenuItem item1 = menu.findItem(R.id.action_settings);
+        MenuItem item2 = menu.findItem(R.id.action_sync);
+        MenuItem item3 = menu.findItem(R.id.action_about);
+        MenuItem item4 = menu.findItem(R.id.action_help);
 
         if(!editAvailable){
 
             item1.setVisible(false);
             item2.setVisible(false);
             item3.setVisible(false);
-            item4.setVisible(false);
 
-            item5.setVisible(true);
+            item4.setVisible(true);
         } else {
             item1.setVisible(true);
             item2.setVisible(true);
             item3.setVisible(true);
-            item4.setVisible(true);
 
-            item5.setVisible(false);
+            item4.setVisible(false);
         }
         return true;
     }
@@ -293,13 +290,6 @@ public class DisplayMonth extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_display_week) {
-            Intent myIntent = new Intent(this, DisplayWeek.class); /** Class name here */
-            startActivity(myIntent);
-            this.finish();
-        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

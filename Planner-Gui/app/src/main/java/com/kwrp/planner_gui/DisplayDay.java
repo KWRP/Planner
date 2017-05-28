@@ -263,11 +263,6 @@ public class DisplayDay extends AppCompatActivity {
             startActivity(myIntent);
             this.finish();
         }
-        if (id == R.id.action_display_week) {
-            Intent myIntent = new Intent(this, DisplayWeek.class); /** Class name here */
-            startActivity(myIntent);
-            this.finish();
-        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -302,7 +297,7 @@ public class DisplayDay extends AppCompatActivity {
 
         final LinearLayout dialogLayout = new LinearLayout(this);
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
-
+        dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(this);
         titleLabel.setText("Event Title:");
         dialogLayout.addView(titleLabel, 0);
