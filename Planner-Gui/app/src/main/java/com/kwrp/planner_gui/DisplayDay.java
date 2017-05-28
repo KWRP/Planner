@@ -88,7 +88,7 @@ public class DisplayDay extends AppCompatActivity {
 
         File dir = getFilesDir();
         File file = new File(dir, "events.xml");
-        file.delete();
+        //file.delete();
 
         if (!file.exists()) {
             filePath = getFilesDir().getAbsolutePath() + "/events.xml";
