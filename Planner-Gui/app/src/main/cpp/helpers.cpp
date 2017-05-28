@@ -90,3 +90,12 @@ std::string changeDate(std::string date, bool forward) {
     }
     return date;
 }
+
+void throwJavaException(JNIEnv *env, const char *msg) {
+    jclass c = env->FindClass("java/lang/RuntimeException");
+
+    if (NULL == c) {
+        c = env->FindClass("java/lang/NullPointerException");
+    }
+    env->ThrowNew(c, msg);
+}
