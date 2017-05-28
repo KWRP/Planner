@@ -1,5 +1,6 @@
 #include "include/helpers.hpp"
 #include "include/month.hpp"
+
 #include "include/week.hpp"
 #include "include/day.hpp"
 
@@ -63,12 +64,7 @@ Month::Month(const char* filepath) {
 	}
 	this->date = theDate;
 }
-Month::~Month() {
-	cout << "months of " + date + " destructor was called" << endl;
-	for (int i = 0; i < 6; i++) {
-		delete weeks[i];
-	}
-}
+
 
 Day* Month::getDay(string date) {
 	for (int week = 0; week < 6; week++) {

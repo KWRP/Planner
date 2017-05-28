@@ -47,15 +47,20 @@ int main() {
 	string quit;
 	string date = "29/06/2017";
 	string date2 = "30/05/2017";
+   // cout<<"1"<<endl;
     Month *month =  new Month(date, s.c_str());
+   // cout<<"2"<<endl;
     for(int i =0; i<6; i++){
-        for(int j = 0; j<7, j++){
-            month->getWeek(i)->getDay(j)->addEvent("test week "+numToString(i)+" day "+numToString(j), "test" )
+        for(int j = 0; j<7; j++){
+           // cout<<"3"<<endl;
+            month->getWeek(i)->getDay(j)->addEvent("test week "+numToString(i)+" day "+numToString(j), "test", 3, 4 );
+          //  cout<<"4"<<endl;
         }
     }
     cout<<"month get week " + month->getWeek(date)->toString()<<endl;
     cout<<"month get day " + month->getDay(date2)->toString()<<endl;
     cout<<"week get day "<< month->getWeek(date2)->getDay(date2)->numOfEvents()<<endl;
+    cout<<"month toString " <<month->toString()<<endl;
 
     //Month *month = new Month(date);
   //  cout<<"he"<<endl;

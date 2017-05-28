@@ -3,9 +3,7 @@
 #include "include/day.hpp"
 
 
-Week::Week(){
 
-}
 
 Week::Week(std::string date, const char* filepath) {//might need to check that the substr is correct
 		this->date = date;
@@ -43,7 +41,6 @@ Week::Week(std::string date, const char* filepath) {//might need to check that t
 		}
 		Day *dayx = new Day(date, filepath);
 		week[i] =dayx;
-        std::cout<<"day of week :" <<i<<std::endl;
         dayx->toString();
 	}
 	this->date = thedate;
@@ -90,12 +87,7 @@ Week::Week(const char* filepath) {
 	}
 	this->date = thedate;
 }
-Week::~Week() {
-   // std::cout << "week of " + date + " destuctor was called" << std::endl;
-	for (int i = 0; i < 7; i++) {
-		delete week[i];
-	}
-}
+
 Day* Week::getDay(std::string day) {
 	int dayOfWeek = 0;
 	int startDateOfWeek = atoi(date.substr(0,2).data());

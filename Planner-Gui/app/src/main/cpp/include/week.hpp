@@ -14,13 +14,12 @@ protected:
 
 public:
 	std::string getDate() { return date; }
-	Day* getDay(std::string day);
-	Day* getDay(int day);
-	std::string toString();
+	Day* getDay(std::string day) ;
+	Day* getDay(int day) ;
+	std::string toString() ;
 	Week() {}
-	Week(const char*) {}
-	Week(std::string date, const char*) {}
-	~Week();
+	Week(const char*) ;
+	Week(std::string date, const char*) ;
 
 };
 #endif
