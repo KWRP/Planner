@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <jni.h>
 
 std::string numToString (long l);
 
@@ -17,4 +18,7 @@ int dayOfWeek(std::string date);
 int numberOfDayInMonth(std::string date);
 
 std::string changeDate(std::string date, bool forward);
+
+void throwJavaException(JNIEnv *env, const char *msg);
+
 #endif	

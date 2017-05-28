@@ -1,15 +1,5 @@
+#include "include/jni-dao.h"
 #include "include/xml-dao.hpp"
-#include <jni.h>
-
-void throwJavaException(JNIEnv *env, const char *msg) {
-    jclass c = env->FindClass("java/lang/RuntimeException");
-
-    if (NULL == c) {
-        c = env->FindClass("java/lang/NullPointerException");
-    }
-    env->ThrowNew(c, msg);
-}
-
 
 // DisplayMonth JNI calls
 extern "C" {
@@ -53,12 +43,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDat
     return env->NewStringUTF(date.c_str());
 }
 
-
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetEvents(
-        JNIEnv *env,
-        jobject /* this */) {
-    return env->NewStringUTF(NULL);
-}
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
