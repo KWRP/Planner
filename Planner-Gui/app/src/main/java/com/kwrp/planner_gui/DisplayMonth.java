@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -27,10 +26,9 @@ import static com.kwrp.planner_gui.R.id.gridview;
 
 
 public class DisplayMonth extends AppCompatActivity {
-    //private Calendar currentDate;
-    //private ArrayList<Integer> currentDay = new ArrayList<>();
 
     private static int month = 0;
+    private static int year = 0;
     private static int thisYear = 0;
     private static int thisMonthIndex = 0;
 
@@ -47,10 +45,6 @@ public class DisplayMonth extends AppCompatActivity {
     private Collection<String> dayList = new ArrayList<>();
     private Collection<Integer> positionList = new ArrayList<>();
     private String currentDate;
-    private static int month = 0;
-    private static int year = 0;
-    private static int thisYear = 0;
-    private static int thisMonthIndex = 0;
     private String filePath;
 
     @Override
@@ -155,7 +149,6 @@ public class DisplayMonth extends AppCompatActivity {
 
         });
 
-
         mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
@@ -171,9 +164,7 @@ public class DisplayMonth extends AppCompatActivity {
                     startActivity(myIntent);
                 }
                 return true;
-
             }
-
         });
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {

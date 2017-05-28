@@ -1,6 +1,5 @@
 package com.kwrp.planner_gui;
 
-
 import java.util.ArrayList;
 
 /**
@@ -18,7 +17,8 @@ public class Day {
     public Day(String data) {
         String[] eventsSplit = data.split(":");
         for (String event : eventsSplit) {
-            events.add(new Event(event));
+            Event newEvent = new Event(event);
+            events.add(newEvent);
         }
     }
 
@@ -34,9 +34,6 @@ public class Day {
         return this.date;
     }
 
-    public void addEvent(Event event) {
-        events.add(event);
-    }
 
     public Event getEvent(int eventNumber) {
         return events.get(eventNumber);

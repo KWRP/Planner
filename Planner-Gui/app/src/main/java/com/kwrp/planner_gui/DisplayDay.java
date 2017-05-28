@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 
 
 public class DisplayDay extends AppCompatActivity {
+
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("calender");
@@ -40,11 +42,16 @@ public class DisplayDay extends AppCompatActivity {
     private String currentDate = jniGetCurrentDate();
     private String selectedDate;
     private String selectDay;
+    private Day selectedDay = null;
+    private boolean editEvent = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_day);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_day);
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
@@ -53,14 +60,29 @@ public class DisplayDay extends AppCompatActivity {
         currentDate = modifyDate(myIntent);
         selectedDate = selectDay + currentDate.substring(currentDate.indexOf("/"));
 
-
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventItems);
-        ListView events = (ListView) findViewById(R.id.list_view_events);
-        events.setAdapter(listAdapter);
+        ListView eventsView = (ListView) findViewById(R.id.list_view_events);
+        eventsView.setAdapter(listAdapter);
 
-        EditText dateField = (EditText) findViewById(R.id.output_selected_date);
+        TextView dateField = (EditText) findViewById(R.id.output_selected_date);
 
         dateField.setText(selectedDate);
+
+        eventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+
+                if (selectedDay.getEvent(position) != null) {
+                    newEventTitle = selectedDay.getEvent(position).getTitle();
+                    newEventDescription = selectedDay.getEvent(position).getDescription();
+                    newEventStart = selectedDay.getEvent(position).getStartTime();
+                    newEventDuration = selectedDay.getEvent(position).getDuration();
+                    editEvent = true;
+                    Dialog dialog = createEventDialog();
+                    dialog.show();
+                }
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,15 +93,7 @@ public class DisplayDay extends AppCompatActivity {
             }
         });
 
-        File dir = getFilesDir();
-        File file = new File(dir, "events.xml");
-        //file.delete();
-
-        if (!file.exists()) {
-            filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-            String newFile = jniCreateXml(filePath);
-            Log.d("JAVA TEST!!!: ", newFile);
-        }
+        checkXmlExists();
         getEvents();
     }
 
@@ -89,9 +103,9 @@ public class DisplayDay extends AppCompatActivity {
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
-       } else {
+        } else {
             eventItems.clear();
-            Day selectedDay = new Day(getDay);
+            selectedDay = new Day(getDay);
             for (Event event : selectedDay.getEvents()) {
                 eventItems.add(event.toString());
             }
@@ -158,6 +172,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        titleInput.setText(newEventTitle);
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
@@ -165,6 +180,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        descriptInput.setText(newEventDescription);
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
@@ -172,6 +188,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(startLabel, 4);
         final EditText startInput = new EditText(this);
         startInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        startInput.setText(newEventStart);
         startInput.setHint("e.g. 0800");
         dialogLayout.addView(startInput, 5);
 
@@ -180,6 +197,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(durationLabel, 6);
         final EditText durationInput = new EditText(this);
         durationInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        durationInput.setText(newEventDuration);
         durationInput.setHint("Number of hours");
         dialogLayout.addView(durationInput, 7);
 
@@ -215,7 +233,8 @@ public class DisplayDay extends AppCompatActivity {
 
     private void createNewEvent(String title, String description, String start, String duration) {
         Log.d("Java Test createEvent: ", "Before");
-        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
+        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate, editEvent);
+        editEvent = false;
         Log.d("Java Test cretEv after:", newEvent);
         getEvents();
         listAdapter.notifyDataSetChanged();
@@ -244,18 +263,34 @@ public class DisplayDay extends AppCompatActivity {
                 Integer.parseInt(context.getStringExtra("year")));
     }
 
+    private void checkXmlExists() {
+        File dir = getFilesDir();
+        File file = new File(dir, "events.xml");
+        //file.delete();
+
+        if (!file.exists()) {
+            filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+            String newFile = jniCreateXml(filePath);
+            Log.d("JAVA TEST!!!: ", newFile);
+        }
+    }
+
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     //public native String jniGetEvents();
+    public native String jniGetDay(String filePath, String currentDate);
 
-    public native String jniGetDay(String dir, String currentDate);
     public native String jniGetCurrentDate();
+
     public native String jniCreateXml(String filePath);
+
     public native String jniCreateEvent(String title, String description, String start,
-                                        String duration, String dir, String selectedDate);
+                                        String duration, String dir, String selectedDate,
+                                        boolean editEvent);
+
 }
 
         /*File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");

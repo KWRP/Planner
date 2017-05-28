@@ -24,6 +24,14 @@ public class Event {
         this.duration = eventItems[4];
     }
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     public String getTitle() {
         return title;
     }
