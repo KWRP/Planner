@@ -1,7 +1,7 @@
 #include "include/xml-dao.hpp"
 #include "include/tinyxml2.h"
-//#include "../../../../../../../Library/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include/android/log.h"
-#include <android/log.h>
+#include "../../../../../../../Library/Android/sdk/ndk-bundle/platforms/android-21/arch-arm/usr/include/android/log.h"
+//#include <android/log.h>
 
 using namespace tinyxml2;
 #ifndef XMLCheckResult
@@ -283,18 +283,26 @@ bool removeEvent(const char *filePath, const char *day, const char *month, const
     }
 
     XMLElement *elementEventTemp = elementEvent->NextSiblingElement("event");
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "next sibling");
 
     if (elementEventTemp != nullptr) {
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "eventtemp is not null");
 
         elementDay->DeleteChild(elementEvent);
-        int tempEID = atoi(eid);
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "deleted child");
+        int tempEID = 0;
 
         while (elementEventTemp != nullptr) {
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "temp event not null yet");
+            tempEID = elementEventTemp->QueryAttribute("EID", &tempEID) - 1;
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "deduct event id");
             elementEventTemp->SetAttribute("EID", tempEID);
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "set new id");
             elementEventTemp = elementEventTemp->NextSiblingElement("event");
-            tempEID++;
+            __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "assign next event");
         }
 
+        __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "ended loop");
     } else {
         elementDay->DeleteChild(elementEvent);
     }
