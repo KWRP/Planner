@@ -1,9 +1,6 @@
-#include "include/helpers.hpp"
+##include "include/helpers.hpp"
 #include "include/week.hpp"
 #include "include/day.hpp"
-
-
-
 
 Week::Week(std::string date, const char* filepath) {//might need to check that the substr is correct
 		this->date = date;
@@ -82,7 +79,6 @@ Week::Week(const char* filepath) {
 				date = date.insert(0, numToString(dateOfWeek));
 		}
 		Day *dayx = new Day(date, filepath);
-   //     std::cout << "day to string " + dayx->toString() << std::endl;
 		week[i] = dayx;
 	}
 	this->date = thedate;
@@ -99,19 +95,17 @@ Day* Week::getDay(std::string day) {
 	int year = atoi(day.substr(6, 4).data());
 	int startYear = atoi(date.substr(6, 4).data());
 
-	if (startYear < year) {//?
+	if (startYear < year) {
 		startDateOfWeek = 31 - theDay;
 	}
 	if (startmon < mon) {
-		this->date = date;
-		//int year = atoi(date.substr(6, 4).data());
 		mon = atoi(date.substr(3, 2).data());
 		int numDays = numberOfDayInMonth(date);
 		startDateOfWeek = numDays - theDay;
 	}
 	dayOfWeek = theDay - startDateOfWeek;
-	if (dayOfWeek < 0) {
-        std::cout <<date+ "please enter a valid date in the week " + toString() << std::endl;
+	if (dayOfWeek < 0 || dayOfWeek > 6) {
+        return NULL;
 	}
 	return week[dayOfWeek];
 }
@@ -125,4 +119,10 @@ std::string Week::toString() {
 		result += week[i]->toString();
 	}
 	return result;
+}
+
+Week::~Week(){
+	for(int i= 7; i>0; i--){
+		free(week[i]);
+	}
 }
