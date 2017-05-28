@@ -2,10 +2,9 @@ package com.kwrp.planner_gui;
 
 import java.util.ArrayList;
 
-/**
- * Created by wsanson on 5/27/17.
+/** Defines an object day, with a date and events associated.
+ * @author KWRP
  */
-
 public class Day {
 
     private String date = "";

@@ -1,6 +1,4 @@
 package com.kwrp.planner_gui;
-
-import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -18,23 +16,39 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created by KurtsPC on 9/05/2017.
+/** Defines a series of actions for specific actions such as "sync" button select.
+ *  Returns dialog boxes for specific actions and in some cases sends data to back-end.
+ *
+ * @author KWRP
  */
-
 public class DialogAction extends AppCompatActivity{
 
+    /**
+     * Loads the native library "calender" on start up
+     */
     static {
         System.loadLibrary("calender");
     }
-    private String filePath;
-    private String selectedDate;
 
+
+    /**
+     * Defines the filepath in the user device where the events.xml is stored.
+     */
+    private String filePath;
+
+    /**
+     * Default constructor
+     */
+    public DialogAction(){}
+
+    /**Creates the "About" Dialog box which occurs when the user selects "About" in the options menu
+     *
+     * @param parent The Intent the dialog box is spawned onto
+     * @return the dialog box object, to "shown".
+     */
     public static AlertDialog createAboutDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage("")
@@ -51,6 +65,11 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
+    /**Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
+     *
+     * @param parent The Intent the dialog box is spawned onto
+     * @return the dialog box object, to "shown".
+     */
     public static AlertDialog createSettingsDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         final AppCompatActivity parentf = parent;
@@ -121,6 +140,12 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
+    /**
+     * Creates the "Sync" Dialog which occurs when the user selects "Sync" in the options menu
+     *
+     * @param parent The Intent the dialog box is spawned onto
+     * @return the dialog box object, to "shown".
+     */
     public static AlertDialog createSyncDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setTitle("Synchronise");
@@ -205,6 +230,11 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
+    /**Creates the "Help" Dialog which occurs when the user selects "Help" in the options menu
+     *
+     * @param parent The Intent the dialog box is spawned onto
+     * @return the dialog box object, to "shown".
+     */
     public static AlertDialog createHelpDialog(AppCompatActivity parent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage("")
@@ -222,6 +252,17 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
+    /**Creates the dialog box for creating an event when there are a series of dates the event will take place on.
+     *
+     Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
+     *
+     * @param parent The Intent the dialog box is spawned onto
+     * @param dayList A collection containing the days that the event occurs on
+     * @param month The month in which this event takes place
+     * @param year The year in which this event takes place
+     * @param filePath The filepath for the XML file storing all the events
+     * @return the dialog box object, to "shown".
+     */
     public AlertDialog createEventSetDialog(AppCompatActivity parent, Collection<String> dayList, String month, String year, String filePath) {
 
         this.filePath = filePath;
@@ -304,6 +345,14 @@ public class DialogAction extends AppCompatActivity{
     }
 
 
+    /**Sends JNI the event details and a date, so that the back-end can create the event and store it
+     *
+     * @param title The event title
+     * @param description The event description
+     * @param start The time the event starts
+     * @param duration How long (in hours) the event will go for
+     * @param dates A collection containing the dates (DD/MM/YYYY) the event occurs on
+     */
     private void createNewEvent(String title, String description, String start, String duration, ArrayList<String> dates) {
         String s;
         for(String selectedDate : dates) {
@@ -314,6 +363,13 @@ public class DialogAction extends AppCompatActivity{
 
     }
 
+    /** Helper function that makes sure the format of the date strings
+     * is valid DD/MM/YYYY format so as to ensure consistency. Will correct errors
+     * such as D/M/YYYY or DD/M/YYYY.
+     *
+     * @param date a string in a given format DD/MM/YYYY OR D/MM/YYYY OR DD/M/YYYY OR D/M/YYYY
+     * @return A properly formed date DD/MM/YYYY
+     */
     private String modifyDate(String date) {
 
         String[] splitDate = date.split("/");
@@ -331,6 +387,17 @@ public class DialogAction extends AppCompatActivity{
         return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
     }
 
+    /** A JNI function that pushes event details through to the back-end to create
+     *  and store events. This is defined outside this class.
+     *
+     * @param title The event title
+     * @param description The event description
+     * @param start The time the event starts
+     * @param duration How long (in hours) the event will go for
+     * @param dir The file path to a .xml file where the events are stored
+     * @param selectedDate A collection containing the dates (DD/MM/YYYY) the event occurs on
+     * @return
+     */
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 

@@ -9,8 +9,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/** Defines the display week activity where the user is shown
+ *  every day in the week.
+ *
+ * @author KWRP
+ */
 public class DisplayWeek extends AppCompatActivity {
 
+    /** Called when the activity is first created. Sets up buttons, labels, and initialises variables.
+     *
+     * @param savedInstanceState defines the action such as screen rotation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +28,11 @@ public class DisplayWeek extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
+    /** Called when the options menu on the toolbar is created or updated.
+     *
+     * @param menu The menu on the toolbar
+     * @return true boolean type
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -26,6 +40,12 @@ public class DisplayWeek extends AppCompatActivity {
         return true;
     }
 
+    /** Called when an item in the menu has been selected. Will find which action it is
+     * and then spawn a dialog box (or change view) accordingly.
+     *
+     * @param item The menu item that was selected
+     * @return boolean type
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
