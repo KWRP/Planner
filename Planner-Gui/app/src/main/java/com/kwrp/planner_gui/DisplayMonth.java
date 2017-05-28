@@ -47,15 +47,6 @@ public class DisplayMonth extends AppCompatActivity {
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
 
-        File dir = getFilesDir();
-        File file = new File(dir, "events.xml");
-        if (!file.exists()) {
-            Log.d("JAVA create file", "In loop");
-            String filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-            jniCreateXml(filePath);
-
-        }
-
         currentDate = jniGetCurrentDate();
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
@@ -151,25 +142,6 @@ public class DisplayMonth extends AppCompatActivity {
                     // File dir = getFilesDir();
                     // File file = new File(dir, "events.xml");
                     // boolean deleted = file.delete();
-/*
-                File eventsXml = new File(getFilesDir().getAbsolutePath() +"/events.xml");
-                if (!eventsXml.exists()) {
-                    try {
-                        eventsXml.createNewFile();
-                        eventsXml.mkdir();
-                    }catch(IOException e) {
-                        e.printStackTrace();
-                        Log.d("---JAVA TESTING!!!---", "File not created!");
-                    }
-                    if (eventsXml.exists()) Log.d("---JAVA TESTING!!!---", "File created!");
-                } else {
-                    Log.d("---JAVA TESTING!!!---", "File already exists!");
-                }
-                Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
-*/
-                    File eventsXml = new File(getFilesDir().getAbsolutePath() + "/events.xml");
-                    if (!eventsXml.exists())
-                        Log.d("---JAVA TESTING!!!---", eventsXml.getAbsolutePath());
                 }
                 return true;
 
@@ -335,5 +307,4 @@ public class DisplayMonth extends AppCompatActivity {
      */
     public native String jniGetCurrentDate();
 
-    public native String jniCreateXml(String filepath);
 }
