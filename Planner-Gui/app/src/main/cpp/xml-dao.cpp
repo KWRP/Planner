@@ -1,6 +1,6 @@
 #include "include/xml-dao.hpp"
 #include "include/tinyxml2.h"
-#include <android/log.h>
+
 
 using namespace tinyxml2;
 #ifndef XMLCheckResult
@@ -21,7 +21,6 @@ bool checkDate(const char *filePath, const char *day, const char *month, const c
     XMLPrinter printer;
     xmlDoc.Accept(&printer);
     const char *xmlcstr = printer.CStr();
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", xmlcstr);
     // -----------------------------------------------
 
     // find year
@@ -63,11 +62,9 @@ bool createDate(const char *filePath, const char *day, const char *month, const 
     XMLElement *elementDay;
 
     XMLDocument xmlDoc;
-
     XMLError eResult = xmlDoc.LoadFile(filePath);
 
     if (eResult != XML_SUCCESS) return false;
-
 
     int yearInt = atoi(year);
     int monthInt = atoi(month);
@@ -170,9 +167,13 @@ bool createXml(const char *filePath) {
     event->InsertEndChild(startTime);
     event->InsertEndChild(duration);
 
-    XMLError eResult = xmlDoc->SaveFile(filePath);
+    XMLError eResult = xmlDoc->SaveFile(filePath);;
 
     XMLCheckResult(eResult);
+    
+    xmlDoc->DeleteChildren();
+    delete xmlDoc;
+    
     return true;
 }
 
@@ -188,25 +189,19 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
 
     if (newDate) {
         XMLElement *elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
-        if (elementYear != nullptr) {
-            while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
-                elementYear = elementYear->NextSiblingElement("year");
-            }
+        while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
+            elementYear = elementYear->NextSiblingElement("year");
         }
 
 
         XMLElement *elementMonth = elementYear->FirstChildElement("month");
-        if (elementMonth != nullptr) {
-            while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
-                elementMonth = elementMonth->NextSiblingElement("month");
-            }
+        while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
+            elementMonth = elementMonth->NextSiblingElement("month");
         }
 
         XMLElement *elementDay = elementMonth->FirstChildElement("day");
-        if (elementDay != nullptr) {
-            while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
-                elementDay = elementDay->NextSiblingElement("day");
-            }
+        while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
+            elementDay = elementDay->NextSiblingElement("day");
         }
 
         int eventNum = 0;
@@ -253,8 +248,7 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
 bool removeEvent(const char *filePath, const char *day, const char *month, const char *year,
                  const char *eid) {
 
-    bool isDate;
-    isDate = checkDate(filePath, day, month, year);
+    bool isDate = checkDate(filePath, day, month, year);
     if (!isDate) return true;
 
     XMLDocument xmlDoc;
@@ -262,52 +256,41 @@ bool removeEvent(const char *filePath, const char *day, const char *month, const
     if (eResult != XML_SUCCESS) return false;
 
     XMLElement *elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
-    if (elementYear != nullptr) {
-        while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
-            elementYear = elementYear->NextSiblingElement("year");
-        }
+    while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
+        elementYear = elementYear->NextSiblingElement("year");
     }
 
     XMLElement *elementMonth = elementYear->FirstChildElement("month");
-    if (elementMonth != nullptr) {
-        while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
-            elementMonth = elementMonth->NextSiblingElement("month");
-        }
+    while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
+        elementMonth = elementMonth->NextSiblingElement("month");
     }
 
     XMLElement *elementDay = elementMonth->FirstChildElement("day");
-    if (elementDay != nullptr) {
-        while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
-            elementDay = elementDay->NextSiblingElement("day");
-        }
+    while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
+        elementDay = elementDay->NextSiblingElement("day");
     }
 
     XMLElement *elementEvent = elementDay->FirstChildElement("event");
-    if (elementEvent != nullptr) {
-        while (elementEvent != nullptr && !(elementEvent->Attribute("EID", eid))) {
-            elementEvent = elementEvent->NextSiblingElement("event");
-        }
+    while (elementEvent != nullptr && !(elementEvent->Attribute("EID",eid))){
+        elementEvent = elementEvent->NextSiblingElement("event");
     }
 
     XMLElement *elementEventTemp = elementEvent->NextSiblingElement("event");
 
-    if (elementEventTemp != nullptr) {
+    int lastEvent = 0;
+    elementDay->LastChildElement("event")->QueryIntAttribute("EID",&lastEvent);
 
-        elementDay->DeleteChild(elementEvent);
-        int tempEID = atoi(eid);
+    elementDay->DeleteChild(elementEvent);
+    int tempEID= 0;
 
-        while (elementEventTemp != nullptr) {
-            elementEventTemp->SetAttribute("EID", tempEID);
-            elementEventTemp = elementEventTemp->NextSiblingElement("event");
-            tempEID++;
-        }
-
-    } else {
-        elementDay->DeleteChild(elementEvent);
+    while (elementEventTemp != nullptr){
+        tempEID = elementEventTemp->QueryAttribute("EID",&tempEID) -1;
+        elementEventTemp->SetAttribute("EID",tempEID);
+        elementEventTemp = elementEventTemp->NextSiblingElement("event");
     }
+
     eResult = xmlDoc.SaveFile(filePath);
     XMLCheckResult(eResult);
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "Saved");
     return true;
 }
 
@@ -315,32 +298,30 @@ bool
 pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, const char *year) {
 
     XMLDocument xmlDoc;
+
     XMLError eResult = xmlDoc.LoadFile(filepath);
     if (eResult != XML_SUCCESS) return false;
+
     bool dateExist = checkDate(filepath, day, month, year);
+
     if (!dateExist) {
         return false;
     }
+
     XMLElement *elementYear = xmlDoc.FirstChildElement("planner")->FirstChildElement("year");
-    if (elementYear != nullptr) {
-        while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
-            elementYear = elementYear->NextSiblingElement("year");
-        }
+    while (elementYear != nullptr && !(elementYear->Attribute("YID", year))) {
+        elementYear->NextSiblingElement("year");
     }
 
     XMLElement *elementMonth = elementYear->FirstChildElement("month");
-    if (elementMonth != nullptr) {
-        while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
-            elementMonth = elementMonth->NextSiblingElement("month");
-        }
+    while (elementMonth != nullptr && !(elementMonth->Attribute("MID", month))) {
+        elementMonth = elementMonth->NextSiblingElement("month");
     }
 
 
     XMLElement *elementDay = elementMonth->FirstChildElement("day");
-    if (elementDay != nullptr) {
-        while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
-            elementDay = elementDay->NextSiblingElement("day");
-        }
+    while (elementDay != nullptr && !(elementDay->Attribute("DID", day))) {
+        elementDay = elementDay->NextSiblingElement("day");
     }
 
 
@@ -367,7 +348,6 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
             break;
         }
         eventCurr = elementEventCurr->IntAttribute("EID");
-
     }
 
     eResult = xmlDoc.SaveFile(filepath);
