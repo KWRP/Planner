@@ -17,8 +17,9 @@ public:
 	Day* getDay(std::string day);
 	Day* getDay(int day);
 	std::string toString();
-	Week(const char*);
-	Week(std::string date, const char*);
+	Week() {}
+	Week(const char*) {}
+	Week(std::string date, const char*) {}
 	~Week();
 
 };
