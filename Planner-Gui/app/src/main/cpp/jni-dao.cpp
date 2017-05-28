@@ -4,18 +4,23 @@
 
 // DisplayMonth JNI calls
 extern "C" {
-JNIEXPORT jstring JNICALL
-Java_com_kwrp_planner_1gui_DisplayMonth_stringFromJNI(
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateXml(
         JNIEnv *env,
-        jobject /* this */) {
-    return env->NewStringUTF(NULL);
-}
+        jobject jobject1, jstring dir) {
 
+    const char *nativePath = env->GetStringUTFChars(dir, 0);
+    bool createFile = createXml(nativePath);
+    (env)->ReleaseStringUTFChars(dir, nativePath);
 
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_testJNI(
-        JNIEnv *env,
-        jobject /* this */) {
-    return env->NewStringUTF(NULL);
+    std::string confirm = "";
+
+    if (createFile) {
+        confirm = "File Created!!";
+    } else {
+        confirm = "File Creation Failed!!!";
+    }
+
+    return env->NewStringUTF(confirm.c_str());
 }
 
 
@@ -60,12 +65,8 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
     std::string month = rest.substr(0, selectedDate.find(delimiter));
     std::string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-    //bool createFile = createXml(nativePath);
-
     bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(), nativeTitle,
                                 nativeDescription, nativeStart, nativeDuration);
-
-    bool cd = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
 
     (env)->ReleaseStringUTFChars(title, nativeTitle);
     (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -75,7 +76,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
 
 
     std::string confirm = "";
-    if (cd) {
+    if (createEvent) {
         confirm = "Event Created!!";
     } else {
         confirm = "Event Creation Failed!!!";
@@ -90,13 +91,16 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDay(
     const char *nativePath = env->GetStringUTFChars(dir, 0);
     const char *nativeDate = env->GetStringUTFChars(date, 0);
 
+    //bool createFile = createXml(nativePath);
+
     Day *day = new Day(nativeDate, nativePath);
+    std::string dayString = day->toString();
 
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! GetDay", "%s", day->toString().c_str());
-
+    free(day);
     (env)->ReleaseStringUTFChars(dir, nativePath);
     (env)->ReleaseStringUTFChars(date, nativeDate);
 
-    return env->NewStringUTF(day->toString().c_str());
+    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!! GetDay", "%s", dayString.c_str());
+    return env->NewStringUTF(dayString.c_str());
 }
 }
