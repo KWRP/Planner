@@ -59,7 +59,11 @@ public class DialogAction extends AppCompatActivity {
         builder.setMessage("")
                 .setTitle("About us")
                 .setMessage("This application is designed for Otago University students. This" +
-                        " application was created by students.");
+                        " application was created by students." +
+                        "\n\n\t\t\t\t\t How to use:"+
+                        "\nSwipe side to side to change month."+
+                        "\nPress and hold a day to edit single day."+
+                        "\nTap the pencil icon to enable multi-day \n\tevent creation.");
 
         builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
