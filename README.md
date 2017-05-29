@@ -37,7 +37,7 @@ Setting up Android Studio
 If you are plan to run the application on you own android device, then select its 
 Androud version, otherwise just select the most recent API Level.
 
-	-Click on the tab that says SDK Tools and make sure the following are ticked:<br />
+- Click on the tab that says SDK Tools and make sure the following are ticked:<br />
 		-Android SDK Build-Tools <br />
 		-CMake<br />
 		-LLDB<br />
