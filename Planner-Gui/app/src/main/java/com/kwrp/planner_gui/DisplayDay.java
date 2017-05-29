@@ -117,6 +117,7 @@ public class DisplayDay extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_day);
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(DialogAction.headColor);
 
         Intent myIntent = getIntent();
         currentDate = modifyDate(myIntent);

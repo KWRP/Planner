@@ -85,6 +85,7 @@ public class DisplayMonth extends AppCompatActivity {
      * The filepath where events are stored on the device
      */
     private String filePath;
+
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
      *
@@ -95,7 +96,7 @@ public class DisplayMonth extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-
+        toolbar.setBackgroundColor(DialogAction.headColor);
         currentDate = jniGetCurrentDate();
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);

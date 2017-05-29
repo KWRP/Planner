@@ -36,6 +36,8 @@ public class DialogAction extends AppCompatActivity {
         System.loadLibrary("calendar");
     }
 
+    public static int headColor = Color.BLUE;
+
 
     /**
      * Defines the filepath in the user device where the events.xml is stored.
@@ -116,12 +118,15 @@ public class DialogAction extends AppCompatActivity {
                 }
                 switch (position) {
                     case 1:
+                        headColor = Color.GREEN;
                         toolbar.setBackgroundColor(Color.GREEN);
                         break;
                     case 2:
+                        headColor = Color.RED;
                         toolbar.setBackgroundColor(Color.RED);
                         break;
                     case 3:
+                        headColor = Color.BLUE;
                         toolbar.setBackgroundColor(Color.BLUE);
                         break;
                 }
