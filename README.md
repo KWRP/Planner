@@ -38,20 +38,20 @@ If you are plan to run the application on you own android device, then select it
 Androud version, otherwise just select the most recent API Level.
 
 - Click on the tab that says SDK Tools and make sure the following are ticked:<br />
-		- [x]Android SDK Build-Tools <br />
-		- [x]CMake<br />
-		- [x]LLDB<br />
-		- [x]Android Emulator<br />
-		- [x]Android SDK Platform-Tools<br />
-		- [x]Android SDK Tools<br />
-		- [x]Documentation for Android SDK<br />
-		- [x]Intel x86 Emulator Accelerator (HAXM installer)<br />
-		- [x]NDK<br />
-		Under Support Repository:<br />
-			- [x]ConstraintLayout for Android<br />
-			- [x]Solver for ConstraintLayout<br />
-			- [x]Android Support Repository<br />
-			- [x]Google Repository<br />
+	- [x] Android SDK Build-Tools <br />
+	- [x] CMake<br />
+	- [x] LLDB<br />
+	- [x] Android Emulator<br />
+	- [x] Android SDK Platform-Tools<br />
+	- [x] Android SDK Tools<br />
+	- [x] Documentation for Android SDK<br />
+	- [x] Intel x86 Emulator Accelerator (HAXM installer)<br />
+	- [x] NDK<br />
+	Under Support Repository:<br />
+		- [x] ConstraintLayout for Android<br />
+		- [x] Solver for ConstraintLayout<br />
+		- [x] Android Support Repository<br />
+		- [x] Google Repository<br />
 
 	-After you have selected them all, click Apply and Accept the Terms and Conditions.
 
