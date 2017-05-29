@@ -85,7 +85,6 @@ public class DisplayMonth extends AppCompatActivity {
      * The filepath where events are stored on the device
      */
     private String filePath;
-
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
      *
@@ -179,6 +178,7 @@ public class DisplayMonth extends AppCompatActivity {
                             String day = view2.getText().toString();
                             dayList.add(day);
                             daysSelected += 1;
+
                         }
                     }
                     FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
@@ -373,15 +373,15 @@ public class DisplayMonth extends AppCompatActivity {
      * @param month the month offset from the initial month.
      */
     public void updateMonthView(int month) {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-//        toolbar.setSubtitle("Today's Date: " + currentDate);
         String[] systemDate = currentDate.split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
         GridView mGridView = (GridView) findViewById(gridview);
+        mGridView.invalidateViews();
         mGridView.setAdapter(new MonthAdapter(
                 this, Integer.parseInt(systemDate[1]) - 1 + month, thisYear, metrics));
+
     }
 
     /**
