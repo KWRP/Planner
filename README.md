@@ -57,7 +57,7 @@ Androud version, otherwise just select the most recent API Level.
 
 4. Once the extra components have been installed, click on 'Check out project from 
    Version Control' and select Github, then Clone the directory 
-   https://github.com/KWRP/Pormis.git
+   https://github.com/KWRP/Planner.git
 
 5. Once it has been cloned, if any pop-ups come up select no and instead select
    'Open an existing Android Studio project and locate the Planner-Gui project 
