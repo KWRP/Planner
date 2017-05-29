@@ -43,7 +43,7 @@ Androud version, otherwise just select the most recent API Level.
 		-LLDB<br />
 		-Android Emulator<br />
 		-Android SDK Platform-Tools<br />
-		-Androud SDK Tools<br />
+		-Android SDK Tools<br />
 		-Documentation for Android SDK<br />
 		-Intel x86 Emulator Accelerator (HAXM installer)<br />
 		-NDK<br />
