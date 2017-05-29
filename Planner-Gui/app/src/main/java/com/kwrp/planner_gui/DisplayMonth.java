@@ -163,7 +163,7 @@ public class DisplayMonth extends AppCompatActivity {
                     if (background instanceof ColorDrawable) {
                         int color = ((ColorDrawable) background).getColor();
                         if (color == Color.LTGRAY) {
-
+                            view2.setBackgroundColor(Color.rgb(244, 244, 244));
                             Integer pos = new Integer(position);
 
                             positionList.remove(pos);
