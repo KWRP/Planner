@@ -107,11 +107,12 @@ public class DialogAction extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toolbar toolbar = (Toolbar) parentf.findViewById(R.id.toolbar_month);
-//                parent.removeView(view);
+                if (toolbar == null){
+                    toolbar = (Toolbar) parentf.findViewById(R.id.toolbar_day);
+                }
                 switch (position) {
                     case 1:
                         toolbar.setBackgroundColor(Color.GREEN);
-                        Log.d("CASE 0 ZIP", "CASE 0 ZIP\n\n\n");
                         break;
                     case 2:
                         toolbar.setBackgroundColor(Color.RED);
@@ -127,7 +128,7 @@ public class DialogAction extends AppCompatActivity {
 
             }
 
-        });
+    });
         spinner.setPadding(100, 20, 100, 20);
 
         spinner.setDropDownHorizontalOffset(90);
@@ -161,11 +162,11 @@ public class DialogAction extends AppCompatActivity {
 
 
         TextView evisionTitle = new TextView(parent);
-        evisionTitle.setText("Evision:");
-        evisionTitle.setPadding(10, 10, 10, 10);
-        evisionTitle.setGravity(Gravity.CENTER);
-        evisionTitle.setTextColor(Color.rgb(0, 0, 0));
-        evisionTitle.setTextSize(14);
+//        evisionTitle.setText("Evision:");
+//        evisionTitle.setPadding(10, 10, 10, 10);
+//        evisionTitle.setGravity(Gravity.CENTER);
+//        evisionTitle.setTextColor(Color.rgb(0, 0, 0));
+//        evisionTitle.setTextSize(14);
 
         Button button = new Button(parent);
         button.setText("Otago Timetable");
@@ -176,11 +177,11 @@ public class DialogAction extends AppCompatActivity {
         dialogLayout.addView(button, 1);
 
         TextView googleTitle = new TextView(parent);
-        googleTitle.setText("Google Calendar:");
-        googleTitle.setPadding(10, 10, 10, 10);
-        googleTitle.setGravity(Gravity.CENTER);
-        googleTitle.setTextColor(Color.rgb(0, 0, 0));
-        googleTitle.setTextSize(14);
+//        googleTitle.setText("Google Calendar:");
+//        googleTitle.setPadding(10, 10, 10, 10);
+//        googleTitle.setGravity(Gravity.CENTER);
+//        googleTitle.setTextColor(Color.rgb(0, 0, 0));
+//        googleTitle.setTextSize(14);
 
         button = new Button(parent);
         button.setText("Google Calendar");
@@ -192,11 +193,11 @@ public class DialogAction extends AppCompatActivity {
 
 
         TextView hotmailTitle = new TextView(parent);
-        hotmailTitle.setText("Hotmail Calendar:");
-        hotmailTitle.setPadding(10, 10, 10, 10);
-        hotmailTitle.setGravity(Gravity.CENTER);
-        hotmailTitle.setTextColor(Color.rgb(0, 0, 0));
-        hotmailTitle.setTextSize(14);
+//        hotmailTitle.setText("Hotmail Calendar:");
+//        hotmailTitle.setPadding(10, 10, 10, 10);
+//        hotmailTitle.setGravity(Gravity.CENTER);
+//        hotmailTitle.setTextColor(Color.rgb(0, 0, 0));
+//        hotmailTitle.setTextSize(14);
 
         button = new Button(parent);
         button.setText("Hotmail Calendar");
@@ -208,11 +209,11 @@ public class DialogAction extends AppCompatActivity {
 
 
         TextView facebookTitle = new TextView(parent);
-        facebookTitle.setText("Facebook Events:");
-        facebookTitle.setPadding(10, 10, 10, 10);
-        facebookTitle.setGravity(Gravity.CENTER);
-        facebookTitle.setTextColor(Color.rgb(0, 0, 0));
-        facebookTitle.setTextSize(14);
+//        facebookTitle.setText("Facebook Events:");
+//        facebookTitle.setPadding(10, 10, 10, 10);
+//        facebookTitle.setGravity(Gravity.CENTER);
+//        facebookTitle.setTextColor(Color.rgb(0, 0, 0));
+//        facebookTitle.setTextSize(14);
 
         button = new Button(parent);
         button.setText("Facebook Events");
