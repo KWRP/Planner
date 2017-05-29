@@ -34,25 +34,26 @@ Setting up Android Studio
 2. Install android studio and start the application.
 3. On the startup menu, click on Configure and then select SDK Manager.
 
-If you are plan to run the application on you own android device, then select its Androud version, otherwise just select the most recent API Level.
+If you are plan to run the application on you own android device, then select its 
+Androud version, otherwise just select the most recent API Level.
 
-- Click on the tab that says SDK Tools and make sure the following are ticked:
-		Android SDK Build-Tools
-		CMake
-	-LLDB
-	-Android Emulator
-	-Android SDK Platform-Tools
-	-Androud SDK Tools
-	-Documentation for Android SDK
-	-Intel x86 Emulator Accelerator (HAXM installer)
-	-NDK
-- Under Support Repository:
-	-ConstraintLayout for Android
-	-Solver for ConstraintLayout
-	-Android Support Repository
-	-Google Repository
+- Click on the tab that says SDK Tools and make sure the following are ticked:<br />
+	- [x] Android SDK Build-Tools <br />
+	- [x] CMake<br />
+	- [x] LLDB<br />
+	- [x] Android Emulator<br />
+	- [x] Android SDK Platform-Tools<br />
+	- [x] Android SDK Tools<br />
+	- [x] Documentation for Android SDK<br />
+	- [x] Intel x86 Emulator Accelerator (HAXM installer)<br />
+	- [x] NDK<br />
+	Under Support Repository:<br />
+		- [x] ConstraintLayout for Android<br />
+		- [x] Solver for ConstraintLayout<br />
+		- [x] Android Support Repository<br />
+		- [x] Google Repository<br />
 
-- After you have selected them all, click Apply and Accept the Terms and Conditions.
+	-After you have selected them all, click Apply and Accept the Terms and Conditions.
 
 4. Once the extra components have been installed, click on 'Check out project from 
    Version Control' and select Github, then Clone the directory 
@@ -73,7 +74,7 @@ If you are plan to run the application on you own android device, then select it
 
 ### External library dependancies:
 
-tinyxml2: https://github.com/leethomason/tinyxml2
-Display month: https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java;
+tinyxml2: https://github.com/leethomason/tinyxml2 <br />
+Display month: https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java; <br />
 
 
