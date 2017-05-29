@@ -8,7 +8,7 @@
 #include "include/day.hpp"
 #include "include/event.hpp"
 
-Day::Day(std::string date1, const char *filepath){
+Day::Day(std::string date1, const char *filepath) {
     this->date = date1;
     this->filepath = filepath;
 
@@ -21,55 +21,58 @@ Day::Day(std::string date1, const char *filepath){
     bool getDay = pullDay(this, filepath, day1.c_str(), month1.c_str(), year1.c_str());
 }
 
-Day::Day(const char* filepath) {
-	std::string dayDate="";
-	std::string monDate="";
-	time_t t = time(0);
-	struct tm *now = localtime(&t);
-	if (now->tm_mday < 10) {
-		 dayDate = "0" + numToString(now->tm_mday);
-	} else
-		 dayDate = numToString(now->tm_mday);
+Day::Day(const char *filepath) {
+    std::string dayDate = "";
+    std::string monDate = "";
+    time_t t = time(0);
+    struct tm *now = localtime(&t);
+    if (now->tm_mday < 10) {
+        dayDate = "0" + numToString(now->tm_mday);
+    } else
+        dayDate = numToString(now->tm_mday);
 
-	if (now->tm_mon + 1 < 10) {
-		monDate = "0" + numToString(1 + now->tm_mon);
-	} else
-		monDate = numToString(1 + now->tm_mon);
-	date = dayDate + "/" + monDate + "/" + numToString(now->tm_year + 1900);
+    if (now->tm_mon + 1 < 10) {
+        monDate = "0" + numToString(1 + now->tm_mon);
+    } else
+        monDate = numToString(1 + now->tm_mon);
+    date = dayDate + "/" + monDate + "/" + numToString(now->tm_year + 1900);
     this->date = date;
-    const char* day = date.substr(0,2).c_str();
-    const char* month = date.substr(3,2).c_str();
-    const char* year = date.substr(5,4).c_str();
+    const char *day = date.substr(0, 2).c_str();
+    const char *month = date.substr(3, 2).c_str();
+    const char *year = date.substr(5, 4).c_str();
     pullDay(this, filepath, day, month, year);
 }
 
-Event* Day::getEvent(int eventNumber) {
-    unsigned number = eventNumber -1;
+Event *Day::getEvent(int eventNumber) {
+    unsigned number = eventNumber - 1;
     return events[number];
 
 }
 
 std::string Day::toString() {
-	std::string result = "";
-	for(int i = 0; i < events.size(); i++){
+    std::string result = "";
+    for (int i = 0; i < events.size(); i++) {
         result += numToString(i);
-        result+= events[i]->toString();
+        result += events[i]->toString();
     }
-	return result;
+    return result;
 }
-void Day:: setEvent(int id, std::string title, std::string description, int startTime, int duration) {
+
+void
+Day::setEvent(std::string title, std::string description, int startTime, int duration) {
     Event *eventx = new Event(title, description, startTime, duration);
     events.push_back(eventx);
 
 }
-void Day::addEvent( std::string title, std::string description, int time, int duration) {
-	Event *eventx = new Event(filepath, date, title, description, time, duration);
-	events.push_back(eventx);
+
+void Day::addEvent(std::string title, std::string description, int time, int duration) {
+    Event *eventx = new Event(filepath, date, title, description, time, duration);
+    events.push_back(eventx);
 }
 
-Day::~Day(){
+Day::~Day() {
     int size = events.size();
-    for(int i=size; i> 0; i--){
+    for (int i = size; i > 0; i--) {
         free(events[i]);
     }
 }

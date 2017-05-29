@@ -2,7 +2,9 @@ package com.kwrp.planner_gui;
 
 import java.util.ArrayList;
 
-/** Defines an object day, with a date and events associated.
+/**
+ * Defines an object day, with a date and events associated.
+ *
  * @author KWRP
  */
 public class Day {
@@ -23,7 +25,8 @@ public class Day {
     public Day() {
     }
 
-    /** Constructor passing in a string containing a list
+    /**
+     * Constructor passing in a string containing a list
      * of events in String form
      *
      * @param data the list of events
@@ -36,23 +39,8 @@ public class Day {
         }
     }
 
-    /**Returns "hello"
-     *
-     * @return string "hello"
-     */
-    public static String hello() {
-        return "JAVA hello";
-    }
-
-    /**Sets the date
-     *
-     * @param date the date
-     */
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    /**Gets the date
+    /**
+     * Gets the date
      *
      * @return the date
      */
@@ -60,7 +48,17 @@ public class Day {
         return this.date;
     }
 
-    /** Gets the event
+    /**
+     * Sets the date
+     *
+     * @param date the date
+     */
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    /**
+     * Gets the event
      *
      * @param eventNumber the event number (index in list)
      * @return the event at that index
@@ -69,7 +67,8 @@ public class Day {
         return events.get(eventNumber);
     }
 
-    /**Gets the list of events
+    /**
+     * Gets the list of events
      *
      * @return the list of events
      */
@@ -77,7 +76,8 @@ public class Day {
         return events;
     }
 
-    /**Gets the number of events in the list
+    /**
+     * Gets the number of events in the list
      *
      * @return size of list
      */
@@ -85,7 +85,8 @@ public class Day {
         return events.size();
     }
 
-    /**Gets the string form of the object
+    /**
+     * Gets the string form of the object
      *
      * @return the string
      */

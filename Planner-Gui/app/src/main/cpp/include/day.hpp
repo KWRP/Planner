@@ -13,19 +13,27 @@ class Event;
 class Day {
 private:
     std::string date;
-    std::vector<Event*> events;
+    std::vector<Event *> events;
     const char *filepath;
 
 public:
     std::string getDate() { return date; }
-	int numOfEvents() { return events.size();}
-	Event *getEvent(int eventNumber);
-	void addEvent(std::string title, std::string description, int time, int duration);
-    void setEvent(int id, std::string title, std::string description, int time, int duration);
+
+    int numOfEvents() { return (int)events.size(); }
+
+    Event *getEvent(int eventNumber);
+
+    void addEvent(std::string title, std::string description, int time, int duration);
+
+    void setEvent(std::string title, std::string description, int time, int duration);
+
     std::string toString();
-	Day(std::string, const char*);
-	Day(const char*);
-	~Day();
+
+    Day(std::string, const char *);
+
+    Day(const char *);
+
+    ~Day();
 };
 
 #endif

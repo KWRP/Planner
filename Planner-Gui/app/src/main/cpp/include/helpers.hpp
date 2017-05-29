@@ -9,7 +9,7 @@
 #include <ctime>
 #include <jni.h>
 
-std::string numToString (long l);
+std::string numToString(long l);
 
 std::string getCurrentDate();
 

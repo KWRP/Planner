@@ -22,11 +22,10 @@
         android:id="@+id/gridview"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:numColumns="7"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="0dp"
-        android:gravity="center"
         android:background="#DADADA"
-        />
+        android:gravity="center"
+        android:horizontalSpacing="0dp"
+        android:numColumns="7"
+        android:verticalSpacing="1dp" />
 
 </android.support.constraint.ConstraintLayout>

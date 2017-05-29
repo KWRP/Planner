@@ -1,4 +1,5 @@
 package com.kwrp.planner_gui;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,8 +24,9 @@ import java.util.Collection;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 
-/** Defines the displaymonth activity where the user is shown
- *  every day in the month.
+/**
+ * Defines the displaymonth activity where the user is shown
+ * every day in the month.
  *
  * @author KWRP
  */
@@ -49,7 +51,7 @@ public class DisplayMonth extends AppCompatActivity {
      * Loads the native library "calender" on start up
      */
     static {
-        System.loadLibrary("calender");
+        System.loadLibrary("calendar");
     }
 
     /**
@@ -84,7 +86,8 @@ public class DisplayMonth extends AppCompatActivity {
      */
     private String filePath;
 
-    /** Called when the activity is first created. Sets up buttons, labels, and initialises variables.
+    /**
+     * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
      *
      * @param savedInstanceState defines the action such as screen rotation
      */
@@ -100,20 +103,20 @@ public class DisplayMonth extends AppCompatActivity {
         filePath = getFilesDir().getAbsolutePath() + "/events.xml";
 
         int index = 0;
-        for(int i =0;i<currentDate.length();i++){
-            if(currentDate.charAt(i) ==('/')){
-                if(index==0){
-                    index=i;
+        for (int i = 0; i < currentDate.length(); i++) {
+            if (currentDate.charAt(i) == ('/')) {
+                if (index == 0) {
+                    index = i;
                 } else {
-                    thisMonthIndex = (Integer.parseInt(currentDate.substring(index+1,i))-1);
-                    thisYear = (Integer.parseInt(currentDate.substring(i+1)));
+                    thisMonthIndex = (Integer.parseInt(currentDate.substring(index + 1, i)) - 1);
+                    thisYear = (Integer.parseInt(currentDate.substring(i + 1)));
                     break;
                 }
             }
         }
 
         this.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
-        toolbar.setTitle(monthList[thisMonthIndex +month_offset] + " - " + thisYear);
+        toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +164,6 @@ public class DisplayMonth extends AppCompatActivity {
                     if (background instanceof ColorDrawable) {
                         int color = ((ColorDrawable) background).getColor();
                         if (color == Color.LTGRAY) {
-                            view2.setBackgroundColor(Color.rgb(244, 244, 244));
 
                             Integer pos = new Integer(position);
 
@@ -169,7 +171,7 @@ public class DisplayMonth extends AppCompatActivity {
                             String day = view2.getText().toString();
                             dayList.remove(day);
                             daysSelected -= 1;
-                        } else if (color== Color.rgb(244, 244, 244)){
+                        } else if (color == Color.rgb(244, 244, 244)) {
                             view2.setBackgroundColor(Color.LTGRAY);
 
                             Integer pos = new Integer(position);
@@ -180,7 +182,7 @@ public class DisplayMonth extends AppCompatActivity {
                         }
                     }
                     FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
-                    if(daysSelected > 0 ) {
+                    if (daysSelected > 0) {
                         fabconfirm.setVisibility(View.VISIBLE);
                     } else {
                         fabconfirm.setVisibility(View.GONE);
@@ -198,7 +200,7 @@ public class DisplayMonth extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int arg2, long arg3) {
-                if(editAvailable) {
+                if (editAvailable) {
                     TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(arg2);
                     String dateSelected = view.getText().toString();
                     Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
@@ -215,23 +217,24 @@ public class DisplayMonth extends AppCompatActivity {
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
-                if(editAvailable) {
+                if (editAvailable) {
 
                     month_offset -= 1;
-                    if((thisMonthIndex + month_offset) < 0){
+                    if ((thisMonthIndex + month_offset) < 0) {
                         month_offset = 11 - thisMonthIndex;
-                        thisYear --;
+                        thisYear--;
                     }
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
                     toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
                     updateMonthView(month_offset);
                 }
             }
+
             public void onSwipeLeft() {
-                if(editAvailable) {
+                if (editAvailable) {
 
                     month_offset += 1;
-                    if((thisMonthIndex + month_offset) > 11){
+                    if ((thisMonthIndex + month_offset) > 11) {
                         month_offset = -thisMonthIndex;
                         thisYear++;
                     }
@@ -243,7 +246,8 @@ public class DisplayMonth extends AppCompatActivity {
         });
     }
 
-    /** Called when the options menu on the toolbar is created or updated.
+    /**
+     * Called when the options menu on the toolbar is created or updated.
      * Contains visibility toggling for menu items when going in and out
      * of edit mode.
      *
@@ -261,7 +265,7 @@ public class DisplayMonth extends AppCompatActivity {
         MenuItem item3 = menu.findItem(R.id.action_about);
         MenuItem item4 = menu.findItem(R.id.action_help);
 
-        if(!editAvailable){
+        if (!editAvailable) {
 
             item1.setVisible(false);
             item2.setVisible(false);
@@ -278,7 +282,8 @@ public class DisplayMonth extends AppCompatActivity {
         return true;
     }
 
-    /** Called when an item in the menu has been selected. Will find which action it is
+    /**
+     * Called when an item in the menu has been selected. Will find which action it is
      * and then spawn a dialog box (or change view) accordingly.
      *
      * @param item The menu item that was selected
@@ -321,13 +326,13 @@ public class DisplayMonth extends AppCompatActivity {
 
     /**
      * Toggles edit mode, each time this method is called, it will toggle between edit mode.
-     *  It essentially disables some listeners and actions to minimise action clashing and
-     *  notifies the user that they are able to add an event to a series of days.
+     * It essentially disables some listeners and actions to minimise action clashing and
+     * notifies the user that they are able to add an event to a series of days.
      */
-    private void startEditState(){
+    private void startEditState() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         FloatingActionButton fab_close = (FloatingActionButton) findViewById(R.id.fab_close);
-        if(editAvailable){
+        if (editAvailable) {
 
             fab_close.setVisibility(View.VISIBLE);
             fab.setVisibility(View.GONE);
@@ -351,7 +356,7 @@ public class DisplayMonth extends AppCompatActivity {
             FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
             fabconfirm.setVisibility(View.GONE);
 
-            for(int pos : positionList){
+            for (int pos : positionList) {
                 TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(pos);
                 view2.setBackgroundColor(Color.rgb(244, 244, 244));
             }
@@ -361,7 +366,8 @@ public class DisplayMonth extends AppCompatActivity {
         }
     }
 
-    /** Updates the month view when the user swipes left or swipes right by
+    /**
+     * Updates the month view when the user swipes left or swipes right by
      * updating the gridview adapter.
      *
      * @param month the month offset from the initial month.
@@ -378,15 +384,16 @@ public class DisplayMonth extends AppCompatActivity {
                 this, Integer.parseInt(systemDate[1]) - 1 + month, thisYear, metrics));
     }
 
-    /** When the user confirms their selection of dates in edit mode
-     *  it creates a dialog asking for event details.
+    /**
+     * When the user confirms their selection of dates in edit mode
+     * it creates a dialog asking for event details.
      */
-    public void createEventSetDialog(){
+    public void createEventSetDialog() {
         DialogAction a = new DialogAction();
-        String eventMonth =  ""+(thisMonthIndex+month_offset+1);
-        String eventYear = ""+thisYear;
+        String eventMonth = "" + (thisMonthIndex + month_offset + 1);
+        String eventYear = "" + thisYear;
 
-        AlertDialog dialog = a.createEventSetDialog(this, dayList, eventMonth, eventYear, filePath );
+        AlertDialog dialog = a.createEventSetDialog(this, dayList, eventMonth, eventYear, filePath);
         dialog.show();
         startEditState();
     }

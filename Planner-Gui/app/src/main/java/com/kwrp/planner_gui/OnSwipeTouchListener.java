@@ -1,17 +1,19 @@
 package com.kwrp.planner_gui;
 
 
-
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-/** Defines what touch action consitutes as a swipe, and performs the appropriate
+
+/**
+ * Defines what touch action consitutes as a swipe, and performs the appropriate
  * action in response when bound to something.
+ *
  * @author https://stackoverflow.com/users/177776/mirek-rusin
- * https://stackoverflow.com/questions/4139288/android-how-to-handle-right-to-left-swipe-gestures
+ *         https://stackoverflow.com/questions/4139288/android-how-to-handle-right-to-left-swipe-gestures
  */
 public class OnSwipeTouchListener implements OnTouchListener {
 
@@ -20,23 +22,39 @@ public class OnSwipeTouchListener implements OnTouchListener {
      */
     private final GestureDetector gestureDetector;
 
-    /** Action to undertake when the action happens
+    /**
+     * Action to undertake when the action happens
      *
      * @param ctx the context the event is read from
      */
-    public OnSwipeTouchListener (Context ctx){
+    public OnSwipeTouchListener(Context ctx) {
         gestureDetector = new GestureDetector(ctx, new GestureListener());
     }
 
-    /** When the view receives a touch event
+    /**
+     * When the view receives a touch event
      *
-     * @param v the view where the touch event took place
+     * @param v     the view where the touch event took place
      * @param event motion event details
      * @return gestureDetector
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
+    }
+
+    public void onSwipeRight() {
+    }
+
+    public void onSwipeLeft() {
+    }
+
+    public void OnTouch() {
+
+    }
+
+    public void onHold() {
+
     }
 
     /**
@@ -55,11 +73,12 @@ public class OnSwipeTouchListener implements OnTouchListener {
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
 
-        /** Defines whether or not the motion can be considered a swipe and
+        /**
+         * Defines whether or not the motion can be considered a swipe and
          * calls the appropriate action if it is.
          *
-         * @param e1 first motion event to take place
-         * @param e2 second motion event to take place
+         * @param e1        first motion event to take place
+         * @param e2        second motion event to take place
          * @param velocityX velocity of the movement on the X-axis
          * @param velocityY velocity of the movement on the Y-axis
          * @return true
@@ -85,19 +104,5 @@ public class OnSwipeTouchListener implements OnTouchListener {
             }
             return result;
         }
-    }
-
-    public void onSwipeRight() {
-    }
-
-    public void onSwipeLeft() {
-    }
-
-    public void OnTouch(){
-
-    }
-
-    public void onHold(){
-
     }
 }

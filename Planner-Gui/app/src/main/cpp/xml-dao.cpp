@@ -253,6 +253,7 @@ bool addEvent(const char *filePath, const char *day, const char *month, const ch
     XMLCheckResult(eResult);
     return false;
 }
+
 bool removeEvent(const char *filePath, const char *day, const char *month, const char *year,
                  const char *eid) {
 
@@ -363,7 +364,7 @@ pullDay(Day *dayObj, const char *filepath, const char *day, const char *month, c
         const char *startTime = elementEventCurr->FirstChildElement("startTime")->GetText();
         const char *duration = elementEventCurr->FirstChildElement("duration")->GetText();
 
-        dayObj->setEvent(eventCurr, title, description, atoi(startTime), atoi(duration));
+        dayObj->setEvent(title, description, atoi(startTime), atoi(duration));
         elementEventCurr = elementEventCurr->NextSiblingElement("event");
 
         if (elementEventCurr == nullptr) {

@@ -16,8 +16,9 @@ import java.util.List;
 
 /**
  * MonthAdapter handles all of the data surrounding date generation
- *  for a particular month, and ensuring it is correctly displayed.
- *  As well as ensuring each day is classified into a day of the week.
+ * for a particular month, and ensuring it is correctly displayed.
+ * As well as ensuring each day is classified into a day of the week.
+ *
  * @author https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java
  */
 public class MonthAdapter extends BaseAdapter {
@@ -74,11 +75,12 @@ public class MonthAdapter extends BaseAdapter {
      */
     private int mTitleHeight, mDayHeight;
 
-    /** Called on swipe, when the adapter needs to be updated for a new month
+    /**
+     * Called on swipe, when the adapter needs to be updated for a new month
      *
-     * @param c the context where the months are shown
-     * @param month the month to generate for
-     * @param year the year to generate for
+     * @param c       the context where the months are shown
+     * @param month   the month to generate for
+     * @param year    the year to generate for
      * @param metrics the dimensions
      */
     public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics) {
@@ -92,11 +94,12 @@ public class MonthAdapter extends BaseAdapter {
     }
 
     /**
-     * @param date - null if day title (0 - dd / 1 - mm / 2 - yy)
+     * @param date     - null if day title (0 - dd / 1 - mm / 2 - yy)
      * @param position - position in item list
-     * @param item - view for date
+     * @param item     - view for date
      */
-    protected void onDate(int[] date, int position, View item) {}
+    protected void onDate(int[] date, int position, View item) {
+    }
 
     /**
      * Populates the month with appropriate number of days
@@ -139,7 +142,8 @@ public class MonthAdapter extends BaseAdapter {
                 - (rows * 8) - getBarHeight()) / (rows - 1);
     }
 
-    /** Finds the number of days in the month
+    /**
+     * Finds the number of days in the month
      *
      * @param month the month to find the number of days in
      * @return the number of days in that month
@@ -151,7 +155,8 @@ public class MonthAdapter extends BaseAdapter {
         return daysInMonth;
     }
 
-    /** Gets the bar height
+    /**
+     * Gets the bar height
      *
      * @return bar height
      */
@@ -168,7 +173,8 @@ public class MonthAdapter extends BaseAdapter {
         }
     }
 
-    /** Gets a day
+    /**
+     * Gets a day
      *
      * @param day the day
      * @return int 0-6) where 0 = MONDAY, and 6 = SUNDAY
@@ -194,11 +200,12 @@ public class MonthAdapter extends BaseAdapter {
         }
     }
 
-    /** Determines if the given date is the current date
+    /**
+     * Determines if the given date is the current date
      *
-     * @param day given day
+     * @param day   given day
      * @param month given month
-     * @param year given year
+     * @param year  given year
      * @return true is they are the same
      */
     private boolean isToday(int day, int month, int year) {
@@ -207,7 +214,8 @@ public class MonthAdapter extends BaseAdapter {
                 && mCalendarToday.get(Calendar.DAY_OF_MONTH) == day;
     }
 
-    /** Get's the date at position n
+    /**
+     * Get's the date at position n
      *
      * @param position in the grid
      * @return the date
@@ -226,7 +234,7 @@ public class MonthAdapter extends BaseAdapter {
                 date[1] = mMonth - 1;
                 date[2] = mYear;
             }
-        } else if (position <= mDaysShown - mDaysNextMonth  ) {
+        } else if (position <= mDaysShown - mDaysNextMonth) {
             // current month
             date[0] = position - (mDaysLastMonth + 6);
             date[1] = mMonth;
@@ -245,11 +253,12 @@ public class MonthAdapter extends BaseAdapter {
         return date;
     }
 
-    /** Retrieves the view
+    /**
+     * Retrieves the view
      *
-     * @param position the position
+     * @param position    the position
      * @param convertView the view to convert
-     * @param parent where the views are being spawned
+     * @param parent      where the views are being spawned
      * @return the new view
      */
     @Override
@@ -261,14 +270,14 @@ public class MonthAdapter extends BaseAdapter {
 
         int[] date = getDate(position);
         if (date != null) {
-            view.setHeight(mDayHeight-50);
+            view.setHeight(mDayHeight - 50);
             if (date[1] != mMonth) {
                 // previous or next month
                 view.setBackgroundColor(Color.rgb(234, 234, 250));
             } else {
                 // current month
                 view.setBackgroundColor(Color.rgb(244, 244, 244));
-                if (isToday(date[0], date[1], date[2] )) {
+                if (isToday(date[0], date[1], date[2])) {
                     view.setTextColor(Color.BLACK);
                     view.setBackgroundColor(Color.rgb(192, 242, 192));
 
@@ -276,14 +285,15 @@ public class MonthAdapter extends BaseAdapter {
             }
         } else {
             view.setBackgroundColor(Color.argb(100, 10, 80, 255));
-            view.setHeight(mTitleHeight+100);
+            view.setHeight(mTitleHeight + 100);
         }
 
         onDate(date, position, view);
         return view;
     }
 
-    /** Gets the number of days in the month
+    /**
+     * Gets the number of days in the month
      *
      * @return the number of days
      */
@@ -292,7 +302,8 @@ public class MonthAdapter extends BaseAdapter {
         return mItems.size();
     }
 
-    /** Gets an item at position
+    /**
+     * Gets an item at position
      *
      * @param position the position
      * @return an item
@@ -302,7 +313,8 @@ public class MonthAdapter extends BaseAdapter {
         return mItems.get(position);
     }
 
-    /** Gets the id of an item at position
+    /**
+     * Gets the id of an item at position
      *
      * @param position the position
      * @return the id

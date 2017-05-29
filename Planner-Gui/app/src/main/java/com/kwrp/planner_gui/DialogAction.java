@@ -21,18 +21,19 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/** Defines a series of actions for specific actions such as "sync" button select.
- *  Returns dialog boxes for specific actions and in some cases sends data to back-end.
+/**
+ * Defines a series of actions for specific actions such as "sync" button select.
+ * Returns dialog boxes for specific actions and in some cases sends data to back-end.
  *
  * @author KWRP
  */
-public class DialogAction extends AppCompatActivity{
+public class DialogAction extends AppCompatActivity {
 
     /**
      * Loads the native library "calender" on start up
      */
     static {
-        System.loadLibrary("calender");
+        System.loadLibrary("calendar");
     }
 
 
@@ -44,9 +45,11 @@ public class DialogAction extends AppCompatActivity{
     /**
      * Default constructor
      */
-    public DialogAction(){}
+    public DialogAction() {
+    }
 
-    /**Creates the "About" Dialog box which occurs when the user selects "About" in the options menu
+    /**
+     * Creates the "About" Dialog box which occurs when the user selects "About" in the options menu
      *
      * @param parent The Intent the dialog box is spawned onto
      * @return the dialog box object, to "shown".
@@ -67,7 +70,8 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
-    /**Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
+    /**
+     * Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
      *
      * @param parent The Intent the dialog box is spawned onto
      * @return the dialog box object, to "shown".
@@ -124,7 +128,7 @@ public class DialogAction extends AppCompatActivity{
             }
 
         });
-        spinner.setPadding(100,20,100,20);
+        spinner.setPadding(100, 20, 100, 20);
 
         spinner.setDropDownHorizontalOffset(90);
         spinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -203,7 +207,6 @@ public class DialogAction extends AppCompatActivity{
         dialogLayout.addView(button, 5);
 
 
-
         TextView facebookTitle = new TextView(parent);
         facebookTitle.setText("Facebook Events:");
         facebookTitle.setPadding(10, 10, 10, 10);
@@ -220,7 +223,7 @@ public class DialogAction extends AppCompatActivity{
         dialogLayout.addView(facebookTitle, 6);
         dialogLayout.addView(button, 7);
 
-        dialogLayout.setPadding(70,10,70,10);
+        dialogLayout.setPadding(70, 10, 70, 10);
         builder.setView(dialogLayout);
 
         builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
@@ -232,7 +235,8 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
-    /**Creates the "Help" Dialog which occurs when the user selects "Help" in the options menu
+    /**
+     * Creates the "Help" Dialog which occurs when the user selects "Help" in the options menu
      *
      * @param parent The Intent the dialog box is spawned onto
      * @return the dialog box object, to "shown".
@@ -254,14 +258,15 @@ public class DialogAction extends AppCompatActivity{
         return dialog;
     }
 
-    /**Creates the dialog box for creating an event when there are a series of dates the event will take place on.
+    /**
+     * Creates the dialog box for creating an event when there are a series of dates the event will take place on.
+     * <p>
+     * Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
      *
-     Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
-     *
-     * @param parent The Intent the dialog box is spawned onto
-     * @param dayList A collection containing the days that the event occurs on
-     * @param month The month in which this event takes place
-     * @param year The year in which this event takes place
+     * @param parent   The Intent the dialog box is spawned onto
+     * @param dayList  A collection containing the days that the event occurs on
+     * @param month    The month in which this event takes place
+     * @param year     The year in which this event takes place
      * @param filePath The filepath for the XML file storing all the events
      * @return the dialog box object, to "shown".
      */
@@ -308,9 +313,9 @@ public class DialogAction extends AppCompatActivity{
         builder.setView(dialogLayout);
 
         final ArrayList<String> dateList = new ArrayList<>();
-        for(String day : dayList) {
+        for (String day : dayList) {
 
-            dateList.add(day + "/"+month+"/"+year);
+            dateList.add(day + "/" + month + "/" + year);
         }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -343,24 +348,26 @@ public class DialogAction extends AppCompatActivity{
     }
 
 
-    /**Sends JNI the event details and a date, so that the back-end can create the event and store it
+    /**
+     * Sends JNI the event details and a date, so that the back-end can create the event and store it
      *
-     * @param title The event title
+     * @param title       The event title
      * @param description The event description
-     * @param start The time the event starts
-     * @param duration How long (in hours) the event will go for
-     * @param dates A collection containing the dates (DD/MM/YYYY) the event occurs on
+     * @param start       The time the event starts
+     * @param duration    How long (in hours) the event will go for
+     * @param dates       A collection containing the dates (DD/MM/YYYY) the event occurs on
      */
     private void createNewEvent(String title, String description, String start, String duration, ArrayList<String> dates) {
         String s;
-        for(String selectedDate : dates) {
+        for (String selectedDate : dates) {
             s = modifyDate(selectedDate);
             String createEvent = jniCreateEvent(title, description, start, duration, filePath, s);
             Log.d("CreateEvent: %s %s %s", createEvent);
         }
     }
 
-    /** Helper function that makes sure the format of the date strings
+    /**
+     * Helper function that makes sure the format of the date strings
      * is valid DD/MM/YYYY format so as to ensure consistency. Will correct errors
      * such as D/M/YYYY or DD/M/YYYY.
      *
@@ -372,7 +379,7 @@ public class DialogAction extends AppCompatActivity{
         String[] splitDate = date.split("/");
 
         //prefixing zero fix (day)
-        if(splitDate[0].length() == 1){
+        if (splitDate[0].length() == 1) {
             splitDate[0] = "0" + splitDate[0];
         }
 
@@ -384,14 +391,15 @@ public class DialogAction extends AppCompatActivity{
         return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
     }
 
-    /** A JNI function that pushes event details through to the back-end to create
-     *  and store events. This is defined outside this class.
+    /**
+     * A JNI function that pushes event details through to the back-end to create
+     * and store events. This is defined outside this class.
      *
-     * @param title The event title
-     * @param description The event description
-     * @param start The time the event starts
-     * @param duration How long (in hours) the event will go for
-     * @param dir The file path to a .xml file where the events are stored
+     * @param title        The event title
+     * @param description  The event description
+     * @param start        The time the event starts
+     * @param duration     How long (in hours) the event will go for
+     * @param dir          The file path to a .xml file where the events are stored
      * @param selectedDate A collection containing the dates (DD/MM/YYYY) the event occurs on
      * @return
      */

@@ -24,20 +24,22 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
-/** Defines the display day activity where the user is shown
- *  the events for a single day, and what the ability to add
- *   an event for a specific day.
+/**
+ * Defines the display day activity where the user is shown
+ * the events for a single day, and what the ability to add
+ * an event for a specific day.
  *
  * @author KWRP
  */
 public class DisplayDay extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
+
     /**
      * Loads the native library "calender" on start up
      */
     static {
-        System.loadLibrary("calender");
+        System.loadLibrary("calendar");
     }
 
     /**
@@ -86,7 +88,7 @@ public class DisplayDay extends AppCompatActivity {
     private String selectedDate;
 
     /**
-     *  Text from the month box
+     * Text from the month box
      */
     private String selectDay;
 
@@ -101,7 +103,8 @@ public class DisplayDay extends AppCompatActivity {
     private String eventId = "";
 
 
-    /** Called when the activity is first created. Sets up buttons, labels, and initialises variables.
+    /**
+     * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
      *
      * @param savedInstanceState defines the action such as screen rotation
      */
@@ -170,12 +173,13 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
-    /** Creates a new event accordingly
+    /**
+     * Creates a new event accordingly
      *
-     * @param title title of the new event
+     * @param title       title of the new event
      * @param description description of then new event
-     * @param start start time of the new event
-     * @param duration duration of the new event
+     * @param start       start time of the new event
+     * @param duration    duration of the new event
      */
     private void createNewEvent(String title, String description, String start, String duration) {
 
@@ -190,7 +194,8 @@ public class DisplayDay extends AppCompatActivity {
         listAdapter.notifyDataSetChanged();
     }
 
-    /** Modifies the date to fit format DD/MM/YYYY
+    /**
+     * Modifies the date to fit format DD/MM/YYYY
      *
      * @param context the intent
      * @return a string in format DD/MM/YYYY
@@ -220,7 +225,7 @@ public class DisplayDay extends AppCompatActivity {
 
     /**
      * Checks if the XML file where events are stored exists
-     *  and create a file if not.
+     * and create a file if not.
      */
     private void checkXmlExists() {
         File dir = getFilesDir();
@@ -233,7 +238,8 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
-    /** Called when the options menu on the toolbar is created or updated.
+    /**
+     * Called when the options menu on the toolbar is created or updated.
      *
      * @param menu The menu on the toolbar
      * @return true boolean type
@@ -245,7 +251,8 @@ public class DisplayDay extends AppCompatActivity {
         return true;
     }
 
-    /** Called when an item in the menu has been selected. Will find which action it is
+    /**
+     * Called when an item in the menu has been selected. Will find which action it is
      * and then spawn a dialog box (or change view) accordingly.
      *
      * @param item The menu item that was selected
@@ -286,7 +293,8 @@ public class DisplayDay extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Creates the CREATE EVENT dialog box that pops up when the user wants to
+    /**
+     * Creates the CREATE EVENT dialog box that pops up when the user wants to
      * add an event.
      *
      * @return the dialog.
@@ -361,7 +369,8 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
-    /** Creates the DELETE EVENT dialog box that pops up when the user wants to
+    /**
+     * Creates the DELETE EVENT dialog box that pops up when the user wants to
      * add an event. (It gives you the choice of deletion)
      *
      * @return the dialog.
@@ -399,41 +408,45 @@ public class DisplayDay extends AppCompatActivity {
      */
     public native String jniGetCurrentDate();
 
-    /** Gets the events on a given day
+    /**
+     * Gets the events on a given day
      *
-     * @param filePath path/to/file
+     * @param filePath    path/to/file
      * @param currentDate the day to search
      * @return the events
      */
     public native String jniGetDay(String filePath, String currentDate);
 
-    /** Creates an xml file for the device if it doesn't exist
+    /**
+     * Creates an xml file for the device if it doesn't exist
      *
      * @param filePath the path/to/file
      * @return the path/to/file
      */
     public native String jniCreateXml(String filePath);
 
-    /** A JNI function that pushes event details through to the back-end to create
-     *  and store events. This is defined outside this class.
+    /**
+     * A JNI function that pushes event details through to the back-end to create
+     * and store events. This is defined outside this class.
      *
-     * @param title The event title
-     * @param description The event description
-     * @param start The time the event starts
-     * @param duration How long (in hours) the event will go for
-     * @param dir The file path to a .xml file where the events are stored
+     * @param title        The event title
+     * @param description  The event description
+     * @param start        The time the event starts
+     * @param duration     How long (in hours) the event will go for
+     * @param dir          The file path to a .xml file where the events are stored
      * @param selectedDate A collection containing the dates (DD/MM/YYYY) the event occurs on
      * @return string confirming action
      */
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 
-    /** A JNI function that removes an event from the .xml file rendering it
+    /**
+     * A JNI function that removes an event from the .xml file rendering it
      * non-existent.
      *
-     * @param filePath path/to/file
+     * @param filePath     path/to/file
      * @param selectedDate the date to remove the event from
-     * @param eventId the event id number
+     * @param eventId      the event id number
      * @return string confirming action
      */
     public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);

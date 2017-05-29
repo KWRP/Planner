@@ -1,7 +1,8 @@
 package com.kwrp.planner_gui;
 
-/** A class defining an event object containg all the appropriate
- *  details (e.g. title, description)
+/**
+ * A class defining an event object containg all the appropriate
+ * details (e.g. title, description)
  *
  * @author KWRP
  */
@@ -39,6 +40,7 @@ public class Event {
 
     /**
      * Constructor given an event formatted in a standard string form
+     *
      * @param event the string event
      */
     public Event(String event) {
@@ -51,7 +53,8 @@ public class Event {
         this.duration = eventItems[4];
     }
 
-    /**Gets the eventId
+    /**
+     * Gets the eventId
      *
      * @return the eventId
      */
@@ -59,7 +62,8 @@ public class Event {
         return eventId;
     }
 
-    /**Sets eventId
+    /**
+     * Sets eventId
      *
      * @param eventId the eventId
      */
@@ -67,7 +71,8 @@ public class Event {
         this.eventId = eventId;
     }
 
-    /** Get the event title
+    /**
+     * Get the event title
      *
      * @return the event title
      */
@@ -75,7 +80,8 @@ public class Event {
         return title;
     }
 
-    /** Set the event title
+    /**
+     * Set the event title
      *
      * @return the event title
      */
@@ -83,7 +89,8 @@ public class Event {
         this.title = title;
     }
 
-    /** Get the event description
+    /**
+     * Get the event description
      *
      * @return the event description
      */
@@ -91,7 +98,8 @@ public class Event {
         return description;
     }
 
-    /** Set the event description
+    /**
+     * Set the event description
      *
      * @return the event description
      */
@@ -99,7 +107,8 @@ public class Event {
         this.description = description;
     }
 
-    /** Get the event start time
+    /**
+     * Get the event start time
      *
      * @return the event start time
      */
@@ -107,7 +116,8 @@ public class Event {
         return startTime;
     }
 
-    /** Set the event start time
+    /**
+     * Set the event start time
      *
      * @return the event start time
      */
@@ -115,7 +125,8 @@ public class Event {
         this.startTime = startTime;
     }
 
-    /** Get the event duration
+    /**
+     * Get the event duration
      *
      * @return the event duration
      */
@@ -123,7 +134,8 @@ public class Event {
         return duration;
     }
 
-    /** Set the event duration
+    /**
+     * Set the event duration
      *
      * @return the event duration
      */
@@ -131,13 +143,14 @@ public class Event {
         this.duration = duration;
     }
 
-    /** Converts object to string
+    /**
+     * Converts object to string
      *
      * @return the string version of the object displaying all fields
      */
     @Override
     public String toString() {
-        return "Event " +eventId+ " :\n" +
+        return "Event " + eventId + " :\n" +
                 "\t\tTitle : " + title +
                 ", \n\t\tDescription : " + description +
                 ", \n\t\tStartTime : " + startTime + " oclock" +

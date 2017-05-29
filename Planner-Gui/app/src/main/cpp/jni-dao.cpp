@@ -69,11 +69,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
         bool createEvent = addEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
                                     nativeTitle, nativeDescription, nativeStart, nativeDuration);
         bool check;
-        if (createEvent) {
-            check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
-        } else {
-            check = false;
-        }
+        check = createEvent && checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -184,11 +180,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent
                                     nativeTitle, nativeDescription, nativeStart, nativeDuration);
 
         bool check;
-        if (createEvent) {
-            check = checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
-        } else {
-            check = false;
-        }
+        check = createEvent && checkDate(nativePath, day.c_str(), month.c_str(), year.c_str());
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
