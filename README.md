@@ -34,23 +34,24 @@ Setting up Android Studio
 2. Install android studio and start the application.
 3. On the startup menu, click on Configure and then select SDK Manager.
 
-If you are plan to run the application on you own android device, then select its Androud version, otherwise just select the most recent API Level.
+If you are plan to run the application on you own android device, then select its 
+Androud version, otherwise just select the most recent API Level.
 
-- Click on the tab that says SDK Tools and make sure the following are ticked:
-		Android SDK Build-Tools
-		CMake
-	-LLDB
-	-Android Emulator
-	-Android SDK Platform-Tools
-	-Androud SDK Tools
-	-Documentation for Android SDK
-	-Intel x86 Emulator Accelerator (HAXM installer)
-	-NDK
-- Under Support Repository:
-	-ConstraintLayout for Android
-	-Solver for ConstraintLayout
-	-Android Support Repository
-	-Google Repository
+- Click on the tab that says SDK Tools and make sure the following are ticked:<br />
+		-Android SDK Build-Tools <br />
+		-CMake<br />
+		-LLDB<br />
+		-Android Emulator<br />
+		-Android SDK Platform-Tools<br />
+		-Androud SDK Tools<br />
+		-Documentation for Android SDK<br />
+		-Intel x86 Emulator Accelerator (HAXM installer)<br />
+		-NDK<br />
+		-Under Support Repository:<br />
+			-ConstraintLayout for Android<br />
+			-Solver for ConstraintLayout<br />
+			-Android Support Repository<br />
+			-Google Repository<br />
 
 - After you have selected them all, click Apply and Accept the Terms and Conditions.
 
@@ -73,7 +74,7 @@ If you are plan to run the application on you own android device, then select it
 
 ### External library dependancies:
 
-tinyxml2: https://github.com/leethomason/tinyxml2
-Display month: https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java;
+tinyxml2: https://github.com/leethomason/tinyxml2 <br />
+Display month: https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java; <br />
 
 
