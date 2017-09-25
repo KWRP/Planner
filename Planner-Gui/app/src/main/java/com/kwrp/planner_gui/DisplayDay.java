@@ -151,7 +151,7 @@ public class DisplayDay extends AppCompatActivity {
             }
         });
 
-        checkXmlExists();
+        checkDbExists();
         getEvents();
     }
 
@@ -184,7 +184,9 @@ public class DisplayDay extends AppCompatActivity {
      */
     private void createNewEvent(String title, String description, String start, String duration) {
 
-        String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
+        //String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
+        String newEvent = jniCreateDbEvent(title, description, start, duration, filePath, selectedDate,
+                "5", "1101010", "25/10/2018");
         eventId = "";
         newEventTitle = "";
         newEventDescription = "";
@@ -228,14 +230,14 @@ public class DisplayDay extends AppCompatActivity {
      * Checks if the XML file where events are stored exists
      * and create a file if not.
      */
-    private void checkXmlExists() {
+    private void checkDbExists() {
         File dir = getFilesDir();
-        File file = new File(dir, "events.xml");
+        File file = new File(dir, "events.db");
         //file.delete();
 
         if (!file.exists()) {
-            filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-            String newFile = jniCreateXml(filePath);
+            filePath = getFilesDir().getAbsolutePath() + "events.db";
+            String newFile = jniCreateDb(filePath);
         }
     }
 
@@ -441,6 +443,7 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 
+
     /**
      * A JNI function that removes an event from the .xml file rendering it
      * non-existent.
@@ -452,5 +455,10 @@ public class DisplayDay extends AppCompatActivity {
      */
     public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);
 
+    public native String jniCreateDb(String filePath);
+
+    public native String jniCreateDbEvent(String title, String description, String start,
+                                          String duration, String dir, String selectedDate,
+                                          String repeat, String numOfRepeats, String endDate);
 }
 

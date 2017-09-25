@@ -19,7 +19,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 include_directories(src/main/cpp/include)
 
-file(GLOB SOURCES "src/main/cpp/*.cpp")
+file(GLOB SOURCES  "src/main/cpp/*.c" "src/main/cpp/*.cpp"  )
 
 add_library(calendar SHARED ${SOURCES})
 
