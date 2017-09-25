@@ -25,15 +25,15 @@ bool createTableQuery(const char *filepath);
 
 bool createDb(const char *stmt, const char *filepath);
 
-bool insertToDb(const char *date, const char *title, const char *description, const char *start,
-                const char *duration,
-                int repeatCycle, const char *endDate, bool repeats[7], const char *filepath);
+bool insertToDb(const char *day, const char *month, const char *year, const char *title,
+                const char *description, const char *start, const char *duration,
+                int repeatCycle, const char *endDay, const char *endMonth, const char *endYear,
+                bool repeats[7], const char *filepath);
 
-bool updateToDb(const char *date, const char *title, const char *description, const char *start,
-                const char *duration,
-                int repeatCycle, const char *endDate, const char *finish, bool repeats[7],
-                int eventID,
-                const char *filepath);
+bool updateToDb(const char *day, const char *month, const char *year, const char *title,
+                const char *description, const char *start, const char *duration, int repeatCycle,
+                const char *endDay, const char *endMonth, const char *endYear,
+                bool repeats[7],int eventID, const char *filepath);
 
 bool deleteFromDb(int eventID, const char *filepath);
 

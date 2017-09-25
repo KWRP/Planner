@@ -32,7 +32,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
-        jstring duration, jstring filepath, jstring date, jstring repeat, jstring numOfRepeats,
+        jstring duration, jstring filepath, jstring date, jstring repeatDays, jstring repeatWeeks,
         jstring endDate) {
 
     string confirm = "";
@@ -46,21 +46,40 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
         const char *nativepath = env->GetStringUTFChars(filepath, 0);
         const char *nativeDate = env->GetStringUTFChars(date, 0);
         const char *nativeEndDate = env->GetStringUTFChars(endDate, 0);
-        const char *nativeRepeat = env->GetStringUTFChars(repeat, 0);
-        const char *nativeNumRepeats = env->GetStringUTFChars(numOfRepeats, 0);
+        const char *nativeRepeatDay = env->GetStringUTFChars(repeatDays, 0);
+        const char *nativeRepeatWeeks = env->GetStringUTFChars(repeatWeeks, 0);
 
-        bool rep[7] = {0, 1, 1, 1, 0, 0, 0};
+        bool rep[7];
+        for(int j = 0; j<7;j++){
+            char temp = nativeRepeatDay[j];
+            if(temp == 'T')rep[j] = true;
+            if(temp == 'F')rep[j] = false;
+        }
 
-        int a = atoi(nativeRepeat);
-        //bool addEventToSql = insertToDb(nativeDate,nativeTitle, nativeDescription, nativeStart,
-        //                               nativeDuration,a,nativeEndDate,rep, nativepath);
+        string selectedDate = nativeDate;
+        string delimiter = "/";
+        string day = selectedDate.substr(0, selectedDate.find(delimiter));
+        string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        string month = rest.substr(0, selectedDate.find(delimiter));
+        string year = rest.substr(selectedDate.find(delimiter) + 1);
+
+        string selectedEndDate = nativeEndDate;
+        string endDay = selectedDate.substr(0, selectedDate.find(delimiter));
+        string endRest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        string endMonth = rest.substr(0, selectedDate.find(delimiter));
+        string endYear = rest.substr(selectedDate.find(delimiter) + 1);
+
+        int a = atoi(nativeRepeatWeeks);
+        bool addEventToSql = insertToDb(day.c_str(),month.c_str(),year.c_str(),nativeTitle, nativeDescription, nativeStart,
+                                       nativeDuration,a,endDay.c_str(),endMonth.c_str(),endYear.c_str(),rep, nativepath);
+
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
         (env)->ReleaseStringUTFChars(start, nativeStart);
         (env)->ReleaseStringUTFChars(duration, nativeDuration);
         (env)->ReleaseStringUTFChars(filepath, nativepath);
-        (env)->ReleaseStringUTFChars(repeat, nativeRepeat);
-        (env)->ReleaseStringUTFChars(numOfRepeats, nativeNumRepeats);
+        (env)->ReleaseStringUTFChars(repeatDays, nativeRepeatDay);
+        (env)->ReleaseStringUTFChars(repeatWeeks, nativeRepeatWeeks);
         (env)->ReleaseStringUTFChars(endDate, nativeEndDate);
 
         if (false) {
