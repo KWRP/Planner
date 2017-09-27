@@ -32,29 +32,19 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
-        jstring duration, jstring filepath, jstring date, jstring repeatDays, jstring repeatWeeks,
-        jstring endDate) {
+        jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
 
     string confirm = "";
-
     try {
 
         const char *nativeTitle = env->GetStringUTFChars(title, 0);
         const char *nativeDescription = env->GetStringUTFChars(description, 0);
         const char *nativeStart = env->GetStringUTFChars(start, 0);
-        const char *nativeDuration = env->GetStringUTFChars(duration, 0);
+        const char *nativeFinish = env->GetStringUTFChars(finish, 0);
         const char *nativepath = env->GetStringUTFChars(filepath, 0);
-        const char *nativeDate = env->GetStringUTFChars(date, 0);
+        const char *nativeDate = env->GetStringUTFChars(startDate, 0);
         const char *nativeEndDate = env->GetStringUTFChars(endDate, 0);
-        const char *nativeRepeatDay = env->GetStringUTFChars(repeatDays, 0);
-        const char *nativeRepeatWeeks = env->GetStringUTFChars(repeatWeeks, 0);
-
-        bool rep[7];
-        for(int j = 0; j<7;j++){
-            char temp = nativeRepeatDay[j];
-            if(temp == 'T')rep[j] = true;
-            if(temp == 'F')rep[j] = false;
-        }
+        const char *nativeRepeat = env->GetStringUTFChars(repeat, 0);
 
         string selectedDate = nativeDate;
         string delimiter = "/";
@@ -69,20 +59,22 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
         string endMonth = rest.substr(0, selectedDate.find(delimiter));
         string endYear = rest.substr(selectedDate.find(delimiter) + 1);
 
-        int a = atoi(nativeRepeatWeeks);
-        bool addEventToSql = insertToDb(day.c_str(),month.c_str(),year.c_str(),nativeTitle, nativeDescription, nativeStart,
-                                       nativeDuration,a,endDay.c_str(),endMonth.c_str(),endYear.c_str(),rep, nativepath);
-
+        bool addEventToSql = insertToDb(day.c_str(),month.c_str(),year.c_str(),
+                                        nativeTitle, nativeDescription, nativeStart, nativeFinish,
+                                        endDay.c_str(),endMonth.c_str(),endYear.c_str(),
+                                        atoi(nativeRepeat), nativepath);
+        displayDb(nativepath);
+        
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
         (env)->ReleaseStringUTFChars(start, nativeStart);
-        (env)->ReleaseStringUTFChars(duration, nativeDuration);
+        (env)->ReleaseStringUTFChars(finish, nativeFinish);
         (env)->ReleaseStringUTFChars(filepath, nativepath);
-        (env)->ReleaseStringUTFChars(repeatDays, nativeRepeatDay);
-        (env)->ReleaseStringUTFChars(repeatWeeks, nativeRepeatWeeks);
+        (env)->ReleaseStringUTFChars(repeat, nativeRepeat);
+        (env)->ReleaseStringUTFChars(startDate, nativeDate);
         (env)->ReleaseStringUTFChars(endDate, nativeEndDate);
 
-        if (false) {
+        if (addEventToSql) {
             confirm = "Event Created!!";
         } else {
             confirm = "Event Deleted!!!";

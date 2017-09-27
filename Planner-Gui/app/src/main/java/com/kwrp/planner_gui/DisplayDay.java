@@ -507,7 +507,7 @@ public class DisplayDay extends AppCompatActivity {
 
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            finishDate.setText(day + "-" + month + "-" + year);
+            finishDate.setText(day + "/" + month + "/" + year);
             finishDate.setTextSize(20);
         }
     }
