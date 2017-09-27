@@ -31,6 +31,7 @@ import android.widget.TimePicker;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Defines the display day activity where the user is shown
@@ -112,6 +113,9 @@ public class DisplayDay extends AppCompatActivity {
     private static Button startTime;
     private static Button endTime;
     private static Button finishDate;
+    private static Button eventDays;
+    private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
+    private static int selectedRepeat = 0;
 
 
     /**
@@ -123,7 +127,6 @@ public class DisplayDay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_day);
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_day);
         toolbar.setSubtitle("Today's Date: " + currentDate);
@@ -159,6 +162,7 @@ public class DisplayDay extends AppCompatActivity {
             public void onClick(View view) {
                 Dialog dialog = createEventDialog();
                 dialog.show();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_blue_bright);
             }
         });
 
@@ -243,11 +247,11 @@ public class DisplayDay extends AppCompatActivity {
      */
     private void checkDbExists() {
         File dir = getFilesDir();
-        File file = new File(dir, "events.db");
+        File file = new File(dir, "/events.db");
         //file.delete();
 
         if (!file.exists()) {
-            filePath = getFilesDir().getAbsolutePath() + "events.db";
+            filePath = getFilesDir().getAbsolutePath() + "/events.db";
             String newFile = jniCreateDb(filePath);
         }
     }
@@ -315,6 +319,7 @@ public class DisplayDay extends AppCompatActivity {
      */
     private AlertDialog createEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
+
         builder.setTitle("New Event");
 
         final LinearLayout dialogLayout = new LinearLayout(this);
@@ -340,6 +345,7 @@ public class DisplayDay extends AppCompatActivity {
         startLabel.setText("Start Time:");
         dialogLayout.addView(startLabel, 4);
         startTime = new Button(this);
+        startTime.setHint("Select time");
         startTime.setOnClickListener(startOnClick);
         dialogLayout.addView(startTime, 5);
 
@@ -347,6 +353,7 @@ public class DisplayDay extends AppCompatActivity {
         endLabel.setText("End Time");
         dialogLayout.addView(endLabel, 6);
         endTime = new Button(this);
+        endTime.setHint("Select time");
         endTime.setOnClickListener(endOnClick);
         dialogLayout.addView(endTime, 7);
 
@@ -354,10 +361,19 @@ public class DisplayDay extends AppCompatActivity {
         finishLabel.setText("Finish Date");
         dialogLayout.addView(finishLabel, 8);
         finishDate = new Button(this);
+        finishDate.setHint("Select date");
         finishDate.setOnClickListener(endDateOnClick);
         dialogLayout.addView(finishDate, 9);
-        builder.setView(dialogLayout);
 
+        final TextView eventDaysLabel = new TextView(this);
+        eventDaysLabel.setText("Select event to repeat on");
+        dialogLayout.addView(eventDaysLabel, 10);
+        eventDays = new Button(this);
+        eventDays.setHint("Select repeats to repeat");
+        eventDays.setOnClickListener(eventDaysOnClick);
+        dialogLayout.addView(eventDays, 11);
+
+        builder.setView(dialogLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -378,12 +394,17 @@ public class DisplayDay extends AppCompatActivity {
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                eventDays.setText("");
+                startTime.setText("");
+                endTime.setText("");
+                finishDate.setText("");
                 dialog.cancel();
             }
         });
 
         return builder.create();
     }
+
 
     /**
      * Creates the DELETE EVENT dialog box that pops up when the user wants to
@@ -474,16 +495,49 @@ public class DisplayDay extends AppCompatActivity {
                                           String repeat, String numOfRepeats, String endDate);
 
 
+    // Code For times and dates, needs refactoring
 
 
+    private View.OnClickListener eventDaysOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            // add a checkbox list
+            DialogFragment newFragment = new SelectDaysFrag();
+            newFragment.show(getFragmentManager(), "Select repeat repeats");
+        }
+    };
+
+    public static class SelectDaysFrag extends DialogFragment {
+        private int newSelection = 0;
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Repeat event on").setSingleChoiceItems(repeats, selectedRepeat,
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    eventDays.setText(repeats[which]);
+                    newSelection = which;
+                }
+            });
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectedRepeat = newSelection;
+                }
+            });
+            builder.setNegativeButton("Cancel", null);
+            return builder.create();
+        }
+    }
 
     // Code For times and dates, needs refactoring
     private View.OnClickListener endDateOnClick = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-
             DialogFragment newFragment = new DatePickerFrag();
-            newFragment.show(getFragmentManager().beginTransaction(), "Pick Date");
+            newFragment.show(getFragmentManager(), "Pick Date");
         }
     };
 
@@ -508,14 +562,12 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
-    ;
-
     private View.OnClickListener startOnClick = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
 
             DialogFragment newFragment = new StartTimeFrag();
-            newFragment.show(getFragmentManager().beginTransaction(), "Pick Time");
+            newFragment.show(getFragmentManager(), "Pick Time");
         }
     };
 
@@ -537,7 +589,7 @@ public class DisplayDay extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int hour = hourOfDay % 12;
-            startTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+            startTime.setText(String.format(Locale.ENGLISH,"%02d:%02d %s", hour == 0 ? 12 : hour,
                     minute, hourOfDay < 12 ? "am" : "pm"));
             startTime.setTextSize(20);
         }
@@ -548,7 +600,7 @@ public class DisplayDay extends AppCompatActivity {
         public void onClick(final View v) {
 
             DialogFragment newFragment = new EndTimeFrag();
-            newFragment.show(getFragmentManager().beginTransaction(), "Pick Time");
+            newFragment.show(getFragmentManager(), "Pick Time");
         }
     };
 
@@ -570,7 +622,7 @@ public class DisplayDay extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int hour = hourOfDay % 12;
-            endTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
                     minute, hourOfDay < 12 ? "am" : "pm"));
             endTime.setTextSize(20);
         }
