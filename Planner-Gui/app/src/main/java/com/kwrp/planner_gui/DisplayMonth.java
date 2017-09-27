@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,57 +35,49 @@ public class DisplayMonth extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
 
-    /**
-     * month offset from current, if sees into the future, this month number will increase
-     */
+    /*month offset from current, if sees into the future, this month number will increase*/
     private static int month_offset = 0;
-    /**
-     * The current shown year
-     */
-    private static int thisYear = 0;
-    /**
-     * The index of the current month
-     */
-    private static int thisMonthIndex = 0;
 
-    /**
-     * Loads the native library "calendar" on start up
-     */
+    /*The current shown year */
+    private static int viewedYear = 0;
+
+    /*The index of the current month*/
+    private static int thisMonthIndex = 0;
+    private int currentDay;
+    /* Loads the native library "calendar" on start up*/
     static {
         System.loadLibrary("calendar");
     }
 
-    /**
-     * An ordered list of months to map month numbers to it's string counterpart
-     */
+    /*An ordered list of months to map month numbers to it's string counterpart*/
     private String[] monthList = {"January", "February", "March", "April",
             "May", "June", "July", "August", "September", "October",
             "November", "December"};
-    /**
-     * Defines whether the "edit" pencil has been selected.
-     * Consider it "edit mode".
-     */
+
+    /*Defines whether the "edit" pencil has been selected.
+     Consider it "edit mode".*/
     private boolean editAvailable = true;
-    /**
-     * Number of days selected if in edit mode
-     */
+
+    /* Number of days selected if in edit mode*/
     private int daysSelected = 0;
-    /**
-     * A list of days selected in edit mode
-     */
+
+    /* A list of days selected in edit mode */
     private Collection<String> dayList = new ArrayList<>();
-    /**
-     * A list of positions selected in edit mode
-     */
+
+    /* A list of positions selected in edit mode */
     private Collection<Integer> positionList = new ArrayList<>();
-    /**
-     * The current date (system date)
-     */
+    /* The current date (system date)*/
     private String currentDate;
-    /**
-     * The filepath where events are stored on the device
-     */
+
+    /*The filepath where events are stored on the device */
     private String filePath;
+
+    private GridView mGridView;
+
+    private int currentYear;
+
+    private int currentDayPos ;
+    private int currentDayColor = DialogAction.headColor;
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -102,21 +95,25 @@ public class DisplayMonth extends AppCompatActivity {
         setSupportActionBar(toolbar);
         filePath = getFilesDir().getAbsolutePath() + "/events.xml";
 
+        //get current date
         int index = 0;
         for (int i = 0; i < currentDate.length(); i++) {
             if (currentDate.charAt(i) == ('/')) {
+
                 if (index == 0) {
                     index = i;
                 } else {
+                    currentDay = Integer.parseInt(currentDate.substring(0,index));
                     thisMonthIndex = (Integer.parseInt(currentDate.substring(index + 1, i)) - 1);
-                    thisYear = (Integer.parseInt(currentDate.substring(i + 1)));
+                    viewedYear = (Integer.parseInt(currentDate.substring(i + 1)));
+                    currentYear = viewedYear;
                     break;
                 }
             }
         }
 
-        this.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
-        toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+        this.setTitle(monthList[thisMonthIndex + month_offset] + " - " + viewedYear);
+        toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + viewedYear);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +121,7 @@ public class DisplayMonth extends AppCompatActivity {
                 startEditState();
             }
         });
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab_close);
         fab.setVisibility(View.GONE);
@@ -143,83 +141,13 @@ public class DisplayMonth extends AppCompatActivity {
             }
         });
 
-
         String[] systemDate = currentDate.split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        GridView mGridView = (GridView) findViewById(gridview);
+        mGridView = (GridView) findViewById(gridview);
+        setGridEventDefault(); //set grid on click listener to default
         mGridView.setAdapter(new MonthAdapter(
                 this, Integer.parseInt(systemDate[1]) - 1, Integer.parseInt(systemDate[2]), metrics));
-
-
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!editAvailable) {
-                    TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
-
-                    Drawable background = view2.getBackground();
-                    if (background instanceof ColorDrawable) {
-                        int color = ((ColorDrawable) background).getColor();
-                        if (color == Color.LTGRAY) {
-                            view2.setBackgroundColor(Color.rgb(244, 244, 244));
-                            Integer pos = new Integer(position);
-
-                            positionList.remove(pos);
-                            String day = view2.getText().toString();
-                            dayList.remove(day);
-                            daysSelected -= 1;
-                        } else if (color == Color.rgb(244, 244, 244)) {
-                            view2.setBackgroundColor(Color.LTGRAY);
-
-                            Integer pos = new Integer(position);
-                            positionList.add(pos);
-                            String day = view2.getText().toString();
-                            dayList.add(day);
-                            daysSelected += 1;
-
-                        }
-                    }
-                    FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
-                    if (daysSelected > 0) {
-                        fabconfirm.setVisibility(View.VISIBLE);
-                    } else {
-                        fabconfirm.setVisibility(View.GONE);
-                    }
-
-                }
-
-            }
-
-        });
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * Callback method to be invoked when an item in this AdapterView has
-             * been clicked.
-             * <p>
-             * Implementers can call getItemAtPosition(position) if they need
-             * to access the data associated with the selected item.
-             *
-             * @param parent   The AdapterView where the click happened.
-             * @param v     The view within the AdapterView that was clicked (this
-             *                 will be a view provided by the adapter)
-             * @param position The position of the view in the adapter.
-             * @param id       The row id of the item that was clicked.
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
-                String dateSelected = view.getText().toString();
-                Intent myIntent = new Intent(view.getContext(), DisplayDay.class); /** Class name here */
-                myIntent.putExtra("date", dateSelected);
-                myIntent.putExtra("month", Integer.toString(month_offset));
-                myIntent.putExtra("year", Integer.toString(thisYear));
-                startActivity(myIntent);
-            }
-        });
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
@@ -228,10 +156,11 @@ public class DisplayMonth extends AppCompatActivity {
                     month_offset -= 1;
                     if ((thisMonthIndex + month_offset) < 0) {
                         month_offset = 11 - thisMonthIndex;
-                        thisYear--;
+                        viewedYear--;
                     }
+
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-                    toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+                    toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + viewedYear);
                     updateMonthView(month_offset);
                 }
             }
@@ -242,15 +171,19 @@ public class DisplayMonth extends AppCompatActivity {
                     month_offset += 1;
                     if ((thisMonthIndex + month_offset) > 11) {
                         month_offset = -thisMonthIndex;
-                        thisYear++;
+                        viewedYear++;
                     }
                     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-                    toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+                    toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + viewedYear);
                     updateMonthView(month_offset);
                 }
             }
         });
+
+
     }
+
+
 
     /**
      * Called when the options menu on the toolbar is created or updated.
@@ -276,13 +209,11 @@ public class DisplayMonth extends AppCompatActivity {
             item1.setVisible(false);
             item2.setVisible(false);
             item3.setVisible(false);
-
             item4.setVisible(true);
         } else {
             item1.setVisible(true);
             item2.setVisible(true);
             item3.setVisible(true);
-
             item4.setVisible(false);
         }
         return true;
@@ -304,8 +235,27 @@ public class DisplayMonth extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            AlertDialog dialog = DialogAction.createSettingsDialog(this);
+            final AlertDialog dialog = DialogAction.createSettingsDialog(this);
             dialog.show();
+            final Intent myIntent = new Intent(this, DisplayMonth.class);
+            class ColorSetThread extends Thread {
+//                Intent current;
+//                public ColorSetThread(AppCompatActivity i){
+//                    current = i;
+//                }
+                @Override
+                public void run(){
+                    int c = DialogAction.headColor;
+                    while(c == DialogAction.headColor){}
+                    startActivity(myIntent);
+                    finish();
+
+                }
+            }
+
+            new ColorSetThread().start();
+
+
             return true;
         }
         //noinspection SimplifiableIfStatement
@@ -339,7 +289,7 @@ public class DisplayMonth extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         FloatingActionButton fab_close = (FloatingActionButton) findViewById(R.id.fab_close);
         if (editAvailable) {
-
+            setGridEventEdit();
             fab_close.setVisibility(View.VISIBLE);
             fab.setVisibility(View.GONE);
 
@@ -350,12 +300,12 @@ public class DisplayMonth extends AppCompatActivity {
 
             editAvailable = false;
         } else {
-
+            setGridEventDefault();
             fab_close.setVisibility(View.GONE);
             fab.setVisibility(View.VISIBLE);
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-            toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + thisYear);
+            toolbar.setTitle(monthList[thisMonthIndex + month_offset] + " - " + viewedYear);
             toolbar.setSubtitle("Today's Date: " + jniGetCurrentDate());
             setSupportActionBar(toolbar);
 
@@ -364,8 +314,13 @@ public class DisplayMonth extends AppCompatActivity {
 
             for (int pos : positionList) {
                 TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(pos);
-                view2.setBackgroundColor(Color.rgb(244, 244, 244));
+                if (pos == currentDayPos && month_offset == 0 && viewedYear == currentYear) {
+                    view2.setBackgroundColor(currentDayColor);
+                } else {
+                    view2.setBackgroundColor(Color.rgb(244, 244, 244));
+                }
             }
+            positionList = new ArrayList<>();
             dayList = new ArrayList<>();
             daysSelected = 0;
             editAvailable = true;
@@ -386,7 +341,7 @@ public class DisplayMonth extends AppCompatActivity {
         GridView mGridView = (GridView) findViewById(gridview);
         mGridView.invalidateViews();
         mGridView.setAdapter(new MonthAdapter(
-                this, Integer.parseInt(systemDate[1]) - 1 + month, thisYear, metrics));
+                this, Integer.parseInt(systemDate[1]) - 1 + month, viewedYear, metrics));
 
     }
 
@@ -397,16 +352,111 @@ public class DisplayMonth extends AppCompatActivity {
     public void createEventSetDialog() {
         DialogAction a = new DialogAction();
         String eventMonth = "" + (thisMonthIndex + month_offset + 1);
-        String eventYear = "" + thisYear;
+        String eventYear = "" + viewedYear;
 
         AlertDialog dialog = a.createEventSetDialog(this, dayList, eventMonth, eventYear, filePath);
         dialog.show();
         startEditState();
     }
 
+
+    public void setGridEventEdit(){
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!editAvailable) {
+                    TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
+                    Log.d("POSITION", "\n\n"+position+"\n\n");
+
+                    Drawable background = view2.getBackground();
+                    if (background instanceof ColorDrawable) {
+                        int color = ((ColorDrawable) background).getColor();
+
+                        if(color == currentDayColor){
+                            currentDayPos = new Integer(position);
+                            color = Color.rgb(244,244,244);
+                        }
+
+
+                        if (color == Color.LTGRAY) {
+                            Integer pos = new Integer(position);
+                            if(position == currentDayPos){
+                                view2.setBackgroundColor(currentDayColor);
+                            } else {
+                                view2.setBackgroundColor(Color.rgb(244, 244, 244));
+                            }
+
+                            positionList.remove(pos);
+
+                            String day = view2.getText().toString();
+                            dayList.remove(day);
+                            daysSelected -= 1;
+                        } else if (color == Color.rgb(244, 244, 244)) {
+                            view2.setBackgroundColor(Color.LTGRAY);
+
+                            Integer pos = new Integer(position);
+                            positionList.add(pos);
+                            String day = view2.getText().toString();
+                            dayList.add(day);
+                            daysSelected += 1;
+
+                        }
+                    }
+                    FloatingActionButton fabconfirm = (FloatingActionButton) findViewById(R.id.fabconfirm);
+                    if (daysSelected > 0) {
+                        fabconfirm.setVisibility(View.VISIBLE);
+                    } else {
+                        fabconfirm.setVisibility(View.GONE);
+                    }
+
+                }
+
+            }
+
+        });
+    }
+
+    public void setGridEventDefault(){
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * Callback method to be invoked when an item in this AdapterView has
+             * been clicked.
+             * <p>
+             * Implementers can call getItemAtPosition(position) if they need
+             * to access the data associated with the selected item.
+             *
+             * @param parent   The AdapterView where the click happened.
+             * @param v     The view within the AdapterView that was clicked (this
+             *                 will be a view provided by the adapter)
+             * @param position The position of the view in the adapter.
+             * @param id       The row id of the item that was clicked.
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                if(editAvailable) {
+                    TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
+                    String dateSelected = view.getText().toString();
+                    Intent myIntent = new Intent(view.getContext(), DisplayDay.class);
+                    myIntent.putExtra("date", dateSelected);
+                    myIntent.putExtra("month", Integer.toString(month_offset));
+                    myIntent.putExtra("year", Integer.toString(viewedYear));
+                    startActivity(myIntent);
+                }
+            }
+        });
+    }
+
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String jniGetCurrentDate();
+
+
+
+
+
 }
