@@ -59,27 +59,30 @@ public class DisplayDay extends AppCompatActivity {
     /**
      * The new event title
      */
-    private String newEventTitle = "";
+    private String newEvTitle = "";
 
     /**
      * The new event description
      */
-    private String newEventDescription = "";
+    private String newEvDescription = "";
 
     /**
      * The new event start time
      */
-    private String newEventStart = "";
+    private String newEvStartTime = "";
 
     /**
      * The new event duration
      */
-    private String newEventDuration = "";
+    private String newEvFinishTime = "";
+
+    private String newEvEndDate = "";
+    private int repeat = 0;
 
     /**
      * The file path to the file where events are being stored
      */
-    private String filePath;
+    private String filepath;
 
     /**
      * The listview for events
@@ -175,8 +178,8 @@ public class DisplayDay extends AppCompatActivity {
      * eventItems list.
      */
     protected void getEvents() {
-        filePath = getFilesDir().getAbsolutePath() + "/events.xml";
-        String getDay = jniGetDay(filePath, selectedDate);
+        filepath = getFilesDir().getAbsolutePath() + "/events.xml";
+        String getDay = jniGetDay(filepath, selectedDate);
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
@@ -195,19 +198,20 @@ public class DisplayDay extends AppCompatActivity {
      * @param title       title of the new event
      * @param description description of then new event
      * @param start       start time of the new event
-     * @param duration    duration of the new event
+     * @param finish    duration of the new event
      */
-    private void createNewEvent(String title, String description, String start, String duration) {
+    private void createNewEvent(String title, String description, String start, String finish,
+                                String finishDate, String repeat) {
 
-        //String newEvent = jniCreateEvent(title, description, start, duration, filePath, selectedDate);
-        String newEvent = jniCreateDbEvent(title, description, start, duration, filePath, selectedDate,
-                "5", "1101010", "25/10/2018");
+        jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
         eventId = "";
-        newEventTitle = "";
-        newEventDescription = "";
-        newEventStart = "";
-        newEventDuration = "";
+        newEvTitle = "";
+        newEvDescription = "";
+        newEvStartTime = "";
+        newEvFinishTime = "";
         selectedDay = null;
+        newEvEndDate = "";
+
         getEvents();
         listAdapter.notifyDataSetChanged();
     }
@@ -251,8 +255,8 @@ public class DisplayDay extends AppCompatActivity {
         //file.delete();
 
         if (!file.exists()) {
-            filePath = getFilesDir().getAbsolutePath() + "/events.db";
-            String newFile = jniCreateDb(filePath);
+            filepath = getFilesDir().getAbsolutePath() + "/events.db";
+            String newFile = jniCreateDb(filepath);
         }
     }
 
@@ -330,7 +334,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        titleInput.setText(newEventTitle);
+        titleInput.setText(newEvTitle);
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
@@ -338,7 +342,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        descriptInput.setText(newEventDescription);
+        descriptInput.setText(newEvDescription);
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
@@ -378,16 +382,18 @@ public class DisplayDay extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                newEventTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
-                newEventDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
-                newEventStart = ((EditText) dialogLayout.getChildAt(5)).getText().toString();
-                newEventDuration = ((EditText) dialogLayout.getChildAt(7)).getText().toString();
-
-                if (newEventTitle.equals("") || newEventDescription.equals("") ||
-                        newEventStart.equals("") || newEventDuration.equals("")) {
+                newEvTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
+                newEvDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
+                newEvStartTime = startTime.getText().toString();
+                newEvFinishTime = endTime.getText().toString();
+                newEvEndDate = finishDate.getText().toString();
+                String repeat = Integer.toString(selectedRepeat);
+                if (newEvTitle.equals("") || newEvDescription.equals("") ||
+                        newEvStartTime.equals("") || newEvFinishTime.equals("")) {
                     Log.d("JAVA create event: ", "failed!!");
                 } else {
-                    createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration);
+                    createNewEvent(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
+                            newEvEndDate, repeat);
                 }
             }
         });
@@ -421,7 +427,7 @@ public class DisplayDay extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String deleteEvent = jniRemoveEvent(filePath, selectedDate, eventId);
+                String deleteEvent = jniRemoveEvent(filepath, selectedDate, eventId);
                 selectedDay = null;
                 getEvents();
                 listAdapter.notifyDataSetChanged();
@@ -438,62 +444,6 @@ public class DisplayDay extends AppCompatActivity {
 
         return builder.create();
     }
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String jniGetCurrentDate();
-
-    /**
-     * Gets the events on a given day
-     *
-     * @param filePath    path/to/file
-     * @param currentDate the day to search
-     * @return the events
-     */
-    public native String jniGetDay(String filePath, String currentDate);
-
-    /**
-     * Creates an xml file for the device if it doesn't exist
-     *
-     * @param filePath the path/to/file
-     * @return the path/to/file
-     */
-    public native String jniCreateXml(String filePath);
-
-    /**
-     * A JNI function that pushes event details through to the back-end to create
-     * and store events. This is defined outside this class.
-     *
-     * @param title        The event title
-     * @param description  The event description
-     * @param start        The time the event starts
-     * @param duration     How long (in hours) the event will go for
-     * @param dir          The file path to a .xml file where the events are stored
-     * @param selectedDate A collection containing the dates (DD/MM/YYYY) the event occurs on
-     * @return string confirming action
-     */
-    public native String jniCreateEvent(String title, String description, String start,
-                                        String duration, String dir, String selectedDate);
-
-    /**
-     * A JNI function that removes an event from the .xml file rendering it
-     * non-existent.
-     *
-     * @param filePath     path/to/file
-     * @param selectedDate the date to remove the event from
-     * @param eventId      the event id number
-     * @return string confirming action
-     */
-    public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);
-
-    public native String jniCreateDb(String filePath);
-
-    public native String jniCreateDbEvent(String title, String description, String start,
-                                          String duration, String dir, String selectedDate,
-                                          String repeat, String numOfRepeats, String endDate);
-
 
     // Code For times and dates, needs refactoring
 
@@ -627,5 +577,37 @@ public class DisplayDay extends AppCompatActivity {
             endTime.setTextSize(20);
         }
     }
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    public native String jniGetCurrentDate();
+
+    /**
+     * Gets the events on a given day
+     *
+     * @param filePath    path/to/file
+     * @param currentDate the day to search
+     * @return the events
+     */
+    public native String jniGetDay(String filePath, String currentDate);
+
+    /**
+     * A JNI function that removes an event from the .xml file rendering it
+     * non-existent.
+     *
+     * @param filePath     path/to/file
+     * @param selectedDate the date to remove the event from
+     * @param eventId      the event id number
+     * @return string confirming action
+     */
+    public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);
+
+    public native String jniCreateDb(String filePath);
+
+    public native String jniCreateDbEvent(String title, String description, String start,
+                                          String finish, String selectedDate,
+                                          String finishDate, String repeat, String filepath);
+
 }
 
