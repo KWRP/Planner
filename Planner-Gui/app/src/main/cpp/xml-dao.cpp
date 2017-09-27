@@ -21,7 +21,7 @@ bool checkDate(const char *filePath, const char *day, const char *month, const c
     XMLPrinter printer;
     xmlDoc.Accept(&printer);
     const char *xmlcstr = printer.CStr();
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", xmlcstr);
+    //__android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "%s", xmlcstr);
     // -----------------------------------------------
 
     // find year
@@ -311,7 +311,7 @@ bool removeEvent(const char *filePath, const char *day, const char *month, const
     }
     eResult = xmlDoc.SaveFile(filePath);
     XMLCheckResult(eResult);
-    __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "Saved");
+   // __android_log_print(ANDROID_LOG_INFO, "TEST C++!!!", "Saved");
     return true;
 }
 

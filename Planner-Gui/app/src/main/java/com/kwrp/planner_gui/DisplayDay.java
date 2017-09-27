@@ -203,7 +203,8 @@ public class DisplayDay extends AppCompatActivity {
     private void createNewEvent(String title, String description, String start, String finish,
                                 String finishDate, String repeat) {
 
-        jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
+        String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
+        Log.e("CREATE Eevnt:", r);
         eventId = "";
         newEvTitle = "";
         newEvDescription = "";
@@ -257,6 +258,7 @@ public class DisplayDay extends AppCompatActivity {
         if (!file.exists()) {
             filepath = getFilesDir().getAbsolutePath() + "/events.db";
             String newFile = jniCreateDb(filepath);
+            Log.e("CREATE SQL:", newFile);
         }
     }
 

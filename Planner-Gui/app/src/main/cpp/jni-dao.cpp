@@ -1,6 +1,7 @@
 #include "include/jni-dao.h"
 #include "include/xml-dao.hpp"
 #include "include/sqlite-dao.h"
+#include <android/log.h>
 
 using namespace std;
 extern "C" {
@@ -63,8 +64,9 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(),endMonth.c_str(),endYear.c_str(),
                                         atoi(nativeRepeat), nativepath);
-        displayDb(nativepath);
-        
+
+        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
+
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
         (env)->ReleaseStringUTFChars(start, nativeStart);
