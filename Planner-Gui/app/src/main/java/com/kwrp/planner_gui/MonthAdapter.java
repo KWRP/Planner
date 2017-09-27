@@ -22,37 +22,28 @@ import java.util.List;
  * @author https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java
  */
 public class MonthAdapter extends BaseAdapter {
-    /**
-     * An array mapping indexes (days of the week) to Strings (the day)
-     */
+    /*An array mapping indexes (days of the week) to Strings (the day) */
     private final String[] mDays = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-    /**
-     * The number of days in each month.
-     */
+
+    /*The number of days in each month.*/
     private final int[] mDaysInMonth = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    /**
-     * An instance of GregorianCalendar
-     */
+
+    /*An instance of GregorianCalendar*/
     private GregorianCalendar mCalendar;
-    /**
-     * Calendar for today
-     */
+
+    /*Calendar for today*/
     private Calendar mCalendarToday;
-    /**
-     * The current month context
-     */
+
+    /*The current month context */
     private Context mContext;
-    /**
-     * this months display metrics
-     */
+
+    /*this months display metrics*/
     private DisplayMetrics mDisplayMetrics;
-    /**
-     * A list of days in the month
-     */
+
+    /*A list of days in the month*/
     private List<String> mItems;
-    /**
-     * month index
-     */
+
+    /* month index*/
     private int mMonth;
     /**
      * this months year
@@ -105,7 +96,7 @@ public class MonthAdapter extends BaseAdapter {
      * Populates the month with appropriate number of days
      */
     private void populateMonth() {
-        mItems = new ArrayList<String>();
+        mItems = new ArrayList<>();
         for (String day : mDays) {
             mItems.add(day);
             mDaysShown++;
@@ -136,10 +127,24 @@ public class MonthAdapter extends BaseAdapter {
             mDaysNextMonth++;
         }
 
+        //buffer bottom of the screen with another row of next month dates
+        if(mDaysNextMonth < 5) {
+            for (int i = 1; i < 8; i++) {
+                mItems.add(String.valueOf(mDaysNextMonth));
+                mDaysShown++;
+                mDaysNextMonth++;
+            }
+        }
+
         mTitleHeight = 30;
-        int rows = (mDaysShown / 7);
+        int rows = (mDaysShown / 7) ;
         mDayHeight = (mDisplayMetrics.heightPixels - mTitleHeight
                 - (rows * 8) - getBarHeight()) / (rows - 1);
+        mDayHeight -= 10;
+        if(rows <= 6){
+            mDayHeight -= 10;
+        }
+
     }
 
     /**
@@ -279,7 +284,7 @@ public class MonthAdapter extends BaseAdapter {
                 view.setBackgroundColor(Color.rgb(244, 244, 244));
                 if (isToday(date[0], date[1], date[2])) {
                     view.setTextColor(Color.BLACK);
-                    view.setBackgroundColor(Color.rgb(192, 242, 192));
+                    view.setBackgroundColor(DialogAction.headColor);
 
                 }
             }

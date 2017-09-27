@@ -14,12 +14,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static com.kwrp.planner_gui.R.id.gridview;
 
 /**
  * Defines a series of actions for specific actions such as "sync" button select.
@@ -29,9 +32,7 @@ import java.util.Collection;
  */
 public class DialogAction extends AppCompatActivity {
 
-    /**
-     * Loads the native library "calender" on start up
-     */
+    /*Loads the native library "calender" on start up */
     static {
         System.loadLibrary("calendar");
     }
@@ -39,14 +40,10 @@ public class DialogAction extends AppCompatActivity {
     public static int headColor = Color.BLUE;
 
 
-    /**
-     * Defines the filepath in the user device where the events.xml is stored.
-     */
+    /*Defines the filepath in the user device where the events.xml is stored.*/
     private String filePath;
 
-    /**
-     * Default constructor
-     */
+    /*Default constructor*/
     public DialogAction() {
     }
 
@@ -119,18 +116,20 @@ public class DialogAction extends AppCompatActivity {
                 switch (position) {
                     case 1:
                         headColor = Color.GREEN;
-                        toolbar.setBackgroundColor(Color.GREEN);
                         break;
                     case 2:
                         headColor = Color.RED;
-                        toolbar.setBackgroundColor(Color.RED);
                         break;
                     case 3:
                         headColor = Color.BLUE;
-                        toolbar.setBackgroundColor(Color.BLUE);
                         break;
                 }
+                toolbar.setBackgroundColor(headColor);
+
+
             }
+
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
