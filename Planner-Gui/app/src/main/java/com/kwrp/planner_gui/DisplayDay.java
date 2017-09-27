@@ -2,7 +2,10 @@ package com.kwrp.planner_gui;
 
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,19 +13,24 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Defines the display day activity where the user is shown
@@ -101,6 +109,9 @@ public class DisplayDay extends AppCompatActivity {
      * selected event Id (for removal)
      */
     private String eventId = "";
+    private static Button startTime;
+    private static Button endTime;
+    private static Button finishDate;
 
 
     /**
@@ -328,21 +339,23 @@ public class DisplayDay extends AppCompatActivity {
         final TextView startLabel = new TextView(this);
         startLabel.setText("Start Time:");
         dialogLayout.addView(startLabel, 4);
-        final EditText startInput = new EditText(this);
-        startInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        startInput.setText(newEventStart);
-        startInput.setHint("e.g. 0800");
-        dialogLayout.addView(startInput, 5);
+        startTime = new Button(this);
+        startTime.setOnClickListener(startOnClick);
+        dialogLayout.addView(startTime, 5);
 
-        final TextView durationLabel = new TextView(this);
-        durationLabel.setText("Duration");
-        dialogLayout.addView(durationLabel, 6);
-        final EditText durationInput = new EditText(this);
-        durationInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        durationInput.setText(newEventDuration);
-        durationInput.setHint("Number of hours");
-        dialogLayout.addView(durationInput, 7);
+        final TextView endLabel = new TextView(this);
+        endLabel.setText("End Time");
+        dialogLayout.addView(endLabel, 6);
+        endTime = new Button(this);
+        endTime.setOnClickListener(endOnClick);
+        dialogLayout.addView(endTime, 7);
 
+        final TextView finishLabel = new TextView(this);
+        finishLabel.setText("Finish Date");
+        dialogLayout.addView(finishLabel, 8);
+        finishDate = new Button(this);
+        finishDate.setOnClickListener(endDateOnClick);
+        dialogLayout.addView(finishDate, 9);
         builder.setView(dialogLayout);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -443,7 +456,6 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
 
-
     /**
      * A JNI function that removes an event from the .xml file rendering it
      * non-existent.
@@ -460,5 +472,108 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniCreateDbEvent(String title, String description, String start,
                                           String duration, String dir, String selectedDate,
                                           String repeat, String numOfRepeats, String endDate);
+
+
+
+
+
+    // Code For times and dates, needs refactoring
+    private View.OnClickListener endDateOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new DatePickerFrag();
+            newFragment.show(getFragmentManager().beginTransaction(), "Pick Date");
+        }
+    };
+
+    public static class DatePickerFrag extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            finishDate.setText(day + "-" + month + "-" + year);
+            finishDate.setTextSize(20);
+        }
+    }
+
+    ;
+
+    private View.OnClickListener startOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new StartTimeFrag();
+            newFragment.show(getFragmentManager().beginTransaction(), "Pick Time");
+        }
+    };
+
+    public static class StartTimeFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int hour = hourOfDay % 12;
+            startTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
+            startTime.setTextSize(20);
+        }
+    }
+
+    private View.OnClickListener endOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new EndTimeFrag();
+            newFragment.show(getFragmentManager().beginTransaction(), "Pick Time");
+        }
+    };
+
+    public static class EndTimeFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int hour = hourOfDay % 12;
+            endTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
+            endTime.setTextSize(20);
+        }
+    }
 }
 

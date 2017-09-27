@@ -48,7 +48,7 @@ public class DisplayMonth extends AppCompatActivity {
     private static int thisMonthIndex = 0;
 
     /**
-     * Loads the native library "calender" on start up
+     * Loads the native library "calendar" on start up
      */
     static {
         System.loadLibrary("calendar");
@@ -194,26 +194,31 @@ public class DisplayMonth extends AppCompatActivity {
             }
 
         });
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-
-        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
+            /**
+             * Callback method to be invoked when an item in this AdapterView has
+             * been clicked.
+             * <p>
+             * Implementers can call getItemAtPosition(position) if they need
+             * to access the data associated with the selected item.
+             *
+             * @param parent   The AdapterView where the click happened.
+             * @param v     The view within the AdapterView that was clicked (this
+             *                 will be a view provided by the adapter)
+             * @param position The position of the view in the adapter.
+             * @param id       The row id of the item that was clicked.
+             */
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int arg2, long arg3) {
-                if (editAvailable) {
-                    TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(arg2);
-                    String dateSelected = view.getText().toString();
-                    Intent myIntent = new Intent(arg1.getContext(), DisplayDay.class); /** Class name here */
-                    myIntent.putExtra("date", dateSelected);
-                    myIntent.putExtra("month", Integer.toString(month_offset));
-                    myIntent.putExtra("year", Integer.toString(thisYear));
-                    startActivity(myIntent);
-                }
-                return true;
-
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
+                String dateSelected = view.getText().toString();
+                Intent myIntent = new Intent(view.getContext(), DisplayDay.class); /** Class name here */
+                myIntent.putExtra("date", dateSelected);
+                myIntent.putExtra("month", Integer.toString(month_offset));
+                myIntent.putExtra("year", Integer.toString(thisYear));
+                startActivity(myIntent);
             }
-
         });
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
