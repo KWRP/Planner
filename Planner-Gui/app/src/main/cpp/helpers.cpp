@@ -39,6 +39,16 @@ int dayOfWeek(std::string date) {
     n = n % 7;
     return n;
 }
+int dayOfWeekI(int day,int mon,int year) {
+    std::tm time_in = {0, 0, 0, // second, minute, hour
+                       day, mon - 1, year - 1900}; // 1-based day, 0-based month, year since 1900
+    std::time_t time_temp = std::mktime(&time_in);
+
+    std::tm const *time_out = std::localtime(&time_temp);
+    int n = time_out->tm_wday + 6;
+    n = n % 7;
+    return n;
+}
 
 int numberOfDayInMonth(std::string date) {
     int mon = atoi(date.substr(3, 2).data());

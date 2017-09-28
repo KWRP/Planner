@@ -27,16 +27,18 @@ bool createDb(const char *stmt, const char *filepath);
 
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
-				const char *endDay, const char *endMonth, const char *endYear, int repeatCycle, const char *filepath);
+				const char *endDay, const char *endMonth, const char *endYear, int repeatCycle,
+				bool byDay, const char *filepath);
 
 bool updateToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,int eventID, 
-				int repeatCycle, const char *filepath);
+				int repeatCycle,bool byDay, const char *filepath);
 
 bool deleteFromDb(int eventID, const char *filepath);
 
-bool selectFromDB(const char *start, const char *end, const char *filepath);
+bool selectFromDB(const char *sday,const char *smonth,const char* syear,
+				   const char *eday,const char *emonth,const char* eyear, const char *filepath);
 
 bool displayDb(const char *nativeDb);
 

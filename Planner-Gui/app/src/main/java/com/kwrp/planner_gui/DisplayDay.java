@@ -119,6 +119,7 @@ public class DisplayDay extends AppCompatActivity {
     private static Button eventDays;
     private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
     private static int selectedRepeat = 0;
+    private static int repeatDayDate = 0;
 
 
     /**
@@ -203,6 +204,7 @@ public class DisplayDay extends AppCompatActivity {
     private void createNewEvent(String title, String description, String start, String finish,
                                 String finishDate, String repeat) {
 
+        if (this.repeat == 3) repeat += repeatDayDate;
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
         Log.e("CREATE Eevnt:", r);
         eventId = "";
@@ -454,12 +456,12 @@ public class DisplayDay extends AppCompatActivity {
         @Override
         public void onClick(final View v) {
             // add a checkbox list
-            DialogFragment newFragment = new SelectDaysFrag();
+            DialogFragment newFragment = new SelectRepeatFrag();
             newFragment.show(getFragmentManager(), "Select repeat repeats");
         }
     };
 
-    public static class SelectDaysFrag extends DialogFragment {
+    public static class SelectRepeatFrag extends DialogFragment {
         private int newSelection = 0;
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -469,8 +471,24 @@ public class DisplayDay extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    eventDays.setText(repeats[which]);
-                    newSelection = which;
+                    if (which == 3) {
+                        String[] choice = {"Day of week", "Date"};
+                        AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
+                        b.setTitle("Repeat on").setSingleChoiceItems(choice, repeatDayDate,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        repeatDayDate = which;
+                                        dialog.cancel();
+                                    }
+                                });
+                        b.create().show();
+                            eventDays.setText("Monthly by " + choice[repeatDayDate]);
+                    } else {
+                        repeatDayDate = 0;
+                        eventDays.setText(repeats[which]);
+                        newSelection = which;
+                    }
                 }
             });
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

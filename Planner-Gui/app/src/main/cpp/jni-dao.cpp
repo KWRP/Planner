@@ -54,16 +54,22 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
         string month = rest.substr(0, selectedDate.find(delimiter));
         string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-        string selectedEndDate = nativeEndDate;
+        selectedDate = nativeEndDate;
         string endDay = selectedDate.substr(0, selectedDate.find(delimiter));
         string endRest = selectedDate.substr(selectedDate.find(delimiter) + 1);
-        string endMonth = rest.substr(0, selectedDate.find(delimiter));
-        string endYear = rest.substr(selectedDate.find(delimiter) + 1);
+        string endMonth = endRest.substr(0, selectedDate.find(delimiter));
+        string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
+
+        bool byDay = false;
+        string s = nativeRepeat;
+        if(s.length() > 1){
+            if(s[1] == 0) byDay=true;
+        }
 
         bool addEventToSql = insertToDb(day.c_str(),month.c_str(),year.c_str(),
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(),endMonth.c_str(),endYear.c_str(),
-                                        atoi(nativeRepeat), nativepath);
+                                        atoi(nativeRepeat),byDay, nativepath);
 
         if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 

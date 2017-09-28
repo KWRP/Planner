@@ -10,13 +10,29 @@
 #include <stdbool.h>
 #include <string.h>
 #include <android/log.h>
+#include <stdlib.h>
 #include "include/sqlite-dao.h"
+#include <time.h>
+
+int dayOfWeekI(int day,int month,int year){
+
+    struct tm time_in = {0, 0, 0, // second, minute, hour
+                       day, month - 1, year - 1900}; // 1-based day, 0-based month, year since 1900
+    time_t time_temp = mktime(&time_in);
+
+    struct tm const *time_out = localtime(&time_temp);
+    int n = time_out->tm_wday + 6;
+    n = n % 7;
+    return n;
+}
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
     int i;
+    __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", " hh");
     for (i = 0; i < argc; ++i) {
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+       // printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
         //printf("info:: azColName = %s ; argv = %s \n", azColName[i], argv[i]);
+        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s %s", azColName[i], argv[i]);
     }
     printf("\n");
     return 0;
@@ -83,13 +99,13 @@ bool createDb(const char *createStatement, const char *filepath) {
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,
-                int repeatCycle, const char *filepath) {
+                int repeatCycle,bool byDay, const char *filepath) {
 
 
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc, i;
-    //int repeater = repeats;
+    int dayNum;
     sqlite3_stmt *stmt;
 
     /* Open database */
@@ -99,28 +115,40 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
         return false;
     }
 
-//    char *insertQueryWeekly = "INSERT INTO WEEKLY(monday,tuesday,wednesday,thursday,friday,saturday,"
-//                                "sunday) VALUES(?,?,?,?,?,?,?);";
+    char *insertQueryWeekly = "INSERT INTO WEEKLY(monday,tuesday,wednesday,thursday,friday,saturday,"
+                                "sunday) VALUES(?,?,?,?,?,?,?);";
     char *insertQueryCalendar = "INSERT INTO CALENDAR(day,month,year,title,description,start,"
                                 "duration,repeatCycle,endDay,endMonth,endYear,weeklyID) "
                                 "VALUES(?,?,?,?,?,?,?,?,?,?,?,last_insert_rowid());";
 
-//    printf("Query %s\n", insertQueryWeekly);
-//    printf("Query %s\n", insertQueryCalendar);
-//
-//    rc = sqlite3_prepare_v2(db, insertQueryWeekly, -1, &stmt, 0);
-//    if (rc == SQLITE_OK) {
+    printf("Query %s\n", insertQueryWeekly);
+    printf("Query %s\n", insertQueryCalendar);
 
-//        for (i = 0; i < 7; i++) {
-//            sqlite3_bind_int(stmt, i + 1, repeats[i]);
-//        }
-//
-//    } else {
-//        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
-//    }
-//
-//    sqlite3_step(stmt);
-//    sqlite3_reset(stmt);
+
+
+
+    dayNum = dayOfWeekI(atoi(day),atoi(month),atoi(year));
+
+
+    rc = sqlite3_prepare_v2(db, insertQueryWeekly, -1, &stmt, 0);
+    if (rc == SQLITE_OK) {
+        if(byDay || repeatCycle == 2) {
+            for (i = 0; i < 7; i++) {
+                if (dayNum == i) {
+                    sqlite3_bind_int(stmt, i + 1, true);
+                } else {
+                    sqlite3_bind_int(stmt, i + 1, false);
+                }
+            }
+        }else{
+            sqlite3_bind_int(stmt, i + 1, true);
+        }
+    } else {
+        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+    }
+
+    sqlite3_step(stmt);
+    sqlite3_reset(stmt);
 
     rc = sqlite3_prepare_v2(db, insertQueryCalendar, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
@@ -147,8 +175,8 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
 
 bool updateToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
-                const char *endDay, const char *endMonth, const char *endYear,int eventID,
-                int repeatCycle,const char *filepath) {
+                const char *endDay, const char *endMonth, const char *endYear,
+                int eventID, int repeatCycle,bool byDay, const char *filepath) {
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
@@ -176,8 +204,8 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
-    return insertToDb(day,month,year, title, description, start, duration, endDay, endMonth, endYear,
-                      repeatCycle ,filepath);
+    return insertToDb(day, month, year, title,description,start, duration,
+                      endDay, endMonth, endYear, repeatCycle, byDay, filepath);
 }
 
 bool deleteFromDb(int eventID, const char *filepath) {
@@ -210,7 +238,8 @@ bool deleteFromDb(int eventID, const char *filepath) {
     return true;
 }
 
-bool selectFromDB(const char *start, const char *end, const char *filepath) {
+bool selectFromDB(const char *sday,const char *smonth,const char* syear,
+                  const char *eday,const char *emonth,const char* eyear, const char *filepath) {
     printf("Database table:\n");
     sqlite3 *db;
     char *zErrMsg = 0;
@@ -227,25 +256,23 @@ bool selectFromDB(const char *start, const char *end, const char *filepath) {
 
     const char *selectQuery = "select * from CALENDAR "
             "join weeklyID on CALENDAR.weeklyID = WEEKLY.weeklyID "
-            "where CALENDAR.date = (?) and CALENDAR.endDate = (?) "
-            "and CALENDAR.monday = (?) "
-            "and CALENDAR.tuesday = (?) "
-            "and CALENDAR.wednesday = (?) "
-            "and CALENDAR.thursday = (?) "
-            "and CALENDAR.friday = (?) "
-            "and CALENDAR.saturday = (?) "
-            "and CALENDAR.sunday = (?) ;";
+            "where CALENDAR.day = (?) "
+            "and CALENDAR.month = (?) "
+            "and CALENDAR.year = (?) "
+            "and CALENDAR.endDay = (?) "
+            "and CALENDAR.endMonth = (?) "
+            "and CALENDAR.endYear = (?) ";
 
     printf("Queury: %s\n\n", selectQuery);
 
     rc = sqlite3_prepare_v2(db, selectQuery, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
-        sqlite3_bind_text(stmt, 1, start, (int)strlen(start), 0);
-        sqlite3_bind_text(stmt, 2, end, (int)strlen(end), 0);;
-        int i;
-//        for (i = 0; i < 7; i++) {
-//            sqlite3_bind_int(stmt, i + 3, repeats[i]);
-//        }
+        sqlite3_bind_text(stmt, 1, sday, (int)strlen(sday), 0);
+        sqlite3_bind_text(stmt, 2, smonth, (int)strlen(smonth), 0);
+        sqlite3_bind_text(stmt, 3, syear, (int)strlen(syear), 0);
+        sqlite3_bind_text(stmt, 4, eday, (int)strlen(eday), 0);
+        sqlite3_bind_text(stmt, 5, emonth, (int)strlen(emonth), 0);
+        sqlite3_bind_text(stmt, 6, eyear, (int)strlen(eyear), 0);
     } else {
         fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
     }
@@ -280,10 +307,11 @@ bool displayDb(const char *filepath) {
     /* Open database */
     rc = sqlite3_open(filepath, &db);
     if (rc != SQLITE_OK) {
+
         sqlite3_free(zErrMsg);
         return false;
     }
-    
+
     const char *selectQuery = "select * from calendar";//join weeklyID on calendar.weeklyID = weekly.weeklyID;";
     /* Execute SQL statement */
     rc = sqlite3_exec(db, selectQuery, callback, 0, &zErrMsg);
