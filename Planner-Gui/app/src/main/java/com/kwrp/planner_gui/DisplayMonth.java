@@ -78,6 +78,7 @@ public class DisplayMonth extends AppCompatActivity {
 
     private int currentDayPos ;
     private int currentDayColor = DialogAction.headColor;
+    private boolean colorThreadRun = false;
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -239,21 +240,23 @@ public class DisplayMonth extends AppCompatActivity {
             dialog.show();
             final Intent myIntent = new Intent(this, DisplayMonth.class);
             class ColorSetThread extends Thread {
-//                Intent current;
-//                public ColorSetThread(AppCompatActivity i){
-//                    current = i;
-//                }
                 @Override
                 public void run(){
+                    colorThreadRun = true;
                     int c = DialogAction.headColor;
-                    while(c == DialogAction.headColor){}
+                    while(c == DialogAction.headColor){
+
+                    }
                     startActivity(myIntent);
                     finish();
+                    colorThreadRun = false;
 
                 }
             }
+            if(!colorThreadRun){
+                new ColorSetThread().start();
+            }
 
-            new ColorSetThread().start();
 
 
             return true;
