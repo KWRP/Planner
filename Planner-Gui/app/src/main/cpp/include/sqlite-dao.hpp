@@ -11,6 +11,7 @@
 #include "sqlite3.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <vector>
 
 #ifdef __cplusplus
 extern "C"
@@ -19,21 +20,23 @@ extern "C"
 
 bool createTableQuery(const char *filepath);
 
-bool createDb(const char *createStatement,sqlite3 *db);
+bool createDb(const char *createStatement, sqlite3 *db);
 
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
-				const char *endDay, const char *endMonth, const char *endYear, int repeatCycle,
-				bool byDay, const char *filepath);
+                const char *endDay, const char *endMonth, const char *endYear, int repeatCycle,
+                bool byDay, const char *filepath);
 
 bool updateToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
-                const char *endDay, const char *endMonth, const char *endYear,int eventID, 
-				int repeatCycle,bool byDay, const char *filepath);
+                const char *endDay, const char *endMonth, const char *endYear, int eventID,
+                int repeatCycle, bool byDay, const char *filepath);
 
 bool deleteFromDb(int eventID, const char *filepath);
 
-bool selectFromDB(const char *sday,const char *smonth,const char* syear, const char *filepath);
+std::vector<std::vector<const unsigned char *>> selectFromDB(const char *sday, const char *smonth,
+                                                             const char *syear,
+                                                             const char *filepath);
 
 bool displayDb(const char *nativeDb);
 

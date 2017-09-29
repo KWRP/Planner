@@ -1,7 +1,6 @@
 #include "include/jni-dao.h"
 #include "include/xml-dao.hpp"
-#include "include/sqlite-dao.h"
-#include <android/log.h>
+#include "sqlite-dao.hpp"
 
 using namespace std;
 extern "C" {
@@ -70,8 +69,12 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(),endMonth.c_str(),endYear.c_str(),
                                         atoi(nativeRepeat),byDay, nativepath);
-        bool select = selectFromDB(day.c_str(),month.c_str(),year.c_str(), nativepath);
-        if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
+
+        std::vector<std::vector<const unsigned char *>> select = selectFromDB(day.c_str(),
+                                                                              month.c_str(),
+                                                                              year.c_str(),
+                                                                              nativepath);
+        //if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
 //        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
@@ -147,7 +150,10 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
         string month = rest.substr(0, selectedDate.find(delimiter));
         string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-        bool select = selectFromDB(days.c_str(),month.c_str(),year.c_str(), nativePath);
+        std::vector<std::vector<const unsigned char *>> select = selectFromDB(days.c_str(),
+                                                                              month.c_str(),
+                                                                              year.c_str(),
+                                                                              nativePath);
 
         Day *day = new Day(nativeDate, nativePath);
         dayString = day->toString();
