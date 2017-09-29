@@ -75,7 +75,7 @@ public class DisplayMonth extends AppCompatActivity {
     private GridView mGridView;
 
     private int currentYear;
-
+    private boolean colorThreadRun = false;
     private int currentDayPos ;
     private int currentDayColor = DialogAction.headColor;
 
@@ -238,22 +238,24 @@ public class DisplayMonth extends AppCompatActivity {
             final AlertDialog dialog = DialogAction.createSettingsDialog(this);
             dialog.show();
             final Intent myIntent = new Intent(this, DisplayMonth.class);
+
             class ColorSetThread extends Thread {
-//                Intent current;
-//                public ColorSetThread(AppCompatActivity i){
-//                    current = i;
-//                }
                 @Override
                 public void run(){
+                    colorThreadRun = true;
                     int c = DialogAction.headColor;
                     while(c == DialogAction.headColor){}
+                    colorThreadRun = false;
                     startActivity(myIntent);
                     finish();
+
 
                 }
             }
 
-            new ColorSetThread().start();
+            if(!colorThreadRun){
+                new ColorSetThread().start();
+            }
 
 
             return true;
