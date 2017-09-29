@@ -306,20 +306,24 @@ std::vector<std::vector<const unsigned char *>> selectFromDB(const char *day, co
             const unsigned char *duration = sqlite3_column_text(stmt, 4);
             //skip repeat cycle, dont want to know it
             const unsigned char *endDate = sqlite3_column_text(stmt, 6);
+            const unsigned char *eventID = sqlite3_column_text(stmt, 7);
             __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!",
                                 "\nStartDate: %s\n"
                                         "Title: %s\n"
                                         "Description: %s\n"
                                         "Start Time: %s\n"
                                         "Duration: %s\n"
-                                        "End Date: %s\n",
-                                startDate, title, description, start, duration, endDate);
+                                        "End Date: %s\n"
+                                        "EventID: %s\n",
+                                startDate, title, description, start, duration, endDate, eventID);
             eventC.emplace_back(startDate);
             eventC.emplace_back(title);
             eventC.emplace_back(description);
             eventC.emplace_back(start);
             eventC.emplace_back(duration);
             eventC.emplace_back(endDate);
+            eventC.emplace_back(eventID);
+
             events.emplace_back(eventC);
 
         } else if (s == SQLITE_DONE) {
