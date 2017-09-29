@@ -6,7 +6,6 @@
 // gcc sqlite3.c test.c -o testDb
 #include <sqlite3.h>
 #include <sqlite-dao.hpp>
-#include <time.h>
 #include <stdlib.h>
 #include <android/log.h>
 
@@ -252,9 +251,9 @@ bool deleteFromDb(int eventID, const char *filepath) {
     return true;
 }
 
-std::vector<std::vector<const unsigned char *>> selectFromDB(const char *day, const char *month,
-                                                             const char *year,
-                                                             const char *filepath) {
+std::vector<std::vector<std::string>> selectFromDB(const char *day, const char *month,
+                                                   const char *year,
+                                                   const char *filepath) {
     const char *days[7] = {"WEEKLY.monday", "WEEKLY.tuesday", "WEEKLY.wednesday",
                            "WEEKLY.thursday", "WEEKLY.friday", "WEEKLY.saturday", "WEEKLY.sunday"};
 
@@ -316,13 +315,13 @@ std::vector<std::vector<const unsigned char *>> selectFromDB(const char *day, co
                                         "End Date: %s\n"
                                         "EventID: %s\n",
                                 startDate, title, description, start, duration, endDate, eventID);
-            eventC.emplace_back(startDate);
-            eventC.emplace_back(title);
-            eventC.emplace_back(description);
-            eventC.emplace_back(start);
-            eventC.emplace_back(duration);
-            eventC.emplace_back(endDate);
-            eventC.emplace_back(eventID);
+            eventC.emplace_back((std::string) (char *) startDate);
+            eventC.emplace_back((std::string) (char *) title);
+            eventC.emplace_back((std::string) (char *) description);
+            eventC.emplace_back((std::string) (char *) start);
+            eventC.emplace_back((std::string) (char *) duration);
+            eventC.emplace_back((std::string) (char *) endDate);
+            eventC.emplace_back((std::string) (char *) eventID);
 
             events.emplace_back(eventC);
 
