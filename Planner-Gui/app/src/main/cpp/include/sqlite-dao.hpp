@@ -26,12 +26,12 @@ bool createDb(const char *createStatement, sqlite3 *db);
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear, int repeatCycle,
-                bool byDay, const char *filepath);
+                const char *filepath);
 
 bool updateToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear, int eventID,
-                int repeatCycle, bool byDay, const char *filepath);
+                int repeatCycle, const char *filepath);
 
 bool deleteFromDb(int eventID, const char *filepath);
 

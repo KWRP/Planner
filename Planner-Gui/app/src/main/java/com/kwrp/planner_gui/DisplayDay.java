@@ -205,7 +205,7 @@ public class DisplayDay extends AppCompatActivity {
     private void createNewEvent(String title, String description, String start, String finish,
                                 String finishDate, String repeat) {
 
-        if (this.repeat == 3) repeat += repeatDayDate;
+        //if (this.repeat == 3) repeat += repeatDayDate;
         Log.e("Finish Date: ",finishDate);
         Log.e("start Date: ", selectedDate);
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
@@ -481,24 +481,9 @@ public class DisplayDay extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (which == 3) {
-                        String[] choice = {"Day of week", "Date"};
-                        AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
-                        b.setTitle("Repeat on").setSingleChoiceItems(choice, repeatDayDate,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        repeatDayDate = which;
-                                        dialog.cancel();
-                                    }
-                                });
-                        b.create().show();
-                            eventDays.setText("Monthly by " + choice[repeatDayDate]);
-                    } else {
                         repeatDayDate = 0;
                         eventDays.setText(repeats[which]);
                         newSelection = which;
-                    }
                 }
             });
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -639,8 +624,7 @@ public class DisplayDay extends AppCompatActivity {
      * A JNI function that removes an event from the .xml file rendering it
      * non-existent.
      *
-     * @param filePath     path/to/file
-     * @param selectedDate the date to remove the event from
+     * @param filepath     path/to/file
      * @param eventId      the event id number
      * @return string confirming action
      */
@@ -652,5 +636,8 @@ public class DisplayDay extends AppCompatActivity {
                                           String finish, String selectedDate,
                                           String finishDate, String repeat, String filepath);
 
-}
+    public native String jniUpdateEventDb(String title, String description, String start, String finish,
+                                          String startDate, String endDate, String repeat, String eventID,
+                                          String filepath);
+    }
 
