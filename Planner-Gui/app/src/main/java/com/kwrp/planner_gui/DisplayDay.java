@@ -179,7 +179,8 @@ public class DisplayDay extends AppCompatActivity {
      * eventItems list.
      */
     protected void getEvents() {
-        filepath = getFilesDir().getAbsolutePath() + "/events.xml";
+        filepath = getFilesDir().getAbsolutePath() + "/events.db";
+        System.out.println(filepath);
         String getDay = jniGetDay(filepath, selectedDate);
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
@@ -255,7 +256,7 @@ public class DisplayDay extends AppCompatActivity {
     private void checkDbExists() {
         File dir = getFilesDir();
         File file = new File(dir, "/events.db");
-        //file.delete();
+        file.delete();
 
         if (!file.exists()) {
             filepath = getFilesDir().getAbsolutePath() + "/events.db";
@@ -527,7 +528,19 @@ public class DisplayDay extends AppCompatActivity {
 
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            finishDate.setText(day + "/" + month + "/" + year);
+            String d;
+            String m;
+            if (day < 10) {
+                d = "0" + day;
+            } else {
+                d = "" + day;
+            }
+            if (month < 10) {
+                m = "0" + month;
+            } else {
+                m = "" + month;
+            }
+            finishDate.setText(d + "/" + m + "/" + year);
             finishDate.setTextSize(20);
         }
     }

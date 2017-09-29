@@ -4,20 +4,16 @@
 
 // To compile this file use:
 // gcc sqlite3.c test.c -o testDb
-
 #include <sqlite3.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <android/log.h>
-#include <stdlib.h>
-#include "include/sqlite-dao.h"
+#include <sqlite-dao.h>
 #include <time.h>
+#include <stdlib.h>
+#include <android/log.h>
 
 int dayOfWeekI(int day,int month,int year){
 
     struct tm time_in = {0, 0, 0, // second, minute, hour
-                       day, month - 1, year - 1900}; // 1-based day, 0-based month, year since 1900
+                         day, month - 1, year - 1900}; // 1-based day, 0-based month, year since 1900
     time_t time_temp = mktime(&time_in);
 
     struct tm const *time_out = localtime(&time_temp);
@@ -28,71 +24,71 @@ int dayOfWeekI(int day,int month,int year){
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
     int i;
-    __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", " hh");
     for (i = 0; i < argc; ++i) {
-       // printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+        //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
         //printf("info:: azColName = %s ; argv = %s \n", azColName[i], argv[i]);
-        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s %s", azColName[i], argv[i]);
+        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
     }
     printf("\n");
     return 0;
 }
 
 bool createTableQuery(const char *filepath) {
+    sqlite3 *db;
+    char *zErrMsg = 0;
+    int rc;
+    rc = sqlite3_open(filepath, &db);
 
-    const char *createWeeklyQuery = "CREATE TABLE IF NOT EXISTS WEEKLY(weeklyID AUTOINCREMENT NOT NULL, monday Boolean NOT NULL,"
+    if (rc != SQLITE_OK) {
+        sqlite3_free(zErrMsg);
+        return false;
+    }
+
+    const char *createWeeklyQuery = "CREATE TABLE IF NOT EXISTS WEEKLY("
+            "monday Boolean NOT NULL,"
             "tuesday Boolean NOT NULL,"
             "wednesday Boolean NOT NULL,"
             "thursday Boolean NOT NULL,"
             "friday Boolean NOT NULL,"
             "saturday Boolean NOT NULL,"
             "sunday Boolean NOT NULL,"
-            "PRIMARY KEY (weeklyID));";
+            "weekID INTEGER NOT NULL,"
+            "PRIMARY KEY(weekID));";
 
     const char *createCALENDARQuery = "CREATE TABLE IF NOT EXISTS CALENDAR("
-            "eventID AUTOINCREMENT NOT NULL,"
-            "day text NOT NULL,"
-            "month text NOT NULL,"
-            "year text NOT NULL,"
-            "title text NOT NULL,"
-            "description text NOT NULL,"
-            "start text NOT NULL,"
-            "duration text NOT NULL, "
-            "repeatCycle int NOT NULL,"
-            "endDay text NOT NULL,"
-            "endMonth text NOT NULL,"
-            "endYear text NOT NULL,"
-            "weeklyID NOT NULL, "
-            "PRIMARY KEY (eventID)),"
-            "FOREIGN KEY(weeklyID) REFERENCES WEEKLY(weeklyID)) ON DELETE CASCADE;";
+            "startDate TEXT NOT NULL,"
+            "title TEXT NOT NULL,"
+            "description TEXT NOT NULL,"
+            "start TEXT NOT NULL,"
+            "duration TEXT NOT NULL,"
+            "repeatCycle INTEGER NOT NULL,"
+            "endDate TEXT NOT NULL,"
+            "eventID INTEGER NOT NULL,"
+            "weekID INTEGER NOT NULL,"
+            "PRIMARY KEY(eventID),"
+            "FOREIGN KEY(weekID) REFERENCES WEEKLY(weekID) ON DELETE CASCADE);";
 
-    bool weeklyResult = createDb(createWeeklyQuery, filepath);
-    bool calendarResult = createDb(createCALENDARQuery, filepath);
+    bool weeklyResult = createDb(createWeeklyQuery, db);
+    bool calendarResult = createDb(createCALENDARQuery, db);
 
+
+    sqlite3_close(db);
     if (!weeklyResult || !calendarResult)
         return false;
     return true;
 }
 
-bool createDb(const char *createStatement, const char *filepath) {
-    /* Open database */
-    sqlite3 *db;
+bool createDb(const char *createStatement,sqlite3 *db) {
     char *zErrMsg = 0;
     int rc;
-    rc = sqlite3_open(filepath, &db);
 
 
-    if (rc != SQLITE_OK) {
-        sqlite3_free(zErrMsg);
-        return false;
-    }
     rc = sqlite3_exec(db, createStatement, callback, 0, &zErrMsg);
     if (rc != SQLITE_OK) {
         sqlite3_free(zErrMsg);
         return false;
     }
 
-    sqlite3_close(db);
     return true;
 }
 
@@ -102,6 +98,8 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
                 int repeatCycle,bool byDay, const char *filepath) {
 
 
+    __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", filepath);
+    createTableQuery(filepath);
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc, i;
@@ -116,19 +114,16 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
     }
 
     char *insertQueryWeekly = "INSERT INTO WEEKLY(monday,tuesday,wednesday,thursday,friday,saturday,"
-                                "sunday) VALUES(?,?,?,?,?,?,?);";
-    char *insertQueryCalendar = "INSERT INTO CALENDAR(day,month,year,title,description,start,"
-                                "duration,repeatCycle,endDay,endMonth,endYear,weeklyID) "
-                                "VALUES(?,?,?,?,?,?,?,?,?,?,?,last_insert_rowid());";
+            "sunday,weekID) VALUES(?,?,?,?,?,?,?,null);";
+    char *insertQueryCalendar = "INSERT INTO CALENDAR(startDate,title,description,start,"
+            "duration,repeatCycle,endDate,eventID,weekID) "
+            "VALUES(?,?,?,?,?,?,?,null,last_insert_rowid());";
 
-    printf("Query %s\n", insertQueryWeekly);
-    printf("Query %s\n", insertQueryCalendar);
-
-
+    //printf("Query %s\n", insertQueryWeekly);
+    //printf("Query %s\n", insertQueryCalendar);
 
 
     dayNum = dayOfWeekI(atoi(day),atoi(month),atoi(year));
-
 
     rc = sqlite3_prepare_v2(db, insertQueryWeekly, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
@@ -141,28 +136,43 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
                 }
             }
         }else{
-            sqlite3_bind_int(stmt, i + 1, true);
+            for (i = 0; i < 7; i++) {
+                sqlite3_bind_int(stmt, i + 1, true);
+            }
         }
     } else {
-        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", sqlite3_errmsg(db));
     }
 
     sqlite3_step(stmt);
     sqlite3_reset(stmt);
 
+    char startDate[11];
+    strcpy(startDate,year);
+    strcat(startDate,"-");
+    strcat(startDate,month);
+    strcat(startDate,"-");
+    strcat(startDate,day);
+
+    char endDate[11];
+    strcpy(endDate,endYear);
+    strcat(endDate,"-");
+    strcat(endDate,endMonth);
+    strcat(endDate,"-");
+    strcat(endDate,endDay);
+
+    printf("start date: %s\n",startDate);
+    printf("end date: %s\n",endDate);
+
     rc = sqlite3_prepare_v2(db, insertQueryCalendar, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
-        sqlite3_bind_text(stmt, 1, day, (int)strlen(day), 0);
-        sqlite3_bind_text(stmt, 2, month, (int)strlen(month), 0);
-        sqlite3_bind_text(stmt, 3, year, (int)strlen(year), 0);
-        sqlite3_bind_text(stmt, 4, title, (int)strlen(title), 0);
-        sqlite3_bind_text(stmt, 5, description, (int)strlen(description), 0);
-        sqlite3_bind_text(stmt, 6, start, (int)strlen(start), 0);
-        sqlite3_bind_text(stmt, 7, duration, (int)strlen(duration), 0);
-        sqlite3_bind_int(stmt, 8, repeatCycle);
-        sqlite3_bind_text(stmt, 9, endDay, (int)strlen(endDay), 0);
-        sqlite3_bind_text(stmt, 10, endMonth, (int)strlen(endMonth), 0);
-        sqlite3_bind_text(stmt, 11, endYear, (int)strlen(endYear), 0);
+        sqlite3_bind_text(stmt, 1, startDate, (int)strlen(startDate), 0);
+        sqlite3_bind_text(stmt, 2, title, (int)strlen(title), 0);
+        sqlite3_bind_text(stmt, 3, description, (int)strlen(description), 0);
+        sqlite3_bind_text(stmt, 4, start, (int)strlen(start), 0);
+        sqlite3_bind_text(stmt, 5, duration, (int)strlen(duration), 0);
+        sqlite3_bind_int(stmt, 6, repeatCycle);
+        sqlite3_bind_text(stmt, 7, endDate, (int)strlen(endDate), 0);
     } else {
         fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
     }
@@ -189,15 +199,20 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
         return false;
     }
 
-    char *updateQuery = "UPDATE CALENDAR SET(endDate) VALUES(?) Where eventID = ?;";
-    printf("Query: %s\n", updateQuery);
+    char startDate[11];
+    strcpy(startDate,year);
+    strcat(startDate,"-");
+    strcat(startDate,month);
+    strcat(startDate,"-");
+    strcat(startDate,day);
+
+    char *updateQuery = "UPDATE CALENDAR SET endDate = ? Where eventID = ?;";
+    //printf("Query: %s\n", updateQuery);
 
     rc = sqlite3_prepare_v2(db, updateQuery, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
-        sqlite3_bind_text(stmt, 1, day, (int)strlen(day), 0);
-        sqlite3_bind_text(stmt, 2, month, (int)strlen(month), 0);
-        sqlite3_bind_text(stmt, 3, year,(int) strlen(year), 0);
-        sqlite3_bind_int(stmt, 4, eventID);
+        sqlite3_bind_text(stmt, 1, startDate, (int)strlen(startDate), 0);
+        sqlite3_bind_int(stmt, 2, eventID);
     } else {
         fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
     }

@@ -5,16 +5,12 @@
 #ifndef PLANNER_GUI_SQLITE_DAO_H
 #define PLANNER_GUI_SQLITE_DAO_H
 
+//
+// Created by willy on 25/06/2017.
 
-// To create sql executable to look at the database files use the following:
-// gcc -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION shell.c sqlite3.c -o sqlite
-
-// To compile this file use:
-// gcc sqlite3.c test.c -o testDb
-
-#include <sqlite3.h>
+#include "sqlite3.h"
 #include <stdio.h>
-#include <string.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -23,7 +19,7 @@ extern "C"
 
 bool createTableQuery(const char *filepath);
 
-bool createDb(const char *stmt, const char *filepath);
+bool createDb(const char *createStatement,sqlite3 *db);
 
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,

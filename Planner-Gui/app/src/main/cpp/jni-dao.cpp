@@ -81,7 +81,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
         (env)->ReleaseStringUTFChars(repeat, nativeRepeat);
         (env)->ReleaseStringUTFChars(startDate, nativeDate);
         (env)->ReleaseStringUTFChars(endDate, nativeEndDate);
-
         if (addEventToSql) {
             confirm = "Event Created!!";
         } else {
@@ -139,6 +138,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
 
         const char *nativePath = env->GetStringUTFChars(dir, 0);
         const char *nativeDate = env->GetStringUTFChars(date, 0);
+        displayDb(nativePath);
 
         Day *day = new Day(nativeDate, nativePath);
         dayString = day->toString();
