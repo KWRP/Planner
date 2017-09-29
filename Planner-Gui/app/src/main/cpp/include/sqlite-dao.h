@@ -33,8 +33,7 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
 
 bool deleteFromDb(int eventID, const char *filepath);
 
-bool selectFromDB(const char *sday,const char *smonth,const char* syear,
-				   const char *eday,const char *emonth,const char* eyear, const char *filepath);
+bool selectFromDB(const char *sday,const char *smonth,const char* syear, const char *filepath);
 
 bool displayDb(const char *nativeDb);
 

@@ -180,7 +180,6 @@ public class DisplayDay extends AppCompatActivity {
      */
     protected void getEvents() {
         filepath = getFilesDir().getAbsolutePath() + "/events.db";
-        System.out.println(filepath);
         String getDay = jniGetDay(filepath, selectedDate);
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();

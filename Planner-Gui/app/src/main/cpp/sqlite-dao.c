@@ -253,9 +253,10 @@ bool deleteFromDb(int eventID, const char *filepath) {
     return true;
 }
 
-bool selectFromDB(const char *sday,const char *smonth,const char* syear,
-                  const char *eday,const char *emonth,const char* eyear, const char *filepath) {
-    printf("Database table:\n");
+bool selectFromDB(const char *day,const char *month,const char* year, const char *filepath) {
+    char* days[7] = {"WEEKLY.monday","WEEKLY.tuesday","WEEKLY.wednesday",
+                           "WEEKLY.thursday","WEEKLY.friday","WEEKLY.saturday","WEEKLY.sunday"};
+
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
@@ -268,46 +269,49 @@ bool selectFromDB(const char *sday,const char *smonth,const char* syear,
         return false;
     }
 
+    char eventDate[11];
+    strcpy(eventDate,year);
+    strcat(eventDate,"-");
+    strcat(eventDate,month);
+    strcat(eventDate,"-");
+    strcat(eventDate,day);
 
+    int dayNum = dayOfWeekI(atoi(day),atoi(month),atoi(year));
     const char *selectQuery = "select * from CALENDAR "
-            "join weeklyID on CALENDAR.weeklyID = WEEKLY.weeklyID "
-            "where CALENDAR.day = (?) "
-            "and CALENDAR.month = (?) "
-            "and CALENDAR.year = (?) "
-            "and CALENDAR.endDay = (?) "
-            "and CALENDAR.endMonth = (?) "
-            "and CALENDAR.endYear = (?) ";
+            "join WEEKLY on CALENDAR.weekID = WEEKLY.weekID "
+            "where CALENDAR.startDate <= (?) "
+            "and CALENDAR.endDate >= (?) "
+            "and (?) = 0;";
 
-    printf("Queury: %s\n\n", selectQuery);
+    printf("Query: %s\n\n", selectQuery);
 
     rc = sqlite3_prepare_v2(db, selectQuery, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
-        sqlite3_bind_text(stmt, 1, sday, (int)strlen(sday), 0);
-        sqlite3_bind_text(stmt, 2, smonth, (int)strlen(smonth), 0);
-        sqlite3_bind_text(stmt, 3, syear, (int)strlen(syear), 0);
-        sqlite3_bind_text(stmt, 4, eday, (int)strlen(eday), 0);
-        sqlite3_bind_text(stmt, 5, emonth, (int)strlen(emonth), 0);
-        sqlite3_bind_text(stmt, 6, eyear, (int)strlen(eyear), 0);
+        sqlite3_bind_text(stmt, 1, eventDate, (int)strlen(eventDate), 0);
+        sqlite3_bind_text(stmt, 2, eventDate, (int)strlen(eventDate), 0);
+        sqlite3_bind_text(stmt, 3, &day[dayNum], (int)strlen(&day[dayNum]), 0);
     } else {
-        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+
+        __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", sqlite3_errmsg(db));
     }
 
-    while (1) {
+    while (true) {
 
         int s = sqlite3_step(stmt);
         if (s == SQLITE_ROW) {
-            int bytes;
+            int title;
             const unsigned char *text;
-            bytes = sqlite3_column_bytes(stmt, 0);
+            title = sqlite3_column_bytes(stmt, 0);
             text = sqlite3_column_text(stmt, 0);
-            printf("%d: %s\n", bytes, text);
+            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%d: %s", title, text);
         } else if (s == SQLITE_DONE) {
             sqlite3_finalize(stmt);
             sqlite3_close(db);
             break;
         } else {
             fprintf(stderr, "Failed.\n");
-            return (1);
+            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", "Failed to read row");
+            return false;
         }
     }
     return true;

@@ -70,8 +70,9 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(),endMonth.c_str(),endYear.c_str(),
                                         atoi(nativeRepeat),byDay, nativepath);
-
-        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
+        bool select = selectFromDB(day.c_str(),month.c_str(),year.c_str(), nativepath);
+        if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
+//        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -138,7 +139,15 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
 
         const char *nativePath = env->GetStringUTFChars(dir, 0);
         const char *nativeDate = env->GetStringUTFChars(date, 0);
-        displayDb(nativePath);
+        //displayDb(nativePath);
+        string selectedDate = nativeDate;
+        string delimiter = "/";
+        string days = selectedDate.substr(0, selectedDate.find(delimiter));
+        string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        string month = rest.substr(0, selectedDate.find(delimiter));
+        string year = rest.substr(selectedDate.find(delimiter) + 1);
+
+        bool select = selectFromDB(days.c_str(),month.c_str(),year.c_str(), nativePath);
 
         Day *day = new Day(nativeDate, nativePath);
         dayString = day->toString();
