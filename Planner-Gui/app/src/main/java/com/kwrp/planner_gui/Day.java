@@ -32,7 +32,7 @@ public class Day {
      * @param data the list of events
      */
     public Day(String data) {
-        String[] eventsSplit = data.split(":");
+        String[] eventsSplit = data.split(";");
         for (String event : eventsSplit) {
             Event newEvent = new Event(event);
             events.add(newEvent);

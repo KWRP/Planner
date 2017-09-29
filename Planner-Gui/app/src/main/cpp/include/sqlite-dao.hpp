@@ -35,7 +35,7 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
 
 bool deleteFromDb(int eventID, const char *filepath);
 
-std::vector<std::vector<std::string>> selectFromDB(const char *sday, const char *smonth,
+std::vector<std::string> selectFromDB(const char *sday, const char *smonth,
                                                    const char *syear,
                                                    const char *filepath);
 

@@ -1,5 +1,7 @@
 package com.kwrp.planner_gui;
 
+import android.util.Log;
+
 /**
  * A class defining an event object containg all the appropriate
  * details (e.g. title, description)
@@ -11,6 +13,7 @@ public class Event {
      * The event ID
      */
     private String eventId;
+    private String eventDate;
 
     /**
      * The event title
@@ -31,7 +34,7 @@ public class Event {
      * The event duration
      */
     private String duration;
-
+    private String endDate;
     /**
      * Default constructor
      */
@@ -45,12 +48,15 @@ public class Event {
      */
     public Event(String event) {
 
-        String[] eventItems = event.split(";");
-        this.eventId = eventItems[0];
+        Log.e("s", event);
+        String[] eventItems = event.split("__");
+        this.eventDate = eventItems[0];
         this.title = eventItems[1];
         this.description = eventItems[2];
         this.startTime = eventItems[3];
         this.duration = eventItems[4];
+        this.endDate = eventItems[5];
+        this.eventId = eventItems[6];
     }
 
     /**
@@ -152,8 +158,10 @@ public class Event {
     public String toString() {
         return "Event " + eventId + " :\n" +
                 "\t\tTitle : " + title +
-                ", \n\t\tDescription : " + description +
-                ", \n\t\tStartTime : " + startTime + " oclock" +
-                ", \n\t\tDuration : " + duration + " hour(s)";
+                "\n\t\tDescription : " + description +
+                "\n\t\tStart Time : " + startTime +
+                "\n\t\tFinish Time: " + duration +
+                "\n\t\tStart Date: " + eventDate +
+                "\n\t\tEnd Date: " + endDate;
     }
 }

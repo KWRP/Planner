@@ -130,14 +130,14 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
         if (byDay || repeatCycle == 2) {
             for (i = 0; i < 7; i++) {
                 if (dayNum == i) {
-                    sqlite3_bind_int(stmt, i + 1, true);
+                    sqlite3_bind_int(stmt, i + 1, 0);
                 } else {
-                    sqlite3_bind_int(stmt, i + 1, false);
+                    sqlite3_bind_int(stmt, i + 1, 1);
                 }
             }
         } else {
             for (i = 0; i < 7; i++) {
-                sqlite3_bind_int(stmt, i + 1, true);
+                sqlite3_bind_int(stmt, i + 1, 0);
             }
         }
     } else {
@@ -251,17 +251,17 @@ bool deleteFromDb(int eventID, const char *filepath) {
     return true;
 }
 
-std::vector<std::vector<std::string>> selectFromDB(const char *day, const char *month,
+std::vector<std::string> selectFromDB(const char *day, const char *month,
                                                    const char *year,
                                                    const char *filepath) {
-    const char *days[7] = {"WEEKLY.monday", "WEEKLY.tuesday", "WEEKLY.wednesday",
-                           "WEEKLY.thursday", "WEEKLY.friday", "WEEKLY.saturday", "WEEKLY.sunday"};
+    const char* days[7] = {"WEEKLY.monday", "WEEKLY.tuesday", "WEEKLY.wednesday",
+                           "WEEKLY.thursday", "friday", "WEEKLY.saturday", "WEEKLY.sunday"};
 
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
     sqlite3_stmt *stmt;
-    std::vector<std::vector<const unsigned char *>> events;
+    std::vector<std::string> events;
 
     /* Open database */
     rc = sqlite3_open(filepath, &db);
@@ -277,19 +277,22 @@ std::vector<std::vector<std::string>> selectFromDB(const char *day, const char *
     strcat(eventDate, day);
 
     int dayNum = dayOfWeekI(atoi(day), atoi(month), atoi(year));
-    const char *selectQuery = "select * from CALENDAR "
+
+    std::string query = "select * from CALENDAR "
             "join WEEKLY on CALENDAR.weekID = WEEKLY.weekID "
-            "where CALENDAR.startDate <= date( ? ) ";
-    "and CALENDAR.endDate >= date( ? ) ";
-    "and ? = 0 ;";
+            "where CALENDAR.startDate <= date( ? ) "
+            "and CALENDAR.endDate >= date( ? ) and ";
+    query.append(days[dayNum]);
+    query.append(" = 0;");
 
     const char *dday = days[dayNum];
+    __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", dday);
 
-    rc = sqlite3_prepare_v2(db, selectQuery, -1, &stmt, 0);
+    rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, 0);
     if (rc == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, eventDate, (int) strlen(eventDate), 0);
         sqlite3_bind_text(stmt, 2, eventDate, (int) strlen(eventDate), 0);
-        sqlite3_bind_text(stmt, 3, dday, (int) strlen(dday), 0);
+        //sqlite3_bind_text(stmt, 3, (char *)dday, (int) strlen((char *)dday), 0);
     } else {
         __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", sqlite3_errmsg(db));
     }
@@ -297,7 +300,7 @@ std::vector<std::vector<std::string>> selectFromDB(const char *day, const char *
     while (true) {
         int s = sqlite3_step(stmt);
         if (s == SQLITE_ROW) {
-            std::vector<const unsigned char *> eventC;
+            std::string eventC = "";
             const unsigned char *startDate = sqlite3_column_text(stmt, 0);
             const unsigned char *title = sqlite3_column_text(stmt, 1);
             const unsigned char *description = sqlite3_column_text(stmt, 2);
@@ -315,14 +318,13 @@ std::vector<std::vector<std::string>> selectFromDB(const char *day, const char *
                                         "End Date: %s\n"
                                         "EventID: %s\n",
                                 startDate, title, description, start, duration, endDate, eventID);
-            eventC.emplace_back((std::string) (char *) startDate);
-            eventC.emplace_back((std::string) (char *) title);
-            eventC.emplace_back((std::string) (char *) description);
-            eventC.emplace_back((std::string) (char *) start);
-            eventC.emplace_back((std::string) (char *) duration);
-            eventC.emplace_back((std::string) (char *) endDate);
-            eventC.emplace_back((std::string) (char *) eventID);
-
+            eventC.append((std::string) (char *) startDate).append("__");
+            eventC.append((std::string) (char *) title).append("__");
+            eventC.append((std::string) (char *) description).append("__");
+            eventC.append((std::string) (char *) start).append("__");
+            eventC.append((std::string) (char *) duration).append("__");
+            eventC.append((std::string) (char *) endDate).append("__");
+            eventC.append((std::string) (char *) eventID).append("__");
             events.emplace_back(eventC);
 
         } else if (s == SQLITE_DONE) {

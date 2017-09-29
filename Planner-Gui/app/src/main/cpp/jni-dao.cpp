@@ -70,10 +70,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
                                         endDay.c_str(),endMonth.c_str(),endYear.c_str(),
                                         atoi(nativeRepeat),byDay, nativepath);
 
-        std::vector<std::vector<const unsigned char *>> select = selectFromDB(day.c_str(),
-                                                                              month.c_str(),
-                                                                              year.c_str(),
-                                                                              nativepath);
+        std::vector<string> select = selectFromDB(day.c_str(),month.c_str(),year.c_str(), nativepath);
         //if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
 //        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 
@@ -97,41 +94,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
     return env->NewStringUTF(confirm.c_str());
 
 }
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveDbEvent(
-        JNIEnv *env, jobject /* this */, jstring filepath, jstring date, jstring eventId) {
-
-    string confirm = "";
-    try {
-
-        const char *nativePath = env->GetStringUTFChars(filepath, 0);
-        const char *nativeDate = env->GetStringUTFChars(date, 0);
-        const char *nativeEventId = env->GetStringUTFChars(eventId, 0);
-
-        string selectedDate = nativeDate;
-        string delimiter = "/";
-        string day = selectedDate.substr(0, selectedDate.find(delimiter));
-        string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
-        string month = rest.substr(0, selectedDate.find(delimiter));
-        string year = rest.substr(selectedDate.find(delimiter) + 1);
-
-        bool deleteEvent = removeEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
-                                       nativeEventId);
-
-        (env)->ReleaseStringUTFChars(filepath, nativePath);
-        (env)->ReleaseStringUTFChars(date, nativeDate);
-        (env)->ReleaseStringUTFChars(eventId, nativeEventId);
-
-        if (deleteEvent) {
-            confirm = "Event Deleted!!";
-        } else {
-            confirm = "Event Deletion Failed!!!";
-        }
-    }
-    catch (exception e) {
-        throwJavaException(env, e.what());
-    }
-    return env->NewStringUTF(confirm.c_str());
-}
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
         JNIEnv *env, jobject /* this */, jstring dir, jstring date) {
@@ -150,20 +112,17 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
         string month = rest.substr(0, selectedDate.find(delimiter));
         string year = rest.substr(selectedDate.find(delimiter) + 1);
 
-        std::vector<std::vector<const unsigned char *>> select = selectFromDB(days.c_str(),
-                                                                              month.c_str(),
-                                                                              year.c_str(),
-                                                                              nativePath);
-
-        Day *day = new Day(nativeDate, nativePath);
-        dayString = day->toString();
-
-        free(day);
+        vector<std::string> result = selectFromDB(days.c_str(), month.c_str(), year.c_str(),
+                                                  nativePath);
         (env)->ReleaseStringUTFChars(dir, nativePath);
         (env)->ReleaseStringUTFChars(date, nativeDate);
 
-    }
-    catch (exception e) {
+        for (int i = 0; i < result.size(); i++) {
+            dayString.append(result[i]).append(";");
+        }
+
+
+    } catch (exception e) {
         throwJavaException(env, e.what());
     }
     return env->NewStringUTF(dayString.c_str());
@@ -302,30 +261,17 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateEvent(
 
 }
 
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEvent(
-        JNIEnv *env, jobject /* this */, jstring filepath, jstring date, jstring eventId) {
-
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb(
+        JNIEnv *env, jobject /* this */, jstring eventId, jstring filepath) {
     string confirm = "";
     try {
 
         const char *nativePath = env->GetStringUTFChars(filepath, 0);
-        const char *nativeDate = env->GetStringUTFChars(date, 0);
         const char *nativeEventId = env->GetStringUTFChars(eventId, 0);
 
-        string selectedDate = nativeDate;
-        string delimiter = "/";
-        string day = selectedDate.substr(0, selectedDate.find(delimiter));
-        string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
-        string month = rest.substr(0, selectedDate.find(delimiter));
-        string year = rest.substr(selectedDate.find(delimiter) + 1);
-
-
-        bool deleteEvent = removeEvent(nativePath, day.c_str(), month.c_str(), year.c_str(),
-                                       nativeEventId);
-
+        bool deleteEvent = deleteFromDb(atoi(nativeEventId), nativePath);
 
         (env)->ReleaseStringUTFChars(filepath, nativePath);
-        (env)->ReleaseStringUTFChars(date, nativeDate);
         (env)->ReleaseStringUTFChars(eventId, nativeEventId);
 
         if (deleteEvent) {

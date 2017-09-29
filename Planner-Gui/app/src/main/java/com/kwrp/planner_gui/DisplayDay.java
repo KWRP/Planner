@@ -180,7 +180,8 @@ public class DisplayDay extends AppCompatActivity {
      */
     protected void getEvents() {
         filepath = getFilesDir().getAbsolutePath() + "/events.db";
-        String getDay = jniGetDay(filepath, selectedDate);
+        String getDay = jniGetDayDb(filepath, selectedDate);
+        Log.e("Get Day", getDay);
         if (getDay == null || getDay.isEmpty()) {
             eventItems.clear();
             eventItems.add("You have no saved events on this day :)");
@@ -205,6 +206,8 @@ public class DisplayDay extends AppCompatActivity {
                                 String finishDate, String repeat) {
 
         if (this.repeat == 3) repeat += repeatDayDate;
+        Log.e("Finish Date: ",finishDate);
+        Log.e("start Date: ", selectedDate);
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
         Log.e("CREATE Eevnt:", r);
         eventId = "";
@@ -248,6 +251,12 @@ public class DisplayDay extends AppCompatActivity {
                 Integer.parseInt(context.getStringExtra("year")));
     }
 
+
+    private void deleteDb() {
+        File dir = getFilesDir();
+        File file = new File(dir, "/events.db");
+        file.delete();
+    }
     /**
      * Checks if the XML file where events are stored exists
      * and create a file if not.
@@ -255,7 +264,6 @@ public class DisplayDay extends AppCompatActivity {
     private void checkDbExists() {
         File dir = getFilesDir();
         File file = new File(dir, "/events.db");
-        file.delete();
 
         if (!file.exists()) {
             filepath = getFilesDir().getAbsolutePath() + "/events.db";
@@ -311,8 +319,10 @@ public class DisplayDay extends AppCompatActivity {
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            AlertDialog dialog = DialogAction.createAboutDialog(this);
-            dialog.show();
+            //AlertDialog dialog = DialogAction.createAboutDialog(this);
+            //dialog.show();
+            deleteDb();
+            checkDbExists();
             return true;
         }
 
@@ -431,7 +441,7 @@ public class DisplayDay extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String deleteEvent = jniRemoveEvent(filepath, selectedDate, eventId);
+                String deleteEvent = jniRemoveEventDb(eventId, filepath);
                 selectedDay = null;
                 getEvents();
                 listAdapter.notifyDataSetChanged();
@@ -534,10 +544,11 @@ public class DisplayDay extends AppCompatActivity {
             } else {
                 d = "" + day;
             }
-            if (month < 10) {
-                m = "0" + month;
+            int mon = month+1;
+            if (mon < 10) {
+                m = "0" + mon;
             } else {
-                m = "" + month;
+                m = "" + mon;
             }
             finishDate.setText(d + "/" + m + "/" + year);
             finishDate.setTextSize(20);
@@ -622,7 +633,7 @@ public class DisplayDay extends AppCompatActivity {
      * @param currentDate the day to search
      * @return the events
      */
-    public native String jniGetDay(String filePath, String currentDate);
+    public native String jniGetDayDb(String filePath, String currentDate);
 
     /**
      * A JNI function that removes an event from the .xml file rendering it
@@ -633,7 +644,7 @@ public class DisplayDay extends AppCompatActivity {
      * @param eventId      the event id number
      * @return string confirming action
      */
-    public native String jniRemoveEvent(String filePath, String selectedDate, String eventId);
+    public native String jniRemoveEventDb(String eventId, String filepath);
 
     public native String jniCreateDb(String filePath);
 
