@@ -3,7 +3,8 @@
 // gcc -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION shell.c sqlite3.c -o sqlite
 
 // To compile this file use:
-// gcc sqlite3.c test.c -o testDb
+// gcc sqlite3.c test.c -o testDb.
+
 #include <sqlite3.h>
 #include <sqlite-dao.hpp>
 #include <stdlib.h>
@@ -21,7 +22,21 @@ int dayOfWeekI(int day, int month, int year) {
     n = n % 7;
     return n;
 }
-
+int maxDays(int mon, int year) {
+    int daysInMonth = 1;
+    if (mon == 04 || mon == 06 || mon == 9 || mon == 11) {
+        daysInMonth = 30;
+    } else if (mon == 02) {
+        if (year % 4 == 0 && year % 100 && year % 400) {
+            daysInMonth = 29;
+        } else {
+            daysInMonth = 28;
+        }
+    } else {
+        daysInMonth = 31;
+    }
+    return daysInMonth;
+}
 int callback(void *NotUsed, int argc, char **argv, char **azColName) {
     NotUsed = 0;
     int i;
@@ -98,7 +113,7 @@ bool createDb(const char *createStatement, sqlite3 *db) {
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,
-                int repeatCycle, bool byDay, const char *filepath) {
+                int repeatCycle, const char *filepath) {
 
 
     __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", filepath);
@@ -127,7 +142,7 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
 
     rc = sqlite3_prepare_v2(db, insertQueryWeekly, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
-        if (byDay || repeatCycle == 2) {
+        if (repeatCycle == 2) {
             for (i = 0; i < 7; i++) {
                 if (dayNum == i) {
                     sqlite3_bind_int(stmt, i + 1, 0);
@@ -186,7 +201,7 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
 bool updateToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,
-                int eventID, int repeatCycle, bool byDay, const char *filepath) {
+                int eventID, int repeatCycle, const char *filepath) {
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
@@ -219,7 +234,7 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
     sqlite3_finalize(stmt);
     sqlite3_close(db);
     return insertToDb(day, month, year, title, description, start, duration,
-                      endDay, endMonth, endYear, repeatCycle, byDay, filepath);
+                      endDay, endMonth, endYear, repeatCycle, filepath);
 }
 
 bool deleteFromDb(int eventID, const char *filepath) {
@@ -292,7 +307,6 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
     if (rc == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, eventDate, (int) strlen(eventDate), 0);
         sqlite3_bind_text(stmt, 2, eventDate, (int) strlen(eventDate), 0);
-        //sqlite3_bind_text(stmt, 3, (char *)dday, (int) strlen((char *)dday), 0);
     } else {
         __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", sqlite3_errmsg(db));
     }
@@ -306,7 +320,7 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             const unsigned char *description = sqlite3_column_text(stmt, 2);
             const unsigned char *start = sqlite3_column_text(stmt, 3);
             const unsigned char *duration = sqlite3_column_text(stmt, 4);
-            //skip repeat cycle, dont want to know it
+            const unsigned char *repeat = sqlite3_column_text(stmt, 5);
             const unsigned char *endDate = sqlite3_column_text(stmt, 6);
             const unsigned char *eventID = sqlite3_column_text(stmt, 7);
             __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!",
@@ -316,8 +330,10 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
                                         "Start Time: %s\n"
                                         "Duration: %s\n"
                                         "End Date: %s\n"
-                                        "EventID: %s\n",
-                                startDate, title, description, start, duration, endDate, eventID);
+                                        "EventID: %s\n"
+                                        "repeatCycle: %s\n",
+                                startDate, title, description, start, duration, endDate, eventID,repeat);
+
             eventC.append((std::string) (char *) startDate).append("__");
             eventC.append((std::string) (char *) title).append("__");
             eventC.append((std::string) (char *) description).append("__");
@@ -325,7 +341,36 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             eventC.append((std::string) (char *) duration).append("__");
             eventC.append((std::string) (char *) endDate).append("__");
             eventC.append((std::string) (char *) eventID).append("__");
-            events.emplace_back(eventC);
+
+            char repeatCycle[1];
+            char eday[2];
+            char emonth[2];
+            strncpy(repeatCycle,(char *)repeat,1);
+            strncpy(emonth,(char *)startDate+6,2);
+            strncpy(eday,(char *)startDate+8,2);
+
+            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "eday is: %d\n"
+                                        "day is: %d\n"
+                                        "month is %d\n"
+                                        "repeatCycle is %d\n",
+                                atoi(eday),atoi(day),atoi(month),atoi(repeatCycle));
+
+            int lastDay = maxDays(atoi(month),atoi(year));
+            if(atoi(repeatCycle) == 3){//monthly
+                if(atoi(eday) == atoi(day)){
+                    events.emplace_back(eventC);
+                }else if(atoi(eday) > lastDay && atoi(day)== lastDay){
+                    events.emplace_back(eventC);
+                }
+            }else if(atoi(repeatCycle) == 4){//yearly
+                if(atoi(eday) == atoi(day) && atoi(emonth) == atoi(month)){
+                    events.emplace_back(eventC);
+                }else if(atoi(emonth) == atoi(month) && atoi(eday) > lastDay && atoi(day) == lastDay ){
+                    events.emplace_back(eventC);
+                }
+            }else{//weekly daily never
+                events.emplace_back(eventC);
+            }
 
         } else if (s == SQLITE_DONE) {
             //__android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", "finished rows");
