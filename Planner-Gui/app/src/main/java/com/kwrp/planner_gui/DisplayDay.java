@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.R.attr.description;
+
 /**
  * Defines the display day activity where the user is shown
  * the events for a single day, and what the ability to add
@@ -108,6 +110,7 @@ public class DisplayDay extends AppCompatActivity {
      * The day object
      */
     private Day selectedDay = null;
+    private Event selectedEvent = null;
 
     /**
      * selected event Id (for removal)
@@ -154,7 +157,8 @@ public class DisplayDay extends AppCompatActivity {
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
                 if (selectedDay != null && selectedDay.getEvent(position) != null) {
                     eventId = selectedDay.getEvent(position).getEventId();
-                    Dialog dialog = removeEventDialog();
+                    //Dialog dialog = removeEventDialog();
+                    Dialog dialog = updateEventDialog(position);
                     dialog.show();
                 }
             }
@@ -209,7 +213,7 @@ public class DisplayDay extends AppCompatActivity {
         Log.e("Finish Date: ",finishDate);
         Log.e("start Date: ", selectedDate);
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
-        Log.e("CREATE Eevnt:", r);
+        Log.e("CREATE Event:", r);
         eventId = "";
         newEvTitle = "";
         newEvDescription = "";
@@ -387,7 +391,7 @@ public class DisplayDay extends AppCompatActivity {
         eventDaysLabel.setText("Select event to repeat on");
         dialogLayout.addView(eventDaysLabel, 10);
         eventDays = new Button(this);
-        eventDays.setHint("Select repeats to repeat");
+        eventDays.setHint("Select repeats on");
         eventDays.setOnClickListener(eventDaysOnClick);
         dialogLayout.addView(eventDays, 11);
 
@@ -411,6 +415,102 @@ public class DisplayDay extends AppCompatActivity {
                 }
             }
         });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                eventDays.setText("");
+                startTime.setText("");
+                endTime.setText("");
+                finishDate.setText("");
+                dialog.cancel();
+            }
+        });
+
+        return builder.create();
+    }
+
+    private AlertDialog updateEventDialog(int eventId) {
+        selectedEvent = selectedDay.getEvent(eventId);
+        AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
+        builder.setTitle("Edit Event");
+
+        final LinearLayout dialogLayout = new LinearLayout(this);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        dialogLayout.setPadding(50, 50, 50, 50);
+        final TextView titleLabel = new TextView(this);
+        titleLabel.setText("Event Title:");
+        dialogLayout.addView(titleLabel, 0);
+        final EditText titleInput = new EditText(this);
+        titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        titleInput.setText(selectedEvent.getTitle());
+        dialogLayout.addView(titleInput, 1);
+
+
+        final TextView descriptLabel = new TextView(this);
+        descriptLabel.setText("Event Description:");
+        dialogLayout.addView(descriptLabel, 2);
+        final EditText descriptInput = new EditText(this);
+        descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        Log.e("Description: ", selectedEvent.getDescription());
+        descriptInput.setText(selectedEvent.getDescription());
+        dialogLayout.addView(descriptInput, 3);
+
+        final TextView startLabel = new TextView(this);
+        startLabel.setText("Start Time:");
+        dialogLayout.addView(startLabel, 4);
+        startTime = new Button(this);
+        startTime.setHint("Select time");
+        startTime.setOnClickListener(startOnClick);
+        startTime.setText(selectedEvent.getStartTime());
+        dialogLayout.addView(startTime, 5);
+
+        final TextView endLabel = new TextView(this);
+        endLabel.setText("End Time");
+        dialogLayout.addView(endLabel, 6);
+        endTime = new Button(this);
+        endTime.setHint("Select time");
+        endTime.setOnClickListener(endOnClick);
+        endTime.setText(selectedEvent.getFinishTime());
+        dialogLayout.addView(endTime, 7);
+
+        final TextView finishLabel = new TextView(this);
+        finishLabel.setText("Finish Date");
+        dialogLayout.addView(finishLabel, 8);
+        finishDate = new Button(this);
+        finishDate.setHint("Select date");
+        finishDate.setOnClickListener(endDateOnClick);
+        finishDate.setText(selectedEvent.getEndDate());
+        dialogLayout.addView(finishDate, 9);
+
+        final TextView eventDaysLabel = new TextView(this);
+        eventDaysLabel.setText("Select event to repeat on");
+        dialogLayout.addView(eventDaysLabel, 10);
+        eventDays = new Button(this);
+        eventDays.setHint("Select repeats to repeat");
+        eventDays.setOnClickListener(eventDaysOnClick);
+        dialogLayout.addView(eventDays, 11);
+
+        builder.setView(dialogLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                newEvTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
+                newEvDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
+                newEvStartTime = startTime.getText().toString();
+                newEvFinishTime = endTime.getText().toString();
+                newEvEndDate = finishDate.getText().toString();
+                String repeat = Integer.toString(selectedRepeat);
+                if (newEvTitle.equals("") || newEvDescription.equals("") ||
+                        newEvStartTime.equals("") || newEvFinishTime.equals("")) {
+                    Log.d("JAVA create event: ", "failed!!");
+                } else {
+                    jniUpdateEventDb(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
+                            newEvEndDate, selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
+                }
+            }
+        });
+
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
