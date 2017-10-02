@@ -146,10 +146,10 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentD
 }
 
 
-
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
-        jstring finish, jstring startDate , jstring endDate, jstring repeat, jstring eventID, jstring filepath) {
+        jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring eventID,
+        jstring filepath) {
 
     string confirm = "";
     try {
@@ -188,9 +188,10 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
 
 
         bool updateEvent = updateToDb(day.c_str(), month.c_str(), year.c_str(),
-                                        nativeTitle, nativeDescription, nativeStart, nativeFinish,
-                                        endDay.c_str(), endMonth.c_str(), endYear.c_str(), atoi(nativeID),
-                                        atoi(nativeRepeat), nativepath);
+                                      nativeTitle, nativeDescription, nativeStart, nativeFinish,
+                                      endDay.c_str(), endMonth.c_str(), endYear.c_str(),
+                                      atoi(nativeID),
+                                      atoi(nativeRepeat), nativepath);
 
         __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
         (env)->ReleaseStringUTFChars(title, nativeTitle);
@@ -241,33 +242,24 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
     }
     return env->NewStringUTF(confirm.c_str());
 }
-
-// XML Stuff
-
-
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateXml(
-        JNIEnv *env,
-        jobject /* this */, jstring dir) {
-    string confirm = "";
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
+        JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir) {
 
     try {
         const char *nativePath = env->GetStringUTFChars(dir, 0);
+        const char *nativeMonth = env->GetStringUTFChars(dir, 0);
+        const char *nativeYear = env->GetStringUTFChars(dir, 0);
 
-        bool createFile = createXml(nativePath);
+        string getMonth = selectMonth(nativeMonth, nativeYear, nativePath);
 
         (env)->ReleaseStringUTFChars(dir, nativePath);
+        (env)->ReleaseStringUTFChars(dir, nativeMonth);
+        (env)->ReleaseStringUTFChars(dir, nativeYear);
 
-
-        if (createFile) {
-            confirm = "File Created!!";
-        } else {
-            confirm = "File Creation Failed!!!";
-        }
     } catch (exception e) {
         throwJavaException(env, e.what());
     }
 
-    return env->NewStringUTF(confirm.c_str());
+    return env->NewStringUTF(getMonth.c_str);
 }
-
 }

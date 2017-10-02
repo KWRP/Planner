@@ -1,11 +1,7 @@
 package com.kwrp.planner_gui;
 
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.TimePickerDialog;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,8 +29,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import android.support.*;
 
 import static android.R.attr.dialogLayout;
+import static com.kwrp.planner_gui.R.id.text;
 
 /**
  * Defines the display day activity where the user is shown
@@ -159,6 +157,7 @@ public class DisplayDay extends AppCompatActivity {
                     //Dialog dialog = removeEventDialog();
                     Dialog dialog = updateEventDialog(position);
                     dialog.show();
+                    dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
                 }
             }
         });
@@ -169,7 +168,7 @@ public class DisplayDay extends AppCompatActivity {
             public void onClick(View view) {
                 Dialog dialog = createEventDialog();
                 dialog.show();
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_blue_bright);
+                dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
             }
         });
 
@@ -220,7 +219,6 @@ public class DisplayDay extends AppCompatActivity {
         newEvFinishTime = "";
         selectedDay = null;
         newEvEndDate = "";
-
         getEvents();
         listAdapter.notifyDataSetChanged();
     }
@@ -673,8 +671,6 @@ public class DisplayDay extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-
-
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
