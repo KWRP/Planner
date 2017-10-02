@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.R.attr.dialogLayout;
+
 /**
  * Defines the display day activity where the user is shown
  * the events for a single day, and what the ability to add
@@ -114,15 +116,13 @@ public class DisplayDay extends AppCompatActivity {
     /**
      * selected event Id (for removal)
      */
-    private String eventId = "";
+    private static String eventId = "";
     private static Button startTime;
     private static Button endTime;
     private static Button finishDate;
     private static Button eventDays;
     private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
     private static int selectedRepeat = 0;
-    private static int repeatDayDate = 0;
-
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -493,6 +493,7 @@ public class DisplayDay extends AppCompatActivity {
         Button deleteBut = new Button(this);
         deleteBut.setBackgroundColor(Color.rgb(180,0,0));
         deleteBut.setText("Delete Event");
+
         deleteBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -500,7 +501,6 @@ public class DisplayDay extends AppCompatActivity {
             }
         });
         dialogLayout.addView(deleteBut, 12);
-
         builder.setView(dialogLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -519,6 +519,7 @@ public class DisplayDay extends AppCompatActivity {
                     jniUpdateEventDb(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
                             newEvEndDate, selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
                 }
+                selectedDay = null;
                 getEvents();
             }
         });
@@ -558,6 +559,8 @@ public class DisplayDay extends AppCompatActivity {
                 getEvents();
                 listAdapter.notifyDataSetChanged();
                 Log.d("Delete Event: %s", deleteEvent);
+                finish();
+                startActivity(getIntent());
             }
         });
 
@@ -594,7 +597,7 @@ public class DisplayDay extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            repeatDayDate = 0;
+                            //repeatDayDate = 0;
                             eventDays.setText(repeats[which]);
                             newSelection = which;
                         }
