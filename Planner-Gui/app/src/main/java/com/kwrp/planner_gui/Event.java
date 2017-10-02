@@ -56,7 +56,8 @@ public class Event {
         this.description = eventItems[2];
         this.startTime = eventItems[3];
         this.finishTime = eventItems[4];
-        this.endDate = eventItems[5];
+        String[] day = eventItems[5].split("-");
+        this.endDate = day[2] + "/" + day[1] + "/" + day[0];
         this.eventId = eventItems[6];
     }
 
@@ -124,15 +125,6 @@ public class Event {
      */
     public String getStartTime() {
         return startTime;
-    }
-
-    /**
-     * Set the event start time
-     *
-     * @return the event start time
-     */
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
     }
 
     /**

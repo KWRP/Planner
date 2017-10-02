@@ -1,3 +1,4 @@
+#include <android/log.h>
 #include "include/jni-dao.h"
 #include "include/xml-dao.hpp"
 #include "sqlite-dao.hpp"
@@ -176,17 +177,22 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
         string endMonth = endRest.substr(0, selectedDate.find(delimiter));
         string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
 
+        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
+
 //        bool byDay = false;
 //        string s = nativeRepeat;
 //        if (s.length() > 1) {
 //            if (s[1] == 0) byDay = true;
 //        }
 
+
+
         bool updateEvent = updateToDb(day.c_str(), month.c_str(), year.c_str(),
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(), endMonth.c_str(), endYear.c_str(), atoi(nativeID),
                                         atoi(nativeRepeat), nativepath);
 
+        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
         (env)->ReleaseStringUTFChars(start, nativeStart);
