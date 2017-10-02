@@ -141,9 +141,9 @@ public class MonthAdapter extends BaseAdapter {
         mDayHeight = (mDisplayMetrics.heightPixels - mTitleHeight
                 - (rows * 8) - getBarHeight()) / (rows - 1);
         mDayHeight *= 0.98f;
-        if(rows <= 6){
-            mDayHeight *= 0.98f;
-        }
+//        if(rows <= 6){
+//            mDayHeight *= 0.98f;
+//        }
 
     }
 
