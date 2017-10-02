@@ -1,13 +1,10 @@
 package com.kwrp.planner_gui;
 
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.TimePickerDialog;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -32,8 +29,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import android.support.*;
 
-import static android.R.attr.description;
+import static android.R.attr.dialogLayout;
+import static com.kwrp.planner_gui.R.id.text;
 
 /**
  * Defines the display day activity where the user is shown
@@ -115,15 +114,13 @@ public class DisplayDay extends AppCompatActivity {
     /**
      * selected event Id (for removal)
      */
-    private String eventId = "";
+    private static String eventId = "";
     private static Button startTime;
     private static Button endTime;
     private static Button finishDate;
     private static Button eventDays;
     private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
     private static int selectedRepeat = 0;
-    private static int repeatDayDate = 0;
-
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -160,6 +157,7 @@ public class DisplayDay extends AppCompatActivity {
                     //Dialog dialog = removeEventDialog();
                     Dialog dialog = updateEventDialog(position);
                     dialog.show();
+                    dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
                 }
             }
         });
@@ -170,7 +168,7 @@ public class DisplayDay extends AppCompatActivity {
             public void onClick(View view) {
                 Dialog dialog = createEventDialog();
                 dialog.show();
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_blue_bright);
+                dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
             }
         });
 
@@ -204,13 +202,13 @@ public class DisplayDay extends AppCompatActivity {
      * @param title       title of the new event
      * @param description description of then new event
      * @param start       start time of the new event
-     * @param finish    duration of the new event
+     * @param finish      duration of the new event
      */
     private void createNewEvent(String title, String description, String start, String finish,
                                 String finishDate, String repeat) {
 
         //if (this.repeat == 3) repeat += repeatDayDate;
-        Log.e("Finish Date: ",finishDate);
+        Log.e("Finish Date: ", finishDate);
         Log.e("start Date: ", selectedDate);
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
         Log.e("CREATE Event:", r);
@@ -221,7 +219,6 @@ public class DisplayDay extends AppCompatActivity {
         newEvFinishTime = "";
         selectedDay = null;
         newEvEndDate = "";
-
         getEvents();
         listAdapter.notifyDataSetChanged();
     }
@@ -261,6 +258,7 @@ public class DisplayDay extends AppCompatActivity {
         File file = new File(dir, "/events.db");
         file.delete();
     }
+
     /**
      * Checks if the XML file where events are stored exists
      * and create a file if not.
@@ -383,7 +381,7 @@ public class DisplayDay extends AppCompatActivity {
         finishLabel.setText("Finish Date");
         dialogLayout.addView(finishLabel, 8);
         finishDate = new Button(this);
-        finishDate.setHint("Select date");
+        finishDate.setText(selectedDate);
         finishDate.setOnClickListener(endDateOnClick);
         dialogLayout.addView(finishDate, 9);
 
@@ -391,7 +389,7 @@ public class DisplayDay extends AppCompatActivity {
         eventDaysLabel.setText("Select event to repeat on");
         dialogLayout.addView(eventDaysLabel, 10);
         eventDays = new Button(this);
-        eventDays.setHint("Select repeats on");
+        eventDays.setText(repeats[0]);
         eventDays.setOnClickListener(eventDaysOnClick);
         dialogLayout.addView(eventDays, 11);
 
@@ -486,10 +484,21 @@ public class DisplayDay extends AppCompatActivity {
         eventDaysLabel.setText("Select event to repeat on");
         dialogLayout.addView(eventDaysLabel, 10);
         eventDays = new Button(this);
-        eventDays.setHint("Select repeats to repeat");
+        eventDays.setText(repeats[0]);
         eventDays.setOnClickListener(eventDaysOnClick);
         dialogLayout.addView(eventDays, 11);
 
+        Button deleteBut = new Button(this);
+        deleteBut.setBackgroundColor(Color.rgb(180,0,0));
+        deleteBut.setText("Delete Event");
+
+        deleteBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeEventDialog().show();
+            }
+        });
+        dialogLayout.addView(deleteBut, 12);
         builder.setView(dialogLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -508,6 +517,8 @@ public class DisplayDay extends AppCompatActivity {
                     jniUpdateEventDb(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
                             newEvEndDate, selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
                 }
+                selectedDay = null;
+                getEvents();
             }
         });
 
@@ -546,6 +557,8 @@ public class DisplayDay extends AppCompatActivity {
                 getEvents();
                 listAdapter.notifyDataSetChanged();
                 Log.d("Delete Event: %s", deleteEvent);
+                finish();
+                startActivity(getIntent());
             }
         });
 
@@ -573,19 +586,20 @@ public class DisplayDay extends AppCompatActivity {
 
     public static class SelectRepeatFrag extends DialogFragment {
         private int newSelection = 0;
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Repeat event on").setSingleChoiceItems(repeats, selectedRepeat,
                     new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                        repeatDayDate = 0;
-                        eventDays.setText(repeats[which]);
-                        newSelection = which;
-                }
-            });
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //repeatDayDate = 0;
+                            eventDays.setText(repeats[which]);
+                            newSelection = which;
+                        }
+                    });
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -629,7 +643,7 @@ public class DisplayDay extends AppCompatActivity {
             } else {
                 d = "" + day;
             }
-            int mon = month+1;
+            int mon = month + 1;
             if (mon < 10) {
                 m = "0" + mon;
             } else {
@@ -657,8 +671,6 @@ public class DisplayDay extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-
-
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
@@ -667,9 +679,12 @@ public class DisplayDay extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int hour = hourOfDay % 12;
-            startTime.setText(String.format(Locale.ENGLISH,"%02d:%02d %s", hour == 0 ? 12 : hour,
+            startTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
                     minute, hourOfDay < 12 ? "am" : "pm"));
             startTime.setTextSize(20);
+            int h = (hourOfDay + 1) % 12;
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", h == 0 ? 12 : h,
+                    minute, (hourOfDay + 1) < 12 ? "am" : "pm"));
         }
     }
 
@@ -705,6 +720,7 @@ public class DisplayDay extends AppCompatActivity {
             endTime.setTextSize(20);
         }
     }
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -724,8 +740,8 @@ public class DisplayDay extends AppCompatActivity {
      * A JNI function that removes an event from the .xml file rendering it
      * non-existent.
      *
-     * @param filepath     path/to/file
-     * @param eventId      the event id number
+     * @param filepath path/to/file
+     * @param eventId  the event id number
      * @return string confirming action
      */
     public native String jniRemoveEventDb(String eventId, String filepath);
@@ -739,5 +755,5 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniUpdateEventDb(String title, String description, String start, String finish,
                                           String startDate, String endDate, String repeat, String eventID,
                                           String filepath);
-    }
+}
 
