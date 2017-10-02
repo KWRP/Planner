@@ -140,10 +140,7 @@ public class MonthAdapter extends BaseAdapter {
         int rows = (mDaysShown / 7) ;
         mDayHeight = (mDisplayMetrics.heightPixels - mTitleHeight
                 - (rows * 8) - getBarHeight()) / (rows - 1);
-        mDayHeight *= 0.98f;
-//        if(rows <= 6){
-//            mDayHeight *= 0.98f;
-//        }
+
 
     }
 
@@ -283,7 +280,7 @@ public class MonthAdapter extends BaseAdapter {
                 // current month
                 view.setBackgroundColor(Color.rgb(244, 244, 244));
                 if (isToday(date[0], date[1], date[2])) {
-                    view.setTextColor(Color.BLACK);
+                    view.setTextColor(DialogAction.textColor);
                     view.setBackgroundColor(DialogAction.headColor);
 
                 }

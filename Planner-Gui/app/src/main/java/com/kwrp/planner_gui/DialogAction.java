@@ -1,11 +1,17 @@
 package com.kwrp.planner_gui;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -13,14 +19,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Locale;
 
 import static com.kwrp.planner_gui.R.id.gridview;
 
@@ -32,12 +43,15 @@ import static com.kwrp.planner_gui.R.id.gridview;
  */
 public class DialogAction extends AppCompatActivity {
 
+
+
     /*Loads the native library "calender" on start up */
     static {
         System.loadLibrary("calendar");
     }
 
     public static int headColor = Color.BLUE;
+    public static int textColor = Color.WHITE;
 
 
     /*Defines the filepath in the user device where the events.xml is stored.*/
@@ -199,39 +213,6 @@ public class DialogAction extends AppCompatActivity {
         dialogLayout.addView(googleTitle, 2);
         dialogLayout.addView(button, 3);
 
-
-        TextView hotmailTitle = new TextView(parent);
-//        hotmailTitle.setText("Hotmail Calendar:");
-//        hotmailTitle.setPadding(10, 10, 10, 10);
-//        hotmailTitle.setGravity(Gravity.CENTER);
-//        hotmailTitle.setTextColor(Color.rgb(0, 0, 0));
-//        hotmailTitle.setTextSize(14);
-
-        button = new Button(parent);
-        button.setText("Hotmail Calendar");
-        button.setLayoutParams(new Toolbar.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        dialogLayout.addView(hotmailTitle, 4);
-        dialogLayout.addView(button, 5);
-
-
-        TextView facebookTitle = new TextView(parent);
-//        facebookTitle.setText("Facebook Events:");
-//        facebookTitle.setPadding(10, 10, 10, 10);
-//        facebookTitle.setGravity(Gravity.CENTER);
-//        facebookTitle.setTextColor(Color.rgb(0, 0, 0));
-//        facebookTitle.setTextSize(14);
-
-        button = new Button(parent);
-        button.setText("Facebook Events");
-        button.setLayoutParams(new Toolbar.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        dialogLayout.addView(facebookTitle, 6);
-        dialogLayout.addView(button, 7);
-
         dialogLayout.setPadding(70, 10, 70, 10);
         builder.setView(dialogLayout);
 
@@ -267,94 +248,7 @@ public class DialogAction extends AppCompatActivity {
         return dialog;
     }
 
-    /**
-     * Creates the dialog box for creating an event when there are a series of dates the event will take place on.
-     * <p>
-     * Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
-     *
-     * @param parent   The Intent the dialog box is spawned onto
-     * @param dayList  A collection containing the days that the event occurs on
-     * @param month    The month in which this event takes place
-     * @param year     The year in which this event takes place
-     * @param filePath The filepath for the XML file storing all the events
-     * @return the dialog box object, to "shown".
-     */
-    public AlertDialog createEventSetDialog(AppCompatActivity parent, Collection<String> dayList, String month, String year, String filePath) {
 
-        this.filePath = filePath;
-        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
-        builder.setTitle("Create Event Set");
-
-        final LinearLayout dialogLayout = new LinearLayout(parent);
-        dialogLayout.setOrientation(LinearLayout.VERTICAL);
-        dialogLayout.setPadding(50, 50, 50, 50);
-
-        final TextView titleLabel = new TextView(parent);
-        titleLabel.setText("Event Title:");
-        dialogLayout.addView(titleLabel, 0);
-        final EditText titleInput = new EditText(parent);
-        titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        dialogLayout.addView(titleInput, 1);
-
-        final TextView descriptLabel = new TextView(parent);
-        descriptLabel.setText("Event Description:");
-        dialogLayout.addView(descriptLabel, 2);
-        final EditText descriptInput = new EditText(parent);
-        descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        dialogLayout.addView(descriptInput, 3);
-
-        final TextView startLabel = new TextView(parent);
-        startLabel.setText("Start Time:");
-        dialogLayout.addView(startLabel, 4);
-        final EditText startInput = new EditText(parent);
-        startInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        startInput.setHint("e.g. 0800");
-        dialogLayout.addView(startInput, 5);
-
-        final TextView durationLabel = new TextView(parent);
-        durationLabel.setText("Duration");
-        dialogLayout.addView(durationLabel, 6);
-        final EditText durationInput = new EditText(parent);
-        durationInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        durationInput.setHint("Number of hours");
-        dialogLayout.addView(durationInput, 7);
-
-        builder.setView(dialogLayout);
-
-        final ArrayList<String> dateList = new ArrayList<>();
-        for (String day : dayList) {
-
-            dateList.add(day + "/" + month + "/" + year);
-        }
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newEventTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
-                String newEventDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
-                String newEventStart = ((EditText) dialogLayout.getChildAt(5)).getText().toString();
-                String newEventDuration = ((EditText) dialogLayout.getChildAt(7)).getText().toString();
-
-                if (newEventTitle.equals("") || newEventDescription.equals("") ||
-                        newEventStart.equals("") || newEventDuration.equals("")) {
-                    Log.d("JAVA create event: ", "failed!!");
-                } else {
-
-                    createNewEvent(newEventTitle, newEventDescription, newEventStart, newEventDuration, dateList);
-                }
-                Log.d("details:", newEventTitle + newEventDescription + newEventStart + newEventDuration);
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        return dialog;
-    }
 
 
     /**
@@ -400,7 +294,10 @@ public class DialogAction extends AppCompatActivity {
         return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
     }
 
-    /**
+
+
+
+     /**
      * A JNI function that pushes event details through to the back-end to create
      * and store events. This is defined outside this class.
      *
@@ -414,6 +311,7 @@ public class DialogAction extends AppCompatActivity {
      */
     public native String jniCreateEvent(String title, String description, String start,
                                         String duration, String dir, String selectedDate);
+
 
 
 }
