@@ -110,7 +110,7 @@ public class DisplayMonth extends AppCompatActivity {
         currentDate = jniGetCurrentDate();
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
-        filePath = getFilesDir().getAbsolutePath() + "/events.xml";
+        filePath = getFilesDir().getAbsolutePath() + "/events.db";
 
         //get current date
         int index = 0;
@@ -367,7 +367,6 @@ public class DisplayMonth extends AppCompatActivity {
         String[] systemDate = currentDate.split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
         String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
         Log.e("TEST", "" + jniGetEventsDb(systemDate[1], systemDate[2], filePath));
         ArrayList<Integer> eventDays = new ArrayList<Integer>();
