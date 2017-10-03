@@ -14,6 +14,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static android.media.CamcorderProfile.get;
+
 /**
  * MonthAdapter handles all of the data surrounding date generation
  * for a particular month, and ensuring it is correctly displayed.
@@ -132,7 +134,9 @@ public class MonthAdapter extends BaseAdapter {
         }
 
         // show events
-        for (Integer i : eventDays) i += 13;
+        for (int i = 0; i < eventDays.size(); i++) {
+            eventDays.set(i, eventDays.get(i) + firstDay+6);
+        }
 
         //buffer bottom of the screen with another row of next month dates
         if(mDaysNextMonth < 5) {

@@ -368,12 +368,12 @@ public class DisplayMonth extends AppCompatActivity {
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        //String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
+        String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
         Log.e("TEST", "" + jniGetEventsDb(systemDate[1], systemDate[2], filePath));
         ArrayList<Integer> eventDays = new ArrayList<Integer>();
-//        for (String s : days) {
-//            if (android.text.TextUtils.isDigitsOnly(s)) eventDays.add(Integer.parseInt(s));
-//        }
+        for (String s : days) {
+            if (android.text.TextUtils.isDigitsOnly(s)) eventDays.add(Integer.parseInt(s));
+        }
 
         GridView mGridView = (GridView) findViewById(gridview);
         mGridView.invalidateViews();
