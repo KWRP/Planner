@@ -420,16 +420,20 @@ std::string selectMonth(const char *month, const char *year, const char *filepat
     const char* days[31] = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16",
                             "17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
     std::string result = "";
+    std::string monthT = "";
+    if(strlen(month)<=1){
+        monthT.append("0");
+    }
+    monthT.append(month);
 
     __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%d %d", atoi(month), atoi(year));
 
     for(int j =0; j<lastDay; j++){
-        __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!! stringstream", "%s", days[j]);
-        std::vector<std::string> events = selectFromDB(days[j],month,year,filepath);
+        std::vector<std::string> events = selectFromDB(days[j],monthT.c_str(),year,filepath);
         if(events.size() > 0){
             result.append(days[j]).append("__");
         }
     }
-    __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%s", "end for loop attempt: ");
+    __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%s", result.c_str());
     return result;
 }
