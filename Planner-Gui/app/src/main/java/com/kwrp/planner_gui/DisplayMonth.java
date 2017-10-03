@@ -164,12 +164,14 @@ public class DisplayMonth extends AppCompatActivity {
         mGridView = (GridView) findViewById(gridview);
         setGridEventDefault(); //set grid on click listener to default
 
-        String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
+        String days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath);
         Log.e("EVENTS", jniGetEventsDb(systemDate[1], systemDate[2], filePath));
         ArrayList<Integer> eventDays = new ArrayList<Integer>();
-        if (days.length > 0) {
-            for (String s : days) {
-                if (android.text.TextUtils.isDigitsOnly(s) && s.compareTo("") != 0) eventDays.add(Integer.parseInt(s));
+        String[] events;
+        if (days.length() > 0) {
+            events = days.split("__");
+            for (String s : events) {
+                eventDays.add(Integer.parseInt(s));
             }
         }
 
@@ -365,20 +367,25 @@ public class DisplayMonth extends AppCompatActivity {
      */
     public void updateMonthView(int month) {
         String[] systemDate = currentDate.split("/");
+        int mon = Integer.parseInt(systemDate[1]) + month;
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
-        Log.e("TEST", "" + jniGetEventsDb(systemDate[1], systemDate[2], filePath));
+
+        String days =  jniGetEventsDb(Integer.toString(mon),
+                Integer.toString(viewedYear), filePath);
+
+        String[] events = days.split("__");
         ArrayList<Integer> eventDays = new ArrayList<Integer>();
-        for (String s : days) {
-            if (android.text.TextUtils.isDigitsOnly(s)) eventDays.add(Integer.parseInt(s));
+        if (days.length() > 0) {
+            for (String s : events) {
+                eventDays.add(Integer.parseInt(s));
+            }
         }
 
         GridView mGridView = (GridView) findViewById(gridview);
         mGridView.invalidateViews();
         mGridView.setAdapter(new MonthAdapter(
                 this, Integer.parseInt(systemDate[1]) - 1 + month, viewedYear, metrics, eventDays));
-
     }
 
     /**

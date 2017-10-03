@@ -85,7 +85,7 @@ public class MonthAdapter extends BaseAdapter {
         mCalendar = new GregorianCalendar(mYear, mMonth, 1);
         mCalendarToday = Calendar.getInstance();
         mDisplayMetrics = metrics;
-        eventDays =  days;
+        eventDays =  new ArrayList<>(days);
         populateMonth();
 
     }
@@ -293,14 +293,16 @@ public class MonthAdapter extends BaseAdapter {
                 if (isToday(date[0], date[1], date[2])) {
                     view.setTextColor(DialogAction.textColor);
                     view.setBackgroundColor(DialogAction.headColor);
-
                 }
             }
         } else {
             view.setBackgroundColor(Color.argb(100, 10, 80, 255));
             view.setHeight(mTitleHeight + 100);
         }
-        if (eventDays.contains(position)) view.setBackgroundColor(Color.argb(100, 0, 0, 255));
+         //colour day with an event
+        if (eventDays.contains(position)) {
+            view.setBackgroundColor(Color.argb(100, 0, 0, 255));
+        }
 
         onDate(date, position, view);
         return view;
