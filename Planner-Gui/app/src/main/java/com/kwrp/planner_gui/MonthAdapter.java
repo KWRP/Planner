@@ -66,6 +66,8 @@ public class MonthAdapter extends BaseAdapter {
      */
     private int mTitleHeight, mDayHeight;
 
+    private ArrayList<Integer> eventDays = new ArrayList<Integer>();
+
     /**
      * Called on swipe, when the adapter needs to be updated for a new month
      *
@@ -74,14 +76,16 @@ public class MonthAdapter extends BaseAdapter {
      * @param year    the year to generate for
      * @param metrics the dimensions
      */
-    public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics) {
+    public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics, ArrayList<Integer> days) {
         mContext = c;
         mMonth = month;
         mYear = year;
         mCalendar = new GregorianCalendar(mYear, mMonth, 1);
         mCalendarToday = Calendar.getInstance();
         mDisplayMetrics = metrics;
+        eventDays =  days;
         populateMonth();
+
     }
 
     /**
@@ -126,6 +130,9 @@ public class MonthAdapter extends BaseAdapter {
             mDaysShown++;
             mDaysNextMonth++;
         }
+
+        // show events
+        for (Integer i : eventDays) i += 13;
 
         //buffer bottom of the screen with another row of next month dates
         if(mDaysNextMonth < 5) {
@@ -292,6 +299,7 @@ public class MonthAdapter extends BaseAdapter {
             view.setBackgroundColor(Color.argb(100, 10, 80, 255));
             view.setHeight(mTitleHeight + 100);
         }
+        if (eventDays.contains(position)) view.setBackgroundColor(Color.argb(100, 0, 0, 255));
 
         onDate(date, position, view);
         return view;

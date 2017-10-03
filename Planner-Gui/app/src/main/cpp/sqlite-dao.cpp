@@ -413,3 +413,25 @@ bool displayDb(const char *filepath) {
     printf("\n\n");
     return true;
 }
+
+std::string selectMonth(const char *month, const char *year, const char *filepath){
+    int lastDay = maxDays(atoi(month),atoi(year));
+    std::string result = "4__6__11";
+
+    __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%d %d", atoi(month), atoi(year));
+
+//    for(int j =0;j<lastDay;j++){
+//        char s[2];
+//        if(j<10){
+//            strncpy(s,"0",1);
+//            strncpy(s,(char *) j,1);
+//        }else{
+//            strncpy(s,(char *) j,2);
+//        }
+//        std::vector<std::string> events = selectFromDB(s,month,year,filepath);
+//        if(events.size() > 0){
+//            result.append(s).append("__");
+//        }
+//    }
+    return result;
+}

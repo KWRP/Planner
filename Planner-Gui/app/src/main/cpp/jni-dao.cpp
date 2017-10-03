@@ -245,21 +245,22 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
         JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir) {
 
+    string getMonth = "";
     try {
         const char *nativePath = env->GetStringUTFChars(dir, 0);
-        const char *nativeMonth = env->GetStringUTFChars(dir, 0);
-        const char *nativeYear = env->GetStringUTFChars(dir, 0);
+        const char *nativeMonth = env->GetStringUTFChars(month, 0);
+        const char *nativeYear = env->GetStringUTFChars(year, 0);
 
-        string getMonth = selectMonth(nativeMonth, nativeYear, nativePath);
+        getMonth = selectMonth(nativeMonth, nativeYear, nativePath);
 
         (env)->ReleaseStringUTFChars(dir, nativePath);
-        (env)->ReleaseStringUTFChars(dir, nativeMonth);
-        (env)->ReleaseStringUTFChars(dir, nativeYear);
+        (env)->ReleaseStringUTFChars(month, nativeMonth);
+        (env)->ReleaseStringUTFChars(year, nativeYear);
 
     } catch (exception e) {
         throwJavaException(env, e.what());
     }
 
-    return env->NewStringUTF(getMonth.c_str);
+    return env->NewStringUTF(getMonth.c_str());
 }
 }

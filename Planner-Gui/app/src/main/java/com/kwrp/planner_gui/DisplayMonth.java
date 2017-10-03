@@ -146,8 +146,19 @@ public class DisplayMonth extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mGridView = (GridView) findViewById(gridview);
         setGridEventDefault(); //set grid on click listener to default
+
+        String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
+        Log.e("EVENTS", jniGetEventsDb(systemDate[1], systemDate[2], filePath));
+        ArrayList<Integer> eventDays = new ArrayList<Integer>();
+        if (days.length > 0) {
+            for (String s : days) {
+                if (android.text.TextUtils.isDigitsOnly(s) && s.compareTo("") != 0) eventDays.add(Integer.parseInt(s));
+            }
+        }
+
         mGridView.setAdapter(new MonthAdapter(
-                this, Integer.parseInt(systemDate[1]) - 1, Integer.parseInt(systemDate[2]), metrics));
+                this, Integer.parseInt(systemDate[1]) - 1,
+                Integer.parseInt(systemDate[2]), metrics, eventDays));
 
         mGridView.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeRight() {
@@ -340,10 +351,17 @@ public class DisplayMonth extends AppCompatActivity {
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
+        //String[] days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath).split("__");
+        Log.e("TEST", "" + jniGetEventsDb(systemDate[1], systemDate[2], filePath));
+        ArrayList<Integer> eventDays = new ArrayList<Integer>();
+//        for (String s : days) {
+//            if (android.text.TextUtils.isDigitsOnly(s)) eventDays.add(Integer.parseInt(s));
+//        }
+
         GridView mGridView = (GridView) findViewById(gridview);
         mGridView.invalidateViews();
         mGridView.setAdapter(new MonthAdapter(
-                this, Integer.parseInt(systemDate[1]) - 1 + month, viewedYear, metrics));
+                this, Integer.parseInt(systemDate[1]) - 1 + month, viewedYear, metrics, eventDays));
 
     }
 
@@ -456,9 +474,6 @@ public class DisplayMonth extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String jniGetCurrentDate();
-
-
-
-
+    public native String jniGetEventsDb(String month, String year, String filePath);
 
 }

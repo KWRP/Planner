@@ -39,6 +39,8 @@ std::vector<std::string> selectFromDB(const char *sday, const char *smonth,
                                                    const char *syear,
                                                    const char *filepath);
 
+std::string selectMonth(const char *month, const char *year, const char *filepath);
+
 bool displayDb(const char *nativeDb);
 
 #endif //PLANNER_GUI_SQLITE_DAO_H
