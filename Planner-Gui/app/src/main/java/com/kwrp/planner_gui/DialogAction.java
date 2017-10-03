@@ -52,6 +52,10 @@ public class DialogAction extends AppCompatActivity {
 
     public static int headColor = Color.BLUE;
     public static int textColor = Color.WHITE;
+    public static int eventColor = Color.argb(100, 10, 80, 255);
+    public static int defaultColor = Color.rgb(244, 244, 244);
+    public static int outMonthColor = Color.rgb(234, 234, 250);
+    public static int selectedColor = Color.LTGRAY;
 
 
     /*Defines the filepath in the user device where the events.xml is stored.*/
