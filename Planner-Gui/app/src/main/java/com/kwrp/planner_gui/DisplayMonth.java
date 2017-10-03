@@ -83,6 +83,7 @@ public class DisplayMonth extends AppCompatActivity {
 
     /* A list of positions selected in edit mode */
     private Collection<Integer> positionList = new ArrayList<>();
+    private Collection<Integer> eventPosList = new ArrayList<>();
     /* The current date (system date)*/
     private String currentDate;
 
@@ -349,10 +350,14 @@ public class DisplayMonth extends AppCompatActivity {
                 TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(pos);
                 if (pos == currentDayPos && month_offset == 0 && viewedYear == currentYear) {
                     view2.setBackgroundColor(currentDayColor);
+                } else if (eventPosList.contains(pos)) {
+                    view2.setBackgroundColor(DialogAction.eventColor);
                 } else {
-                    view2.setBackgroundColor(Color.rgb(244, 244, 244));
+                    view2.setBackgroundColor(DialogAction.defaultColor);
                 }
             }
+
+
             positionList = new ArrayList<>();
             dayList = new ArrayList<>();
             daysSelected = 0;
@@ -421,16 +426,19 @@ public class DisplayMonth extends AppCompatActivity {
 
                         if(color == currentDayColor){
                             currentDayPos = new Integer(position);
-                            color = Color.rgb(244,244,244);
+                            color = DialogAction.defaultColor;
                         }
 
 
-                        if (color == Color.LTGRAY) {
+                        if (color == DialogAction.selectedColor) {
                             Integer pos = new Integer(position);
                             if(position == currentDayPos){
                                 view2.setBackgroundColor(currentDayColor);
+                            } else if (eventPosList.contains(pos)) {
+                                    view2.setBackgroundColor(DialogAction.eventColor);
+                                    eventPosList.remove(pos);
                             } else {
-                                view2.setBackgroundColor(Color.rgb(244, 244, 244));
+                                    view2.setBackgroundColor(DialogAction.defaultColor);
                             }
 
                             positionList.remove(pos);
@@ -438,10 +446,15 @@ public class DisplayMonth extends AppCompatActivity {
                             String day = view2.getText().toString();
                             dayList.remove(day);
                             daysSelected -= 1;
-                        } else if (color == Color.rgb(244, 244, 244)) {
-                            view2.setBackgroundColor(Color.LTGRAY);
+                        } else if (color != DialogAction.outMonthColor) {
+                            view2.setBackgroundColor(DialogAction.selectedColor);
 
                             Integer pos = new Integer(position);
+
+                            if(color == DialogAction.eventColor){
+                                eventPosList.add(pos);
+                            }
+
                             positionList.add(pos);
                             String day = view2.getText().toString();
                             dayList.add(day);

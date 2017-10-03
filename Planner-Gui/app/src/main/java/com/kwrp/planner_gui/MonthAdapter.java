@@ -286,22 +286,22 @@ public class MonthAdapter extends BaseAdapter {
             view.setHeight(mDayHeight - 50);
             if (date[1] != mMonth) {
                 // previous or next month
-                view.setBackgroundColor(Color.rgb(234, 234, 250));
+                view.setBackgroundColor(DialogAction.outMonthColor);
             } else {
                 // current month
-                view.setBackgroundColor(Color.rgb(244, 244, 244));
+                view.setBackgroundColor(DialogAction.defaultColor);
                 if (isToday(date[0], date[1], date[2])) {
                     view.setTextColor(DialogAction.textColor);
                     view.setBackgroundColor(DialogAction.headColor);
                 }
             }
         } else {
-            view.setBackgroundColor(Color.argb(100, 10, 80, 255));
+            view.setBackgroundColor(DialogAction.defaultColor);
             view.setHeight(mTitleHeight + 100);
         }
          //colour day with an event
         if (eventDays.contains(position)) {
-            view.setBackgroundColor(Color.argb(100, 0, 0, 255));
+            view.setBackgroundColor(DialogAction.eventColor);
         }
 
         onDate(date, position, view);
