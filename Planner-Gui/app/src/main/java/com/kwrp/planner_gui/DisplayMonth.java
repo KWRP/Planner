@@ -373,7 +373,9 @@ public class DisplayMonth extends AppCompatActivity {
 
         String days =  jniGetEventsDb(Integer.toString(mon),
                 Integer.toString(viewedYear), filePath);
-
+        Log.e("EVENT DAYS", days);
+        Log.e("Viewed Year", Integer.toString(viewedYear));
+        Log.e("MONTH", Integer.toString(mon));
         String[] events = days.split("__");
         ArrayList<Integer> eventDays = new ArrayList<Integer>();
         if (days.length() > 0) {
