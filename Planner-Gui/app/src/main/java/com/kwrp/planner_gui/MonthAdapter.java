@@ -139,7 +139,7 @@ public class MonthAdapter extends BaseAdapter {
         }
 
         //buffer bottom of the screen with another row of next month dates
-        if(mDaysNextMonth < 5) {
+        if(mDaysNextMonth < 6) {
             for (int i = 1; i < 8; i++) {
                 mItems.add(String.valueOf(mDaysNextMonth));
                 mDaysShown++;

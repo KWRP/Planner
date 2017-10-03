@@ -160,8 +160,9 @@ public class DisplayMonth extends AppCompatActivity {
 
         String[] systemDate = currentDate.split("/");
         final DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
         mGridView = (GridView) findViewById(gridview);
+
         setGridEventDefault(); //set grid on click listener to default
 
         String days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath);
