@@ -131,6 +131,8 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
         sqlite3_free(zErrMsg);
         return false;
     }
+    __android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s %d", day,
+                        month, year, repeatCycle);
 
     const char *insertQueryWeekly = "INSERT INTO WEEKLY(monday,tuesday,wednesday,thursday,friday,saturday,"
             "sunday,weekID) VALUES(?,?,?,?,?,?,?,null);";
@@ -199,7 +201,7 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
     return true;
 }
 
-bool updateToDb(const char *day, const char *month, const char *year, const char *title,
+bool updateToDb(const char *sday, const char *smonth, const char *syear, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,
                 int eventID, int repeatCycle, const char *filepath) {
@@ -207,6 +209,16 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
     char *zErrMsg = 0;
     int rc;
     sqlite3_stmt *stmt;
+    const char *days[31] = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12",
+                            "13", "14", "15", "16",
+                            "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
+                            "29", "30", "31"};
+
+    const char *months[31] = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
+                              "12"};
+
+    const char *day;
+    const char *month;
 
     /* Open database */
     rc = sqlite3_open(filepath, &db);
@@ -214,9 +226,24 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
         sqlite3_free(zErrMsg);
         return false;
     }
+    //__android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",sday,smonth,syear);
+    //__android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",endDay,endMonth,endYear);
+
+    if (atoi(sday) == 1) {
+        if (atoi(month) > 1) {
+            day = "31";
+        } else {
+            day = "0"; //may break database, must test
+        }
+        month = months[atoi(smonth)];
+    } else {
+        day = days[atoi(sday)];
+        month = smonth;
+    }
 
     char startDate[11];
-    strcpy(startDate, year);
+
+    strcpy(startDate, syear);
     strcat(startDate, "-");
     strcat(startDate, month);
     strcat(startDate, "-");
@@ -234,7 +261,7 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
     sqlite3_close(db);
-    return insertToDb(day, month, year, title, description, start, duration,
+    return insertToDb(sday, smonth, syear, title, description, start, duration,
                       endDay, endMonth, endYear, repeatCycle, filepath);
 }
 
@@ -302,7 +329,7 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
     query.append(" = 0;");
 
     const char *dday = days[dayNum];
-    __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", dday);
+    //__android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", dday);
 
     rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, 0);
     if (rc == SQLITE_OK) {
@@ -343,27 +370,34 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             eventC.append((std::string) (char *) endDate).append("__");
             eventC.append((std::string) (char *) eventID).append("__");
 
-            char repeatCycle[1];
-            char eday[2];
-            char emonth[2];
-            strncpy(repeatCycle,(char *)repeat,1);
-            strncpy(emonth,(char *)startDate+6,2);
-            strncpy(eday,(char *)startDate+8,2);
 
-            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "eday is: %d\n"
+            std::string selectedDate = (std::string) (char *) startDate;
+            std::string yearstr = selectedDate.substr(0, 4);
+            std::string monthstr = selectedDate.substr(5, 2);
+            std::string daystr = selectedDate.substr(8, 2);
+
+            const char *eday = daystr.c_str();
+            const char *emonth = monthstr.c_str();
+            const char *eyear = yearstr.c_str();
+
+            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "DATE IS: %s\n"
+                                        "eday is: %s to %d\n"
                                         "day is: %d\n"
-                                        "month is %d\n"
+                                        "month is %s to %d\n"
+                                        "year is %s to %d\n"
                                         "repeatCycle is %d\n",
-                                atoi(eday),atoi(day),atoi(month),atoi(repeatCycle));
+                                selectedDate.c_str(), eday, atoi(eday), atoi(day), emonth,
+                                atoi(month),
+                                eyear, atoi(eyear), atoi((char *) repeat));
 
             int lastDay = maxDays(atoi(month),atoi(year));
-            if(atoi(repeatCycle) == 3){//monthly
+            if (atoi((char *) repeat) == 3) {//monthly
                 if(atoi(eday) == atoi(day)){
                     events.emplace_back(eventC);
                 }else if(atoi(eday) > lastDay && atoi(day)== lastDay){
                     events.emplace_back(eventC);
                 }
-            }else if(atoi(repeatCycle) == 4){//yearly
+            } else if (atoi((char *) repeat) == 4) {//yearly
                 if(atoi(eday) == atoi(day) && atoi(emonth) == atoi(month)){
                     events.emplace_back(eventC);
                 }else if(atoi(emonth) == atoi(month) && atoi(eday) > lastDay && atoi(day) == lastDay ){
@@ -426,7 +460,7 @@ std::string selectMonth(const char *month, const char *year, const char *filepat
     }
     monthT.append(month);
 
-    __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%d %d", atoi(month), atoi(year));
+    //__android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%d %d", atoi(month), atoi(year));
 
     for(int j =0; j<lastDay; j++){
         std::vector<std::string> events = selectFromDB(days[j],monthT.c_str(),year,filepath);
@@ -434,6 +468,6 @@ std::string selectMonth(const char *month, const char *year, const char *filepat
             result.append(days[j]).append("__");
         }
     }
-    __android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%s", result.c_str());
+    //__android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%s", result.c_str());
     return result;
 }
