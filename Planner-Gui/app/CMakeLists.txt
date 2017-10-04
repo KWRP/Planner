@@ -23,6 +23,7 @@ file(GLOB SOURCES  "src/main/cpp/*.c" "src/main/cpp/*.cpp" )
 
 add_library(calendar SHARED ${SOURCES})
 
+
 find_library( # Sets the name of the path variable.
               log-lib
 

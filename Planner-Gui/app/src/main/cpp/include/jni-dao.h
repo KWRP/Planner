@@ -48,6 +48,13 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
         JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir);
 
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent(
+        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath);
+
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateDbEvent(
+        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath);
 #ifdef __cplusplus
 }
 #endif

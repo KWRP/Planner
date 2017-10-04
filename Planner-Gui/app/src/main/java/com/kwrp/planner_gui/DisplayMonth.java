@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 
+import static com.kwrp.planner_gui.R.color.dialog;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 
@@ -404,9 +405,10 @@ public class DisplayMonth extends AppCompatActivity {
 
         String eventMonth = "" + (thisMonthIndex + month_offset + 1);
         String eventYear = "" + viewedYear;
-
-        AlertDialog dialog = createEventSetDialog(dayList, eventMonth, eventYear);
+        final AlertDialog dialog = new DialogAction().createEventDialog(this);
+        //AlertDialog dialog = createEventSetDialog(dayList, eventMonth, eventYear);
         dialog.show();
+        dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
         startEditState();
     }
 
@@ -506,205 +508,6 @@ public class DisplayMonth extends AppCompatActivity {
             }
         });
     }
-
-
-    // Code For times and dates, needs refactoring
-    private View.OnClickListener endDateOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            DialogFragment newFragment = new DatePickerFrag();
-            newFragment.show(getFragmentManager(), "Pick Date");
-        }
-    };
-
-    public static class DatePickerFrag extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            String d;
-            String m;
-            if (day < 10) {
-                d = "0" + day;
-            } else {
-                d = "" + day;
-            }
-            int mon = month+1;
-            if (mon < 10) {
-                m = "0" + mon;
-            } else {
-                m = "" + mon;
-            }
-//            finishDate.setText(d + "/" + m + "/" + year);
-//            finishDate.setTextSize(20);
-        }
-    }
-
-    private View.OnClickListener startOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-
-            DialogFragment newFragment = new StartTimeFrag();
-            newFragment.show(getFragmentManager(), "Pick Time");
-        }
-    };
-
-    public static class StartTimeFrag extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            int hour = hourOfDay % 12;
-            startTime.setText(String.format(Locale.ENGLISH,"%02d:%02d %s", hour == 0 ? 12 : hour,
-                    minute, hourOfDay < 12 ? "am" : "pm"));
-            startTime.setTextSize(20);
-        }
-    }
-
-    private View.OnClickListener endOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-
-            DialogFragment newFragment = new EndTimeFrag();
-            newFragment.show(getFragmentManager(), "Pick Time");
-        }
-    };
-
-    public static class EndTimeFrag extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-
-
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
-
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            int hour = hourOfDay % 12;
-            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
-                    minute, hourOfDay < 12 ? "am" : "pm"));
-            endTime.setTextSize(20);
-        }
-
-
-    }
-
-
-    /**
-     * Creates the dialog box for creating an event when there are a series of dates the event will take place on.
-     * <p>
-     * Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
-     *
-     * @param dayList  A collection containing the days that the event occurs on
-     * @param month    The month in which this event takes place
-     * @param year     The year in which this event takes place
-     * @return the dialog box object, to "shown".
-     */
-    public AlertDialog createEventSetDialog(Collection<String> dayList, String month, String year) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("New Event");
-        final LinearLayout dialogLayout = new LinearLayout(this);
-        dialogLayout.setOrientation(LinearLayout.VERTICAL);
-        dialogLayout.setPadding(50, 50, 50, 50);
-        final TextView titleLabel = new TextView(this);
-
-        titleLabel.setText("Event Title:");
-        dialogLayout.addView(titleLabel, 0);
-        final EditText titleInput = new EditText(this);
-        titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        titleInput.setText(newEvTitle);
-        dialogLayout.addView(titleInput, 1);
-
-        final TextView descriptLabel = new TextView(this);
-        descriptLabel.setText("Event Description:");
-        dialogLayout.addView(descriptLabel, 2);
-        final EditText descriptInput = new EditText(this);
-        descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        descriptInput.setText(newEvDescription);
-        dialogLayout.addView(descriptInput, 3);
-
-        final TextView startLabel = new TextView(this);
-        startLabel.setText("Start Time:");
-        dialogLayout.addView(startLabel, 4);
-        startTime = new Button(this);
-        startTime.setHint("Select time");
-        startTime.setOnClickListener(startOnClick);
-        dialogLayout.addView(startTime, 5);
-
-        final TextView endLabel = new TextView(this);
-        endLabel.setText("End Time");
-        dialogLayout.addView(endLabel, 6);
-        endTime = new Button(this);
-        endTime.setHint("Select time");
-        endTime.setOnClickListener(endOnClick);
-        dialogLayout.addView(endTime, 7);
-
-
-        builder.setView(dialogLayout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                    String newEvTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
-                    String newEvDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
-                    String newEvStartTime = startTime.getText().toString();
-                    String newEvFinishTime = endTime.getText().toString();
-
-                    if (newEvTitle.equals("") || newEvDescription.equals("") ||
-                            newEvStartTime.equals("") || newEvFinishTime.equals("")) {
-                        Log.d("JAVA create event: ", "failed!!");
-                    } else {
-//                        createNewEvent(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
-//                                newEvEndDate, repeat);
-                    }
-                dialog.cancel();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        return builder.create();
-    }
-
-
-
-
-
 
     /**
      * A native method that is implemented by the 'native-lib' native library,

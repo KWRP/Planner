@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -43,7 +44,72 @@ import static com.kwrp.planner_gui.R.id.gridview;
  */
 public class DialogAction extends AppCompatActivity {
 
+    private ArrayList<String> eventItems = new ArrayList<>();
 
+    /**
+     * The new event title
+     */
+    private String newEvTitle = "";
+
+    /**
+     * The new event description
+     */
+    private String newEvDescription = "";
+
+    /**
+     * The new event start time
+     */
+    private String newEvStartTime = "";
+
+    /**
+     * The new event duration
+     */
+    private String newEvFinishTime = "";
+
+    private String newEvEndDate = "";
+    private int repeat = 0;
+
+    /**
+     * The file path to the file where events are being stored
+     */
+    private String filepath;
+
+    /**
+     * The listview for events
+     */
+    private ArrayAdapter<String> listAdapter;
+
+    /**
+     * The current date
+     */
+    private String currentDate = jniGetCurrentDate();
+
+    /**
+     * The selected date
+     */
+    private String selectedDate;
+
+    /**
+     * Text from the month box
+     */
+    private String selectDay;
+
+    /**
+     * The day object
+     */
+    private Day selectedDay = null;
+    private Event selectedEvent = null;
+
+    /**
+     * selected event Id (for removal)
+     */
+    private static String eventId = "";
+    private static Button startTime;
+    private static Button endTime;
+    private static Button finishDate;
+    private static Button eventDays;
+    private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
+    private static int selectedRepeat = 0;
 
     /*Loads the native library "calender" on start up */
     static {
@@ -298,8 +364,264 @@ public class DialogAction extends AppCompatActivity {
         return (splitDate[0] + "/" + splitDate[1] + "/" + splitDate[2]);
     }
 
+    private void createNewEvent(String title, String description, String start, String finish,
+                                String finishDate, String repeat) {
+
+        //if (this.repeat == 3) repeat += repeatDayDate;
+        Log.e("Finish Date: ", finishDate);
+        Log.e("start Date: ", selectedDate);
+        String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
+        Log.e("CREATE Event:", r);
+        eventId = "";
+        newEvTitle = "";
+        newEvDescription = "";
+        newEvStartTime = "";
+        newEvFinishTime = "";
+        selectedDay = null;
+        newEvEndDate = "";
+        //getEvents();
+        listAdapter.notifyDataSetChanged();
+    }
+
+    public AlertDialog createEventDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle("New Event");
+
+        final LinearLayout dialogLayout = new LinearLayout(context);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        dialogLayout.setPadding(50, 50, 50, 50);
+        final TextView titleLabel = new TextView(context);
+        titleLabel.setText("Event Title:");
+        dialogLayout.addView(titleLabel, 0);
+        final EditText titleInput = new EditText(context);
+        titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        titleInput.setText(newEvTitle);
+        dialogLayout.addView(titleInput, 1);
+
+        final TextView descriptLabel = new TextView(context);
+        descriptLabel.setText("Event Description:");
+        dialogLayout.addView(descriptLabel, 2);
+        final EditText descriptInput = new EditText(context);
+        descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        descriptInput.setText(newEvDescription);
+        dialogLayout.addView(descriptInput, 3);
+
+        final TextView startLabel = new TextView(context);
+        startLabel.setText("Start Time:");
+        dialogLayout.addView(startLabel, 4);
+        startTime = new Button(context);
+        startTime.setHint("Select time");
+        startTime.setOnClickListener(startOnClick);
+        dialogLayout.addView(startTime, 5);
+
+        final TextView endLabel = new TextView(context);
+        endLabel.setText("End Time");
+        dialogLayout.addView(endLabel, 6);
+        endTime = new Button(context);
+        endTime.setHint("Select time");
+        endTime.setOnClickListener(endOnClick);
+        dialogLayout.addView(endTime, 7);
+
+        final TextView finishLabel = new TextView(context);
+        finishLabel.setText("Finish Date");
+        dialogLayout.addView(finishLabel, 8);
+        finishDate = new Button(context);
+        finishDate.setText(selectedDate);
+        finishDate.setOnClickListener(endDateOnClick);
+        dialogLayout.addView(finishDate, 9);
+
+        final TextView eventDaysLabel = new TextView(context);
+        eventDaysLabel.setText("Select event to repeat on");
+        dialogLayout.addView(eventDaysLabel, 10);
+        eventDays = new Button(context);
+        eventDays.setText(repeats[0]);
+        eventDays.setOnClickListener(eventDaysOnClick);
+        dialogLayout.addView(eventDays, 11);
+
+        builder.setView(dialogLayout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                newEvTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
+                newEvDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
+                newEvStartTime = startTime.getText().toString();
+                newEvFinishTime = endTime.getText().toString();
+                newEvEndDate = finishDate.getText().toString();
+                String repeat = Integer.toString(selectedRepeat);
+                if (newEvTitle.equals("") || newEvDescription.equals("") ||
+                        newEvStartTime.equals("") || newEvFinishTime.equals("")) {
+                    Log.d("JAVA create event: ", "failed!!");
+                } else {
+                    createNewEvent(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
+                            newEvEndDate, repeat);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                eventDays.setText("");
+                startTime.setText("");
+                endTime.setText("");
+                finishDate.setText("");
+                dialog.cancel();
+            }
+        });
+
+        return builder.create();
+    }
+
+    private View.OnClickListener eventDaysOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            // add a checkbox list
+            DialogFragment newFragment = new SelectRepeatFrag();
+            newFragment.show(getFragmentManager(), "Select repeat repeats");
+        }
+    };
+
+    public static class SelectRepeatFrag extends DialogFragment {
+        private int newSelection = 0;
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Repeat event on").setSingleChoiceItems(repeats, selectedRepeat,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //repeatDayDate = 0;
+                            eventDays.setText(repeats[which]);
+                            newSelection = which;
+                        }
+                    });
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    selectedRepeat = newSelection;
+                }
+            });
+            builder.setNegativeButton("Cancel", null);
+            return builder.create();
+        }
+    }
+
+    // Code For times and dates, needs refactoring
+    private View.OnClickListener endDateOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            DialogFragment newFragment = new DatePickerFrag();
+            newFragment.show(getFragmentManager(), "Pick Date");
+        }
+    };
+
+    public static class DatePickerFrag extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            String d;
+            String m;
+            if (day < 10) {
+                d = "0" + day;
+            } else {
+                d = "" + day;
+            }
+            int mon = month + 1;
+            if (mon < 10) {
+                m = "0" + mon;
+            } else {
+                m = "" + mon;
+            }
+            finishDate.setText(d + "/" + m + "/" + year);
+            finishDate.setTextSize(20);
+        }
+    }
+
+    private View.OnClickListener startOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new StartTimeFrag();
+            newFragment.show(getFragmentManager(), "Pick Time");
+        }
+    };
+
+    public static class StartTimeFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int hour = hourOfDay % 12;
+            startTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
+            startTime.setTextSize(20);
+            int h = (hourOfDay + 1) % 12;
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", h == 0 ? 12 : h,
+                    minute, (hourOfDay + 1) < 12 ? "am" : "pm"));
+        }
+    }
+
+    private View.OnClickListener endOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new EndTimeFrag();
+            newFragment.show(getFragmentManager(), "Pick Time");
+        }
+    };
+
+    public static class EndTimeFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
 
 
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int hour = hourOfDay % 12;
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
+            endTime.setTextSize(20);
+        }
+    }
+
+    public native String jniCreateDbEvent(String title, String description, String start,
+                                          String finish, String selectedDate,
+                                          String finishDate, String repeat, String filepath);
 
      /**
      * A JNI function that pushes event details through to the back-end to create
@@ -317,5 +639,6 @@ public class DialogAction extends AppCompatActivity {
                                         String duration, String dir, String selectedDate);
 
 
+    public native String jniGetCurrentDate();
 
 }

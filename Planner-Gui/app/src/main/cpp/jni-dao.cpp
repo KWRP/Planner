@@ -13,6 +13,13 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDat
     return env->NewStringUTF(date.c_str());
 }
 
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniGetCurrentDate(
+        JNIEnv *env,
+        jobject /* this */) {
+    string date = getCurrentDate();
+    return env->NewStringUTF(date.c_str());
+}
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
         JNIEnv *env,
         jobject /* this */, jstring dir) {
@@ -262,5 +269,71 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb
     }
 
     return env->NewStringUTF(getMonth.c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateDbEvent(
+        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
+
+    string confirm = "";
+    try {
+
+        const char *nativeTitle = env->GetStringUTFChars(title, 0);
+        const char *nativeDescription = env->GetStringUTFChars(description, 0);
+        const char *nativeStart = env->GetStringUTFChars(start, 0);
+        const char *nativeFinish = env->GetStringUTFChars(finish, 0);
+        const char *nativepath = env->GetStringUTFChars(filepath, 0);
+        const char *nativeDate = env->GetStringUTFChars(startDate, 0);
+        const char *nativeEndDate = env->GetStringUTFChars(endDate, 0);
+        const char *nativeRepeat = env->GetStringUTFChars(repeat, 0);
+
+        string selectedDate = nativeDate;
+        string delimiter = "/";
+        string day = selectedDate.substr(0, selectedDate.find(delimiter));
+        string rest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        string month = rest.substr(0, selectedDate.find(delimiter));
+        string year = rest.substr(selectedDate.find(delimiter) + 1);
+
+        selectedDate = nativeEndDate;
+        string endDay = selectedDate.substr(0, selectedDate.find(delimiter));
+        string endRest = selectedDate.substr(selectedDate.find(delimiter) + 1);
+        string endMonth = endRest.substr(0, selectedDate.find(delimiter));
+        string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
+
+//        bool byDay = false;
+//        string s = nativeRepeat;
+//        if (s.length() > 1) {
+//            if (s[1] == 0) byDay = true;
+//        }
+
+        bool addEventToSql = insertToDb(day.c_str(), month.c_str(), year.c_str(),
+                                        nativeTitle, nativeDescription, nativeStart, nativeFinish,
+                                        endDay.c_str(), endMonth.c_str(), endYear.c_str(),
+                                        atoi(nativeRepeat), nativepath);
+
+        std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
+                                                  nativepath);
+        //if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
+//        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
+
+        (env)->ReleaseStringUTFChars(title, nativeTitle);
+        (env)->ReleaseStringUTFChars(description, nativeDescription);
+        (env)->ReleaseStringUTFChars(start, nativeStart);
+        (env)->ReleaseStringUTFChars(finish, nativeFinish);
+        (env)->ReleaseStringUTFChars(filepath, nativepath);
+        (env)->ReleaseStringUTFChars(repeat, nativeRepeat);
+        (env)->ReleaseStringUTFChars(startDate, nativeDate);
+        (env)->ReleaseStringUTFChars(endDate, nativeEndDate);
+        if (addEventToSql) {
+            confirm = "Event Created!!";
+        } else {
+            confirm = "Event Deleted!!!";
+        }
+    }
+    catch (exception e) {
+        throwJavaException(env, e.what());
+    }
+    return env->NewStringUTF(confirm.c_str());
+
 }
 }
