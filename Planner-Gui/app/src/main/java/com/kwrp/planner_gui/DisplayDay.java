@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.ScrollView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -340,6 +341,7 @@ public class DisplayDay extends AppCompatActivity {
     private AlertDialog createEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
 
+        final ScrollView scrollView = new ScrollView(this);
         builder.setTitle("New Event");
 
         final LinearLayout dialogLayout = new LinearLayout(this);
@@ -393,7 +395,7 @@ public class DisplayDay extends AppCompatActivity {
         eventDays.setOnClickListener(eventDaysOnClick);
         dialogLayout.addView(eventDays, 11);
 
-        builder.setView(dialogLayout);
+      //  builder.setView(dialogLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -423,6 +425,8 @@ public class DisplayDay extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+        scrollView.addView(dialogLayout);
+        builder.setView(scrollView);
 
         return builder.create();
     }
@@ -430,6 +434,7 @@ public class DisplayDay extends AppCompatActivity {
     private AlertDialog updateEventDialog(int eventId) {
         selectedEvent = selectedDay.getEvent(eventId);
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
+        final ScrollView scrollView = new ScrollView(this);
         builder.setTitle("Edit Event");
 
         final LinearLayout dialogLayout = new LinearLayout(this);
@@ -499,7 +504,7 @@ public class DisplayDay extends AppCompatActivity {
             }
         });
         dialogLayout.addView(deleteBut, 12);
-        builder.setView(dialogLayout);
+      //  builder.setView(dialogLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -532,6 +537,8 @@ public class DisplayDay extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+        scrollView.addView(dialogLayout);
+        builder.setView(scrollView);
 
         return builder.create();
     }
