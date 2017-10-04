@@ -1,13 +1,11 @@
 package com.kwrp.planner_gui;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,26 +15,26 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.util.Log;
 import android.widget.TimePicker;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 
-import static com.kwrp.planner_gui.R.color.dialog;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 
@@ -48,10 +46,22 @@ import static com.kwrp.planner_gui.R.id.gridview;
  */
 public class DisplayMonth extends AppCompatActivity {
 
-    private static Button startTime;
-    private static Button endTime;
-    private String newEvTitle = "";
-    private String newEvDescription = "";
+    /**
+     * The selected date
+     */
+    private String selectedDate;
+
+    /**
+     * Text from the month box
+     */
+    private String selectDay;
+
+    /**
+     * The day object
+     */
+    private Day selectedDay = null;
+    private Event selectedEvent = null;
+
 
     /*month offset from current, if sees into the future, this month number will increase*/
     private static int month_offset = 0;
@@ -61,7 +71,7 @@ public class DisplayMonth extends AppCompatActivity {
 
     /*The index of the current month*/
     private static int thisMonthIndex = 0;
-    private int currentDay;
+
     /* Loads the native library "calendar" on start up*/
     static {
         System.loadLibrary("calendar");
@@ -85,8 +95,7 @@ public class DisplayMonth extends AppCompatActivity {
     /* A list of positions selected in edit mode */
     private Collection<Integer> positionList = new ArrayList<>();
     private Collection<Integer> eventPosList = new ArrayList<>();
-    /* The current date (system date)*/
-    private String currentDate;
+
 
     /*The filepath where events are stored on the device */
     private String filePath;
@@ -95,8 +104,46 @@ public class DisplayMonth extends AppCompatActivity {
 
     private int currentYear;
     private boolean colorThreadRun = false;
-    private int currentDayPos ;
+    private int currentDayPos;
     private int currentDayColor = DialogAction.headColor;
+
+    /**
+     * The new event title
+     */
+    private String newEvTitle = "";
+
+    /**
+     * The new event description
+     */
+    private String newEvDescription = "";
+
+    /**
+     * The new event start time
+     */
+    private String newEvStartTime = "";
+
+    /**
+     * The new event duration
+     */
+    private String newEvFinishTime = "";
+
+    private String newEvEndDate = "";
+
+    /**
+     * The current date
+     */
+    private String currentDate = jniGetCurrentDate();
+    private static String month;
+    private static String year;
+
+    /**
+     * selected event Id (for removal)
+     */
+    private static String eventId = "";
+    private static Button startTime;
+    private static Button endTime;
+    private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
+    private static int selectedRepeat = 0;
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -113,8 +160,10 @@ public class DisplayMonth extends AppCompatActivity {
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
         filePath = getFilesDir().getAbsolutePath() + "/events.db";
+        checkDbExists();
 
         //get current date
+        int currentDay = 0;
         int index = 0;
         for (int i = 0; i < currentDate.length(); i++) {
             if (currentDate.charAt(i) == ('/')) {
@@ -122,7 +171,7 @@ public class DisplayMonth extends AppCompatActivity {
                 if (index == 0) {
                     index = i;
                 } else {
-                    currentDay = Integer.parseInt(currentDate.substring(0,index));
+                    currentDay = Integer.parseInt(currentDate.substring(0, index));
                     thisMonthIndex = (Integer.parseInt(currentDate.substring(index + 1, i)) - 1);
                     viewedYear = (Integer.parseInt(currentDate.substring(i + 1)));
                     currentYear = viewedYear;
@@ -167,7 +216,7 @@ public class DisplayMonth extends AppCompatActivity {
 
         setGridEventDefault(); //set grid on click listener to default
 
-        String days =  jniGetEventsDb(systemDate[1], systemDate[2], filePath);
+        String days = jniGetEventsDb(systemDate[1], systemDate[2], filePath);
         Log.e("EVENTS", jniGetEventsDb(systemDate[1], systemDate[2], filePath));
         ArrayList<Integer> eventDays = new ArrayList<Integer>();
         String[] events;
@@ -216,6 +265,20 @@ public class DisplayMonth extends AppCompatActivity {
 
     }
 
+    /**
+     * Checks if the XML file where events are stored exists
+     * and create a file if not.
+     */
+    private void checkDbExists() {
+        File dir = getFilesDir();
+        File file = new File(dir, "/events.db");
+
+        if (!file.exists()) {
+            filePath = getFilesDir().getAbsolutePath() + "/events.db";
+            String newFile = jniCreateDb(filePath);
+            Log.e("CREATE SQL:", newFile);
+        }
+    }
 
 
     /**
@@ -274,10 +337,11 @@ public class DisplayMonth extends AppCompatActivity {
 
             class ColorSetThread extends Thread {
                 @Override
-                public void run(){
+                public void run() {
                     colorThreadRun = true;
                     int c = DialogAction.headColor;
-                    while(c == DialogAction.headColor){}
+                    while (c == DialogAction.headColor) {
+                    }
                     colorThreadRun = false;
                     startActivity(myIntent);
                     finish();
@@ -286,11 +350,9 @@ public class DisplayMonth extends AppCompatActivity {
                 }
             }
 
-            if(!colorThreadRun){
+            if (!colorThreadRun) {
                 new ColorSetThread().start();
             }
-
-
             return true;
         }
         //noinspection SimplifiableIfStatement
@@ -373,12 +435,13 @@ public class DisplayMonth extends AppCompatActivity {
      * @param month the month offset from the initial month.
      */
     public void updateMonthView(int month) {
+
         String[] systemDate = currentDate.split("/");
         int mon = Integer.parseInt(systemDate[1]) + month;
         final DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        String days =  jniGetEventsDb(Integer.toString(mon),
+        String days = jniGetEventsDb(Integer.toString(mon),
                 Integer.toString(viewedYear), filePath);
         Log.e("EVENT DAYS", days);
         Log.e("Viewed Year", Integer.toString(viewedYear));
@@ -405,28 +468,27 @@ public class DisplayMonth extends AppCompatActivity {
 
         String eventMonth = "" + (thisMonthIndex + month_offset + 1);
         String eventYear = "" + viewedYear;
-        final AlertDialog dialog = new DialogAction().createEventDialog(this);
-        //AlertDialog dialog = createEventSetDialog(dayList, eventMonth, eventYear);
+        Dialog dialog = createEventDialog(eventMonth, eventYear);
         dialog.show();
         dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
-        startEditState();
     }
 
 
-    public void setGridEventEdit(){
+    public void setGridEventEdit() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!editAvailable) {
                     TextView view2 = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
-                    Log.d("POSITION", "\n\n"+position+"\n\n");
+                    Log.d("POSITION", "\n\n" + position + "\n\n");
+
 
                     Drawable background = view2.getBackground();
                     if (background instanceof ColorDrawable) {
                         int color = ((ColorDrawable) background).getColor();
 
-                        if(color == currentDayColor){
+                        if (color == currentDayColor) {
                             currentDayPos = new Integer(position);
                             color = DialogAction.defaultColor;
                         }
@@ -434,13 +496,13 @@ public class DisplayMonth extends AppCompatActivity {
 
                         if (color == DialogAction.selectedColor) {
                             Integer pos = new Integer(position);
-                            if(position == currentDayPos){
+                            if (position == currentDayPos) {
                                 view2.setBackgroundColor(currentDayColor);
                             } else if (eventPosList.contains(pos)) {
-                                    view2.setBackgroundColor(DialogAction.eventColor);
-                                    eventPosList.remove(pos);
+                                view2.setBackgroundColor(DialogAction.eventColor);
+                                eventPosList.remove(pos);
                             } else {
-                                    view2.setBackgroundColor(DialogAction.defaultColor);
+                                view2.setBackgroundColor(DialogAction.defaultColor);
                             }
 
                             positionList.remove(pos);
@@ -453,7 +515,7 @@ public class DisplayMonth extends AppCompatActivity {
 
                             Integer pos = new Integer(position);
 
-                            if(color == DialogAction.eventColor){
+                            if (color == DialogAction.eventColor) {
                                 eventPosList.add(pos);
                             }
 
@@ -470,7 +532,6 @@ public class DisplayMonth extends AppCompatActivity {
                     } else {
                         fabconfirm.setVisibility(View.GONE);
                     }
-
                 }
 
             }
@@ -478,7 +539,7 @@ public class DisplayMonth extends AppCompatActivity {
         });
     }
 
-    public void setGridEventDefault(){
+    public void setGridEventDefault() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             /**
@@ -496,7 +557,7 @@ public class DisplayMonth extends AppCompatActivity {
              */
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if(editAvailable) {
+                if (editAvailable) {
                     TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
                     String dateSelected = view.getText().toString();
                     Intent myIntent = new Intent(view.getContext(), DisplayDay.class);
@@ -510,10 +571,195 @@ public class DisplayMonth extends AppCompatActivity {
     }
 
     /**
+     * Creates a new event accordingly
+     *
+     * @param title       title of the new event
+     * @param description description of then new event
+     * @param start       start time of the new event
+     * @param finish      duration of the new event
+     */
+    private void createNewEvent(String title, String description, String start, String finish,
+                                String startDate, int repeat) {
+
+        Log.e("Finish Date: ", startDate);
+        String r = jniCreateDbEvent(title, description, start, finish, startDate, startDate, Integer.toString(repeat), filePath);
+        Log.e("CREATE Event:", r);
+        newEvTitle = "";
+        newEvDescription = "";
+        newEvStartTime = "";
+        newEvFinishTime = "";
+    }
+
+    /**
+     * Creates the CREATE EVENT dialog box that pops up when the user wants to
+     * add an event.
+     *
+     * @return the dialog.
+     */
+    private AlertDialog createEventDialog(final String month, final String year) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DisplayMonth.this);
+
+        final ScrollView scrollView = new ScrollView(this);
+        builder.setTitle("New Event");
+
+        final LinearLayout dialogLayout = new LinearLayout(this);
+        dialogLayout.setOrientation(LinearLayout.VERTICAL);
+        dialogLayout.setPadding(50, 50, 50, 50);
+        final TextView titleLabel = new TextView(this);
+        titleLabel.setText("Event Title:");
+        dialogLayout.addView(titleLabel, 0);
+        final EditText titleInput = new EditText(this);
+        titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        titleInput.setText(newEvTitle);
+        dialogLayout.addView(titleInput, 1);
+
+        final TextView descriptLabel = new TextView(this);
+        descriptLabel.setText("Event Description:");
+        dialogLayout.addView(descriptLabel, 2);
+        final EditText descriptInput = new EditText(this);
+        descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        descriptInput.setText(newEvDescription);
+        dialogLayout.addView(descriptInput, 3);
+
+        final TextView startLabel = new TextView(this);
+        startLabel.setText("Start Time:");
+        dialogLayout.addView(startLabel, 4);
+        startTime = new Button(this);
+        startTime.setHint("Select time");
+        startTime.setOnClickListener(startOnClick);
+        dialogLayout.addView(startTime, 5);
+
+        final TextView endLabel = new TextView(this);
+        endLabel.setText("End Time");
+        dialogLayout.addView(endLabel, 6);
+        endTime = new Button(this);
+        endTime.setHint("Select time");
+        endTime.setOnClickListener(endOnClick);
+        dialogLayout.addView(endTime, 7);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Log.e("JAVA DAY", Integer.toString(dayList.size()));
+                for (String day : dayList) {
+                    newEvTitle = ((EditText) dialogLayout.getChildAt(1)).getText().toString();
+                    newEvDescription = ((EditText) dialogLayout.getChildAt(3)).getText().toString();
+                    newEvStartTime = startTime.getText().toString();
+                    newEvFinishTime = endTime.getText().toString();
+
+                    if (Integer.parseInt(day) < 10) {
+                        newEvEndDate = "0" + day + "/" + month + "/" + year;
+                    } else {
+                        newEvEndDate = day + "/" + month + "/" + year;
+                    }
+
+                    if (newEvTitle.equals("") || newEvDescription.equals("") ||
+                            newEvStartTime.equals("") || newEvFinishTime.equals("")) {
+                        Log.d("JAVA create event: ", "failed!!");
+                    } else {
+                        createNewEvent(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
+                                newEvEndDate, 0);
+                    }
+                }
+                startEditState();
+                updateMonthView(month_offset);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startTime.setText("");
+                endTime.setText("");
+                dialog.cancel();
+            }
+        });
+        scrollView.addView(dialogLayout);
+        builder.setView(scrollView);
+
+        return builder.create();
+    }
+
+    private View.OnClickListener startOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new DisplayMonth.StartTimeFrag();
+            newFragment.show(getFragmentManager(), "Pick Time");
+        }
+    };
+
+    public static class StartTimeFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int hour = hourOfDay % 12;
+            startTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
+            startTime.setTextSize(20);
+            int h = (hourOfDay + 1) % 12;
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", h == 0 ? 12 : h,
+                    minute, (hourOfDay + 1) < 12 ? "am" : "pm"));
+        }
+    }
+
+    private View.OnClickListener endOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new DisplayMonth.EndTimeFrag();
+            newFragment.show(getFragmentManager(), "Pick Time");
+        }
+    };
+
+    public static class EndTimeFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            int hour = hourOfDay % 12;
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
+            endTime.setTextSize(20);
+        }
+    }
+
+
+    /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
+    public native String jniCreateDb(String filePath);
+
     public native String jniGetCurrentDate();
+
     public native String jniGetEventsDb(String month, String year, String filePath);
+
+    public native String jniCreateDbEvent(String title, String description, String start,
+                                          String finish, String selectedDate,
+                                          String finishDate, String repeat, String filepath);
 
 }

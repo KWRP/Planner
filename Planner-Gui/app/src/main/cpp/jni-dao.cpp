@@ -45,6 +45,31 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
     return env->NewStringUTF(confirm.c_str());
 
 }
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
+        JNIEnv *env,
+        jobject /* this */, jstring dir) {
+    string confirm = "";
+
+    try {
+        const char *nativePath = env->GetStringUTFChars(dir, 0);
+
+        bool createDb = createTableQuery(nativePath);
+
+        (env)->ReleaseStringUTFChars(dir, nativePath);
+
+
+        if (createDb) {
+            confirm = "File Created!!";
+        } else {
+            confirm = "File Creation Failed!!!";
+        }
+    } catch (exception e) {
+        throwJavaException(env, e.what());
+    }
+
+    return env->NewStringUTF(confirm.c_str());
+
+}
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
@@ -75,12 +100,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
         string endMonth = endRest.substr(0, selectedDate.find(delimiter));
         string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
 
-//        bool byDay = false;
-//        string s = nativeRepeat;
-//        if (s.length() > 1) {
-//            if (s[1] == 0) byDay = true;
-//        }
-
         bool addEventToSql = insertToDb(day.c_str(), month.c_str(), year.c_str(),
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(), endMonth.c_str(), endYear.c_str(),
@@ -88,8 +107,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
 
         std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
                                                   nativepath);
-        //if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
-//        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -186,13 +203,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
 
         __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 
-//        bool byDay = false;
-//        string s = nativeRepeat;
-//        if (s.length() > 1) {
-//            if (s[1] == 0) byDay = true;
-//        }
-
-
 
         bool updateEvent = updateToDb(day.c_str(), month.c_str(), year.c_str(),
                                       nativeTitle, nativeDescription, nativeStart, nativeFinish,
@@ -201,6 +211,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
                                       atoi(nativeRepeat), nativepath);
 
         __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
+
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
         (env)->ReleaseStringUTFChars(start, nativeStart);
@@ -271,7 +282,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb
     return env->NewStringUTF(getMonth.c_str());
 }
 
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateDbEvent(
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
 
@@ -300,11 +311,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateDbEve
         string endMonth = endRest.substr(0, selectedDate.find(delimiter));
         string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
 
-//        bool byDay = false;
-//        string s = nativeRepeat;
-//        if (s.length() > 1) {
-//            if (s[1] == 0) byDay = true;
-//        }
 
         bool addEventToSql = insertToDb(day.c_str(), month.c_str(), year.c_str(),
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
@@ -313,8 +319,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateDbEve
 
         std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
                                                   nativepath);
-        //if (!select) __android_log_print(ANDROID_LOG_INFO, "TEST Select from DATABASE!!!", "%s", "Select failed");
-//        if (!displayDb(nativepath))  __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
