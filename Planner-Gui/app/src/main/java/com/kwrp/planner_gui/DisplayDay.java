@@ -411,7 +411,6 @@ public class DisplayDay extends AppCompatActivity {
                     createNewEvent(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
                             newEvEndDate, repeat);
                 }
-                selectedRepeat = 0;
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -421,7 +420,6 @@ public class DisplayDay extends AppCompatActivity {
                 startTime.setText("");
                 endTime.setText("");
                 finishDate.setText("");
-                selectedRepeat = 0;
                 dialog.cancel();
             }
         });
@@ -520,7 +518,6 @@ public class DisplayDay extends AppCompatActivity {
                             selectedEvent.getEventDate(), selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
                 }
                 selectedDay = null;
-                selectedRepeat = 0;
                 getEvents();
             }
         });
