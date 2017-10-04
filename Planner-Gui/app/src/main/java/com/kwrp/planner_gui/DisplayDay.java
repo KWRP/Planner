@@ -1,11 +1,7 @@
 package com.kwrp.planner_gui;
 
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.TimePickerDialog;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,6 +29,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import android.support.*;
+
+import static android.R.attr.dialogLayout;
+import static com.kwrp.planner_gui.R.id.text;
 
 /**
  * Defines the display day activity where the user is shown
@@ -45,17 +45,6 @@ public class DisplayDay extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
 
-    private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
-    /**
-     * selected event Id (for removal)
-     */
-    private static String eventId = "";
-    private static Button startTime;
-    private static Button endTime;
-    private static Button finishDate;
-    private static Button eventDays;
-    private static int selectedRepeat = 0;
-
     /**
      * Loads the native library "calender" on start up
      */
@@ -67,81 +56,71 @@ public class DisplayDay extends AppCompatActivity {
      * List of eventItems
      */
     private ArrayList<String> eventItems = new ArrayList<>();
+
     /**
      * The new event title
      */
     private String newEvTitle = "";
+
     /**
      * The new event description
      */
     private String newEvDescription = "";
+
     /**
      * The new event start time
      */
     private String newEvStartTime = "";
+
     /**
      * The new event duration
      */
     private String newEvFinishTime = "";
+
     private String newEvEndDate = "";
     private int repeat = 0;
+
     /**
      * The file path to the file where events are being stored
      */
     private String filepath;
+
     /**
      * The listview for events
      */
     private ArrayAdapter<String> listAdapter;
+
     /**
      * The current date
      */
     private String currentDate = jniGetCurrentDate();
+
     /**
      * The selected date
      */
     private String selectedDate;
+
     /**
      * Text from the month box
      */
     private String selectDay;
+
     /**
      * The day object
      */
     private Day selectedDay = null;
     private Event selectedEvent = null;
-    private View.OnClickListener eventDaysOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            // add a checkbox list
-            DialogFragment newFragment = new SelectRepeatFrag();
-            newFragment.show(getFragmentManager(), "Select repeat repeats");
-        }
-    };
-    // Code For times and dates, needs refactoring
-    private View.OnClickListener endDateOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            DialogFragment newFragment = new DatePickerFrag();
-            newFragment.show(getFragmentManager(), "Pick Date");
-        }
-    };
-    private View.OnClickListener startOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
 
-            DialogFragment newFragment = new StartTimeFrag();
-            newFragment.show(getFragmentManager(), "Pick Time");
-        }
-    };
-    private View.OnClickListener endOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-
-            DialogFragment newFragment = new EndTimeFrag();
-            newFragment.show(getFragmentManager(), "Pick Time");
-        }
-    };
+    /**
+     * selected event Id (for removal)
+     */
+    private static String eventId = "";
+    private static Button startTime;
+    private static Button endTime;
+    private static Button finishDate;
+    private static Button eventDays;
+    private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
+    private static int selectedRepeat = 0;
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -273,6 +252,7 @@ public class DisplayDay extends AppCompatActivity {
                 Integer.parseInt(context.getStringExtra("year")));
     }
 
+
     private void deleteDb() {
         File dir = getFilesDir();
         File file = new File(dir, "/events.db");
@@ -306,8 +286,6 @@ public class DisplayDay extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_day, menu);
         return true;
     }
-
-    // Code For times and dates, needs refactoring
 
     /**
      * Called when an item in the menu has been selected. Will find which action it is
@@ -433,7 +411,6 @@ public class DisplayDay extends AppCompatActivity {
                     createNewEvent(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
                             newEvEndDate, repeat);
                 }
-                selectedRepeat = 0;
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -443,7 +420,6 @@ public class DisplayDay extends AppCompatActivity {
                 startTime.setText("");
                 endTime.setText("");
                 finishDate.setText("");
-                selectedRepeat = 0;
                 dialog.cancel();
             }
         });
@@ -542,7 +518,6 @@ public class DisplayDay extends AppCompatActivity {
                             selectedEvent.getEventDate(), selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
                 }
                 selectedDay = null;
-                selectedRepeat = 0;
                 getEvents();
             }
         });
@@ -560,6 +535,7 @@ public class DisplayDay extends AppCompatActivity {
 
         return builder.create();
     }
+
 
     /**
      * Creates the DELETE EVENT dialog box that pops up when the user wants to
@@ -596,40 +572,17 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native String jniGetCurrentDate();
+    // Code For times and dates, needs refactoring
 
-    /**
-     * Gets the events on a given day
-     *
-     * @param filePath    path/to/file
-     * @param currentDate the day to search
-     * @return the events
-     */
-    public native String jniGetDayDb(String filePath, String currentDate);
 
-    /**
-     * A JNI function that removes an event from the .xml file rendering it
-     * non-existent.
-     *
-     * @param filepath path/to/file
-     * @param eventId  the event id number
-     * @return string confirming action
-     */
-    public native String jniRemoveEventDb(String eventId, String filepath);
-
-    public native String jniCreateDb(String filePath);
-
-    public native String jniCreateDbEvent(String title, String description, String start,
-                                          String finish, String selectedDate,
-                                          String finishDate, String repeat, String filepath);
-
-    public native String jniUpdateEventDb(String title, String description, String start, String finish,
-                                          String startDate, String endDate, String repeat, String eventID,
-                                          String filepath);
+    private View.OnClickListener eventDaysOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            // add a checkbox list
+            DialogFragment newFragment = new SelectRepeatFrag();
+            newFragment.show(getFragmentManager(), "Select repeat repeats");
+        }
+    };
 
     public static class SelectRepeatFrag extends DialogFragment {
         private int newSelection = 0;
@@ -657,6 +610,15 @@ public class DisplayDay extends AppCompatActivity {
             return builder.create();
         }
     }
+
+    // Code For times and dates, needs refactoring
+    private View.OnClickListener endDateOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            DialogFragment newFragment = new DatePickerFrag();
+            newFragment.show(getFragmentManager(), "Pick Date");
+        }
+    };
 
     public static class DatePickerFrag extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
@@ -692,6 +654,15 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
+    private View.OnClickListener startOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new StartTimeFrag();
+            newFragment.show(getFragmentManager(), "Pick Time");
+        }
+    };
+
     public static class StartTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -717,6 +688,15 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
+    private View.OnClickListener endOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+
+            DialogFragment newFragment = new EndTimeFrag();
+            newFragment.show(getFragmentManager(), "Pick Time");
+        }
+    };
+
     public static class EndTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -740,5 +720,40 @@ public class DisplayDay extends AppCompatActivity {
             endTime.setTextSize(20);
         }
     }
+
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    public native String jniGetCurrentDate();
+
+    /**
+     * Gets the events on a given day
+     *
+     * @param filePath    path/to/file
+     * @param currentDate the day to search
+     * @return the events
+     */
+    public native String jniGetDayDb(String filePath, String currentDate);
+
+    /**
+     * A JNI function that removes an event from the .xml file rendering it
+     * non-existent.
+     *
+     * @param filepath path/to/file
+     * @param eventId  the event id number
+     * @return string confirming action
+     */
+    public native String jniRemoveEventDb(String eventId, String filepath);
+
+    public native String jniCreateDb(String filePath);
+
+    public native String jniCreateDbEvent(String title, String description, String start,
+                                          String finish, String selectedDate,
+                                          String finishDate, String repeat, String filepath);
+
+    public native String jniUpdateEventDb(String title, String description, String start, String finish,
+                                          String startDate, String endDate, String repeat, String eventID,
+                                          String filepath);
 }
 
