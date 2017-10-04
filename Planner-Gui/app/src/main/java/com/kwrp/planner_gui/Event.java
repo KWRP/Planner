@@ -71,14 +71,6 @@ public class Event {
     }
 
     public String getEndDate() { return endDate;}
-    /**
-     * Sets eventId
-     *
-     * @param eventId the eventId
-     */
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
-    }
 
     /**
      * Get the event title
@@ -90,15 +82,6 @@ public class Event {
     }
 
     /**
-     * Set the event title
-     *
-     * @return the event title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
      * Get the event description
      *
      * @return the event description
@@ -106,16 +89,7 @@ public class Event {
     public String getDescription() {
         return description;
     }
-
-    /**
-     * Set the event description
-     *
-     * @return the event description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
+    public String getEventDate() { return eventDate; }
 
     public String getFinishTime() { return finishTime;}
     /**

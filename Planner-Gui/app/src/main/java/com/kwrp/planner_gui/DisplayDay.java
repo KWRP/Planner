@@ -515,7 +515,7 @@ public class DisplayDay extends AppCompatActivity {
                     Log.d("JAVA create event: ", "failed!!");
                 } else {
                     jniUpdateEventDb(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
-                            newEvEndDate, selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
+                            selectedEvent.getEventDate(), selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
                 }
                 selectedDay = null;
                 getEvents();
