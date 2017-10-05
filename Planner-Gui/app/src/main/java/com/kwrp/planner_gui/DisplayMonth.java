@@ -562,9 +562,7 @@ public class DisplayMonth extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            Intent refresh = new Intent(this, DisplayMonth.class);
-            startActivity(refresh);
-            this.finish();
+            updateMonthView(month_offset);
         }
     }
 
