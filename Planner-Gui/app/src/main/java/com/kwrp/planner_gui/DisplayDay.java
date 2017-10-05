@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -723,6 +724,17 @@ public class DisplayDay extends AppCompatActivity {
                     minute, hourOfDay < 12 ? "am" : "pm"));
             endTime.setTextSize(20);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
+        {
+            setResult(RESULT_OK, null);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**

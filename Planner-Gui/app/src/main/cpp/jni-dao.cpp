@@ -1,6 +1,6 @@
 #include <android/log.h>
 #include "include/jni-dao.h"
-#include "include/xml-dao.hpp"
+#include "include/helpers.hpp"
 #include "sqlite-dao.hpp"
 
 using namespace std;
