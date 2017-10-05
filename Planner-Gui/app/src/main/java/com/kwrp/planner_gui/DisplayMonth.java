@@ -142,7 +142,6 @@ public class DisplayMonth extends AppCompatActivity {
         checkDbExists();
 
         //get current date
-        int currentDay = 0;
         int index = 0;
         for (int i = 0; i < currentDate.length(); i++) {
             if (currentDate.charAt(i) == ('/')) {
@@ -150,7 +149,7 @@ public class DisplayMonth extends AppCompatActivity {
                 if (index == 0) {
                     index = i;
                 } else {
-                    currentDay = Integer.parseInt(currentDate.substring(0, index));
+
                     thisMonthIndex = (Integer.parseInt(currentDate.substring(index + 1, i)) - 1);
                     viewedYear = (Integer.parseInt(currentDate.substring(i + 1)));
                     currentYear = viewedYear;
@@ -463,6 +462,9 @@ public class DisplayMonth extends AppCompatActivity {
     }
 
 
+    /**
+     * Set the grid event listener to select days for multi-event option.
+     */
     public void setGridEventEdit() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -528,6 +530,9 @@ public class DisplayMonth extends AppCompatActivity {
         });
     }
 
+    /**
+     * Set the grid event listener to default, which is to view the day and see events on that day
+     */
     public void setGridEventDefault() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -594,7 +599,7 @@ public class DisplayMonth extends AppCompatActivity {
      * Creates the CREATE EVENT dialog box that pops up when the user wants to
      * add an event.
      *
-     * @return the dialog.
+     * @return the dialog for create event.
      */
     private AlertDialog createEventDialog(final String month, final String year) {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayMonth.this);
@@ -691,6 +696,9 @@ public class DisplayMonth extends AppCompatActivity {
         }
     };
 
+    /**
+     * Creates the start time fragment for start/end times of events
+     */
     public static class StartTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -726,6 +734,9 @@ public class DisplayMonth extends AppCompatActivity {
         }
     };
 
+    /**
+     * Endtime fragment for the dialog box
+     */
     public static class EndTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -757,10 +768,33 @@ public class DisplayMonth extends AppCompatActivity {
      */
     public native String jniCreateDb(String filePath);
 
+    /**
+     * Get current date
+     * @return string for the current date
+     */
     public native String jniGetCurrentDate();
 
+    /** Gets the events for a particular month and year (i.e. September 2017)
+     *
+     * @param month the month you want
+     * @param year the year
+     * @param filePath path/to/database
+     * @return events
+     */
     public native String jniGetEventsDb(String month, String year, String filePath);
 
+    /** Creates an event on a particular date
+     *
+     * @param title the title of the event
+     * @param description description of the event
+     * @param start start time of the event
+     * @param finish finish time of the event
+     * @param selectedDate the start date of the event
+     * @param finishDate the last date the event will occur
+     * @param repeat how often the event repeats (i.e. daily, weekly, monthly)
+     * @param filepath path/to/database
+     * @return
+     */
     public native String jniCreateDbEvent(String title, String description, String start,
                                           String finish, String selectedDate,
                                           String finishDate, String repeat, String filepath);
