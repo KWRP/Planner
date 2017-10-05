@@ -141,8 +141,6 @@ public class DisplayMonth extends AppCompatActivity {
         filePath = getFilesDir().getAbsolutePath() + "/events.db";
         checkDbExists();
 
-        //get current date
-        int currentDay = 0;
         int index = 0;
         for (int i = 0; i < currentDate.length(); i++) {
             if (currentDate.charAt(i) == ('/')) {
@@ -150,7 +148,6 @@ public class DisplayMonth extends AppCompatActivity {
                 if (index == 0) {
                     index = i;
                 } else {
-                    currentDay = Integer.parseInt(currentDate.substring(0, index));
                     thisMonthIndex = (Integer.parseInt(currentDate.substring(index + 1, i)) - 1);
                     viewedYear = (Integer.parseInt(currentDate.substring(i + 1)));
                     currentYear = viewedYear;
@@ -197,7 +194,7 @@ public class DisplayMonth extends AppCompatActivity {
 
         String days = jniGetEventsDb(systemDate[1], systemDate[2], filePath);
         Log.e("EVENTS", jniGetEventsDb(systemDate[1], systemDate[2], filePath));
-        ArrayList<Integer> eventDays = new ArrayList<Integer>();
+        ArrayList<Integer> eventDays = new ArrayList<>();
         String[] events;
         if (days.length() > 0) {
             events = days.split("__");
@@ -320,6 +317,7 @@ public class DisplayMonth extends AppCompatActivity {
                     colorThreadRun = true;
                     int c = DialogAction.headColor;
                     while (c == DialogAction.headColor) {
+                        // waits until the colour is changed then restarts the activity
                     }
                     colorThreadRun = false;
                     startActivity(myIntent);
@@ -436,7 +434,7 @@ public class DisplayMonth extends AppCompatActivity {
         Log.e("Viewed Year", Integer.toString(viewedYear));
         Log.e("MONTH", Integer.toString(mon));
         String[] events = days.split("__");
-        ArrayList<Integer> eventDays = new ArrayList<Integer>();
+        ArrayList<Integer> eventDays = new ArrayList<>();
         if (days.length() > 0) {
             for (String s : events) {
                 eventDays.add(Integer.parseInt(s));
@@ -478,13 +476,13 @@ public class DisplayMonth extends AppCompatActivity {
                         int color = ((ColorDrawable) background).getColor();
 
                         if (color == currentDayColor) {
-                            currentDayPos = new Integer(position);
+                            currentDayPos = position;
                             color = DialogAction.defaultColor;
                         }
 
 
                         if (color == DialogAction.selectedColor) {
-                            Integer pos = new Integer(position);
+                            Integer pos = position;
                             if (position == currentDayPos) {
                                 view2.setBackgroundColor(currentDayColor);
                             } else if (eventPosList.contains(pos)) {
@@ -502,7 +500,7 @@ public class DisplayMonth extends AppCompatActivity {
                         } else if (color != DialogAction.outMonthColor) {
                             view2.setBackgroundColor(DialogAction.selectedColor);
 
-                            Integer pos = new Integer(position);
+                            Integer pos = position;
 
                             if (color == DialogAction.eventColor) {
                                 eventPosList.add(pos);
@@ -606,7 +604,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
         dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(this);
-        titleLabel.setText("Event Title:");
+        titleLabel.setText(R.string.label_dialog_title);
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -615,7 +613,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
-        descriptLabel.setText("Event Description:");
+        descriptLabel.setText(R.string.label_dialog_description);
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -624,7 +622,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
-        startLabel.setText("Start Time:");
+        startLabel.setText(R.string.label_dialog_start_time);
         dialogLayout.addView(startLabel, 4);
         startTime = new Button(this);
         startTime.setHint("Select time");
@@ -632,7 +630,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(startTime, 5);
 
         final TextView endLabel = new TextView(this);
-        endLabel.setText("End Time");
+        endLabel.setText(R.string.label_dialog_end_time);
         dialogLayout.addView(endLabel, 6);
         endTime = new Button(this);
         endTime.setHint("Select time");
