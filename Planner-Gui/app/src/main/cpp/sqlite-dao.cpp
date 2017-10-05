@@ -227,8 +227,8 @@ bool updateToDb(const char *sday, const char *smonth, const char *syear, const c
         sqlite3_free(zErrMsg);
         return false;
     }
-    //__android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",sday,smonth,syear);
-    //__android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",endDay,endMonth,endYear);
+    __android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",sday,smonth,syear);
+    __android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",endDay,endMonth,endYear);
 
     if (atoi(sday) == 1) {
         if (atoi(month) > 1) {

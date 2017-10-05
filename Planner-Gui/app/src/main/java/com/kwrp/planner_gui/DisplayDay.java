@@ -316,6 +316,11 @@ public class DisplayDay extends AppCompatActivity {
             checkDbExists();
             return true;
         }
+        if (id == R.id.action_help) {
+            AlertDialog dialog = DialogAction.createHelpDialog(this);
+            dialog.show();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
