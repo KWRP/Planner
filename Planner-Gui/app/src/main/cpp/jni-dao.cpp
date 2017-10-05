@@ -105,8 +105,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
                                         endDay.c_str(), endMonth.c_str(), endYear.c_str(),
                                         atoi(nativeRepeat), nativepath);
 
-        std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
-                                                  nativepath);
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -316,9 +314,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDbEve
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(), endMonth.c_str(), endYear.c_str(),
                                         atoi(nativeRepeat), nativepath);
-
-        std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
-                                                  nativepath);
+        
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);

@@ -1,6 +1,6 @@
 package com.kwrp.planner_gui;
 
-import android.app.Dialog;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
@@ -16,7 +16,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import static android.media.CamcorderProfile.get;
 
 /**
  * MonthAdapter handles all of the data surrounding date generation
