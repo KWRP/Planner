@@ -7,51 +7,34 @@
 
 #include <sqlite3.h>
 #include <sqlite-dao.hpp>
-#include <stdlib.h>
-#include <sstream>
+#include <helpers.hpp>
 #include <android/log.h>
 
-int dayOfWeekI(int day, int month, int year) {
-
-    struct tm time_in = {0, 0, 0, // second, minute, hour
-                         day, month - 1,
-                         year - 1900}; // 1-based day, 0-based month, year since 1900
-    time_t time_temp = mktime(&time_in);
-
-    struct tm const *time_out = localtime(&time_temp);
-    int n = time_out->tm_wday + 6;
-    n = n % 7;
-    return n;
-}
-int maxDays(int mon, int year) {
-    int daysInMonth = 1;
-    if (mon == 04 || mon == 06 || mon == 9 || mon == 11) {
-        daysInMonth = 30;
-    } else if (mon == 02) {
-        if (year % 4 == 0 && year % 100 && year % 400) {
-            daysInMonth = 29;
-        } else {
-            daysInMonth = 28;
-        }
-    } else {
-        daysInMonth = 31;
-    }
-    return daysInMonth;
-}
+/**
+ * Logs each line of a SQL execution
+ *
+ * @param null pointer
+ * @param argc for number of lines to log
+ * @param argv is a character pointer for argument values
+ * @param azColName is the name of the columns in the database
+ * @return 0 once complete
+ */
 int callback(void *NotUsed, int argc, char **argv, char **azColName) {
-    NotUsed = 0;
     int i;
     __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", "got into callback");
     for (i = 0; i < argc; ++i) {
-        //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-        //printf("info:: azColName = %s ; argv = %s \n", azColName[i], argv[i]);
         __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s = %s\n", azColName[i],
                             argv[i] ? argv[i] : "NULL");
     }
     printf("\n");
     return 0;
 }
-
+/**
+ * Creates the initial database if not already created.
+ *
+ * @param filepath of the stored database
+ * @return bool value of database creation
+ */
 bool createTableQuery(const char *filepath) {
     sqlite3 *db;
     char *zErrMsg = 0;
@@ -96,7 +79,13 @@ bool createTableQuery(const char *filepath) {
         return false;
     return true;
 }
-
+/**
+ * Creates the initial database if not already created.
+ *
+ * @param createStatement is the statement to be executed
+ * @param db is the opened instance of the database to execute the statement in
+ * @return bool value of database creation
+ */
 bool createDb(const char *createStatement, sqlite3 *db) {
     char *zErrMsg = 0;
     int rc;
@@ -110,7 +99,23 @@ bool createDb(const char *createStatement, sqlite3 *db) {
 
     return true;
 }
-
+/**
+ * Inserts an event into the database
+ *
+ * @param day portion of the start date
+ * @param month portion of the start date
+ * @param year portion of the start date
+ * @param title of the event
+ * @param description for the event
+ * @param start time of the event
+ * @param duration of the event
+ * @param endDay portion of the end date
+ * @param endMonth portion of the end date
+ * @param endYear portion of the end date
+ * @param repeatCycle of the event (0-4)
+ * @param filepath of the stored database
+ * @return bool value of database creation
+ */
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,
@@ -201,7 +206,26 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
     sqlite3_close(db);
     return true;
 }
-
+/**
+ * updates the end date of an already existing event, then recalls insert for the new event.
+ *
+ * @param day portion of the start date of the new event,
+ *          used to derive the end date of the old event
+ * @param month portion of the start date of the new event,
+ *          used to derive the end date of the old event
+ * @param year portion of the start date of the new event,
+ *          used to derive the end date of the old event
+ * @param title of the event
+ * @param description for the event
+ * @param start time of the event
+ * @param duration of the event
+ * @param endDay portion of the end date
+ * @param endMonth portion of the end date
+ * @param endYear portion of the end date
+ * @param repeatCycle of the event (0-4)
+ * @param filepath of the stored database
+ * @return bool value of database creation
+ */
 bool updateToDb(const char *sday, const char *smonth, const char *syear, const char *title,
                 const char *description, const char *start, const char *duration,
                 const char *endDay, const char *endMonth, const char *endYear,
@@ -231,7 +255,7 @@ bool updateToDb(const char *sday, const char *smonth, const char *syear, const c
     __android_log_print(ANDROID_LOG_INFO, "TEST update MONTH SELECT SQL!!!", "%s %s %s",endDay,endMonth,endYear);
 
     if (atoi(sday) == 1) {
-        if (atoi(month) > 1) {
+        if (atoi(smonth) > 1) {
             day = "31";
         } else {
             day = "0"; //may break database, must test
@@ -265,7 +289,13 @@ bool updateToDb(const char *sday, const char *smonth, const char *syear, const c
     return insertToDb(sday, smonth, syear, title, description, start, duration,
                       endDay, endMonth, endYear, repeatCycle, filepath);
 }
-
+/**
+ * Removes a database entry with the given ID
+ *
+ * @param eventID is the ID of the desired event to be deleted
+ * @param filepath of the stored database
+ * @return bool value of database creation
+ */
 bool deleteFromDb(int eventID, const char *filepath) {
     sqlite3 *db;
     char *zErrMsg = 0;
@@ -294,7 +324,15 @@ bool deleteFromDb(int eventID, const char *filepath) {
     sqlite3_close(db);
     return true;
 }
-
+/**
+ * Selects and returns all events that occur on a given date.
+ *
+ * @param day portion of date
+ * @param month portion of date
+ * @param year portion of date
+ * @param filepath of the stored database
+ * @return vector of strings with the information of each event
+ */
 std::vector<std::string> selectFromDB(const char *day, const char *month,
                                                    const char *year,
                                                    const char *filepath) {
@@ -328,9 +366,6 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             "and CALENDAR.endDate >= date( ? ) and ";
     query.append(days[dayNum]);
     query.append(" = 0;");
-
-    const char *dday = days[dayNum];
-    //__android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", dday);
 
     rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, 0);
     if (rc == SQLITE_OK) {
@@ -409,7 +444,6 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             }
 
         } else if (s == SQLITE_DONE) {
-            //__android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", "finished rows");
             sqlite3_finalize(stmt);
             sqlite3_close(db);
             break;
@@ -424,7 +458,12 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
 
 }
 
-
+/**
+ * logs the entire database
+ *
+ * @param filepath of the stored database
+ * @return bool value of database manipulations
+ */
 bool displayDb(const char *filepath) {
     sqlite3 *db;
     char *zErrMsg = 0;
@@ -449,7 +488,14 @@ bool displayDb(const char *filepath) {
     printf("\n\n");
     return true;
 }
-
+/**
+ * Calls select for each day of a given month in a given year
+ *
+ * @param month to select from
+ * @param year of the given month
+ * @param filepath of the stored database
+ * @return bool value of database manipulations
+ */
 std::string selectMonth(const char *month, const char *year, const char *filepath){
     int lastDay = maxDays(atoi(month),atoi(year));
     const char* days[31] = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16",
@@ -461,7 +507,6 @@ std::string selectMonth(const char *month, const char *year, const char *filepat
     }
     monthT.append(month);
 
-    //__android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%d %d", atoi(month), atoi(year));
 
     for(int j =0; j<lastDay; j++){
         std::vector<std::string> events = selectFromDB(days[j],monthT.c_str(),year,filepath);
@@ -469,6 +514,6 @@ std::string selectMonth(const char *month, const char *year, const char *filepat
             result.append(days[j]).append("__");
         }
     }
-    //__android_log_print(ANDROID_LOG_INFO, "TEST MONTH SELECT SQL!!!", "%s", result.c_str());
+
     return result;
 }

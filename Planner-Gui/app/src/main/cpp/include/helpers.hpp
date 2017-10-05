@@ -13,12 +13,8 @@ std::string numToString(long l);
 
 std::string getCurrentDate();
 
-int dayOfWeek(std::string date);
 int dayOfWeekI(int day, int mon, int year);
-
-int numberOfDayInMonth(std::string date);
-
-std::string changeDate(std::string date, bool forward);
+int maxDays(int mon, int year);
 
 void throwJavaException(JNIEnv *env, const char *msg);
 

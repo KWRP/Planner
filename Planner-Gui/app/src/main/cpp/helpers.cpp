@@ -1,5 +1,11 @@
 #include "include/helpers.hpp"
 
+/**
+ * Converts a given long into a string.
+ *
+ * @param long intended to be converted to string
+ * @return the converted string
+ */
 std::string numToString(long l) {
     std::stringstream ss;
     ss << l;
@@ -7,6 +13,11 @@ std::string numToString(long l) {
     return newString;
 }
 
+/**
+ * collects and formats the date to the format DD/MM/YYYY
+ *
+ * @return the formatted date
+ */
 std::string getCurrentDate() {
     std::string dayDate = "";
     std::string monDate = "";
@@ -25,38 +36,38 @@ std::string getCurrentDate() {
     date = dayDate + "/" + monDate + "/" + numToString(now->tm_year + 1900);
     return date;
 }
+/**
+ * Finds the day of the week a given date falls on.
+ *
+ * @param day portion of date
+ * @param month portion of date
+ * @param year portion of date
+ * @return the day of the week
+ */
+int dayOfWeekI(int day, int month, int year) {
 
-int dayOfWeek(std::string date) {
-    int day = atoi(date.substr(0, 2).data());
-    int mon = atoi(date.substr(3, 2).data());
-    int year = atoi(date.substr(6, 4).data());
-    std::tm time_in = {0, 0, 0, // second, minute, hour
-                       day, mon - 1, year - 1900}; // 1-based day, 0-based month, year since 1900
-    std::time_t time_temp = std::mktime(&time_in);
+    struct tm time_in = {0, 0, 0, // second, minute, hour
+                         day, month - 1,
+                         year - 1900}; // 1-based day, 0-based month, year since 1900
+    time_t time_temp = mktime(&time_in);
 
-    std::tm const *time_out = std::localtime(&time_temp);
+    struct tm const *time_out = localtime(&time_temp);
     int n = time_out->tm_wday + 6;
     n = n % 7;
     return n;
 }
-//int dayOfWeekI(int day,int mon,int year) {
-//    std::tm time_in = {0, 0, 0, // second, minute, hour
-//                       day, mon - 1, year - 1900}; // 1-based day, 0-based month, year since 1900
-//    std::time_t time_temp = std::mktime(&time_in);
-//
-//    std::tm const *time_out = std::localtime(&time_temp);
-//    int n = time_out->tm_wday + 6;
-//    n = n % 7;
-//    return n;
-//}
-
-int numberOfDayInMonth(std::string date) {
-    int mon = atoi(date.substr(3, 2).data());
+/**
+ * Finds the maximum days for a given month in a given year
+ *
+ * @param month
+ * @param year
+ * @return the total days in the given month
+ */
+int maxDays(int mon, int year) {
     int daysInMonth = 1;
     if (mon == 04 || mon == 06 || mon == 9 || mon == 11) {
         daysInMonth = 30;
     } else if (mon == 02) {
-        int year = atoi(date.substr(6, 4).data());
         if (year % 4 == 0 && year % 100 && year % 400) {
             daysInMonth = 29;
         } else {
@@ -67,36 +78,12 @@ int numberOfDayInMonth(std::string date) {
     }
     return daysInMonth;
 }
-
-std::string changeDate(std::string date, bool forward) {
-    int month = atoi(date.substr(3, 2).data());
-    int year = atoi(date.substr(6, 4).data());
-    if (forward) {
-        if (month == 12) {//checking that if it's the end of the year
-            year++;
-            date = "01/01/" + numToString(year);
-        } else {//checks if it's the end of the month
-            if (month + 1 < 10)
-                date = "01/0" + numToString(month + 1) + "/" + numToString(year);
-            else
-                date = "01/" + numToString(month + 1) + "/" + numToString(year);
-        }
-    } else {
-        if (month == 1) {//checking that if it's the end of the year
-            year--;
-            date = "31/12/" + numToString(year);
-        } else {
-            int day = numberOfDayInMonth(date.replace(3, 2, numToString(month - 1)));
-            if (month - 1 < 10)
-                date = numToString(day) + "/" + "0" + numToString(month - 1) + "/" +
-                       numToString(year);
-            else
-                date = numToString(day) + "/" + numToString(month - 1) + "/" + numToString(year);
-        }
-    }
-    return date;
-}
-
+/**
+ * Throws a Java exception
+ *
+ * @param JNI environment
+ * @param message to be thrown
+ */
 void throwJavaException(JNIEnv *env, const char *msg) {
     jclass c = env->FindClass("java/lang/RuntimeException");
 
