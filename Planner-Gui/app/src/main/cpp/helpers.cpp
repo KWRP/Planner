@@ -64,7 +64,7 @@ int dayOfWeekI(int day, int month, int year) {
  * @return the total days in the given month
  */
 int maxDays(int mon, int year) {
-    int daysInMonth = 1;
+    int daysInMonth = 0;
     if (mon == 04 || mon == 06 || mon == 9 || mon == 11) {
         daysInMonth = 30;
     } else if (mon == 02) {

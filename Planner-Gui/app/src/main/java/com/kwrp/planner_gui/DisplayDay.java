@@ -1,7 +1,6 @@
 package com.kwrp.planner_gui;
 
 import android.app.*;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,10 +30,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static android.R.attr.id;
-import static android.R.id.text1;
-
-
 /**
  * Defines the display day activity where the user is shown
  * the events for a single day, and what the ability to add
@@ -44,10 +39,6 @@ import static android.R.id.text1;
  */
 public class DisplayDay extends AppCompatActivity {
 
-    public static Color dialogColour;
-    /**
-     * Loads the native library "calender" on start up
-     */
     static {
         System.loadLibrary("calendar");
     }
@@ -114,10 +105,10 @@ public class DisplayDay extends AppCompatActivity {
      * selected event Id (for removal)
      */
     private static String eventId = "";
-    private static Button startTime;
-    private static Button endTime;
-    private static Button finishDate;
-    private static Button eventDays;
+    private Button startTime;
+    private Button endTime;
+    private Button finishDate;
+    private Button eventDays;
     private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
     private static int selectedRepeat = 0;
 
@@ -140,7 +131,7 @@ public class DisplayDay extends AppCompatActivity {
         currentDate = modifyDate(myIntent);
         selectedDate = selectDay + currentDate.substring(currentDate.indexOf("/"));
 
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_day, eventItems);
+        listAdapter = new ArrayAdapter<>(this, R.layout.list_day, eventItems);
         ListView eventsView = (ListView) findViewById(R.id.list_view_events);
         eventsView.setAdapter(listAdapter);
 
@@ -204,9 +195,6 @@ public class DisplayDay extends AppCompatActivity {
      */
     private void createNewEvent(String title, String description, String start, String finish,
                                 String finishDate, String repeat) {
-
-        Log.e("Finish Date: ", finishDate);
-        Log.e("start Date: ", selectedDate);
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
         Log.e("CREATE Event:", r);
         eventId = "";
@@ -247,13 +235,6 @@ public class DisplayDay extends AppCompatActivity {
 
         return (splitDate[0] + "/" + splitDate[1] + "/" +
                 Integer.parseInt(context.getStringExtra("year")));
-    }
-
-
-    private void deleteDb() {
-        File dir = getFilesDir();
-        File file = new File(dir, "/events.db");
-        file.delete();
     }
 
     /**
@@ -297,7 +278,7 @@ public class DisplayDay extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_display_month) {
-            Intent myIntent = new Intent(this, DisplayMonth.class); /** Class name here */
+            Intent myIntent = new Intent(this, DisplayMonth.class);
             startActivity(myIntent);
             this.finish();
         }
@@ -317,11 +298,6 @@ public class DisplayDay extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
             AlertDialog dialog = DialogAction.createAboutDialog(this);
-            dialog.show();
-            return true;
-        }
-        if (id == R.id.action_help) {
-            AlertDialog dialog = DialogAction.createHelpDialog(this);
             dialog.show();
             return true;
         }
@@ -350,7 +326,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
         dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(this);
-        titleLabel.setText("Event Title:");
+        titleLabel.setText(R.string.label_dialog_title);
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -358,7 +334,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
-        descriptLabel.setText("Event Description:");
+        descriptLabel.setText(R.string.label_dialog_description);
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -366,7 +342,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
-        startLabel.setText("Start Time:");
+        startLabel.setText(R.string.label_dialog_start_time);
         dialogLayout.addView(startLabel, 4);
         startTime = new Button(this);
         startTime.setHint("Select time");
@@ -374,7 +350,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(startTime, 5);
 
         final TextView endLabel = new TextView(this);
-        endLabel.setText("End Time");
+        endLabel.setText(R.string.label_dialog_end_time);
         dialogLayout.addView(endLabel, 6);
         endTime = new Button(this);
         endTime.setHint("Select time");
@@ -382,7 +358,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(endTime, 7);
 
         final TextView eventDaysLabel = new TextView(this);
-        eventDaysLabel.setText("Select event to repeat on");
+        eventDaysLabel.setText(R.string.label_dialog_repeat);
         dialogLayout.addView(eventDaysLabel, 8);
         eventDays = new Button(this);
         eventDays.setText(repeats[0]);
@@ -391,7 +367,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(eventDays, 9);
 
         final TextView finishLabel = new TextView(this);
-        finishLabel.setText("Finish Date");
+        finishLabel.setText(R.string.label_dialog_finish_date);
         dialogLayout.addView(finishLabel, 10);
         finishDate = new Button(this);
         finishDate.setText(selectedDate);
@@ -450,7 +426,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
         dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(this);
-        titleLabel.setText("Event Title:");
+        titleLabel.setText(R.string.label_dialog_title);
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -459,7 +435,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
-        descriptLabel.setText("Event Description:");
+        descriptLabel.setText(R.string.label_dialog_description);
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -468,7 +444,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
-        startLabel.setText("Start Time:");
+        startLabel.setText(R.string.label_dialog_start_time);
         dialogLayout.addView(startLabel, 4);
         startTime = new Button(this);
         startTime.setHint("Select time");
@@ -478,7 +454,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(startTime, 5);
 
         final TextView endLabel = new TextView(this);
-        endLabel.setText("End Time");
+        endLabel.setText(R.string.label_dialog_end_time);
         dialogLayout.addView(endLabel, 6);
         endTime = new Button(this);
         endTime.setHint("Select time");
@@ -488,7 +464,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(endTime, 7);
 
         final TextView eventDaysLabel = new TextView(this);
-        eventDaysLabel.setText("Select event to repeat on");
+        eventDaysLabel.setText(R.string.label_dialog_repeat);
         dialogLayout.addView(eventDaysLabel, 8);
         eventDays = new Button(this);
         eventDays.setText(repeats[0]);
@@ -497,7 +473,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(eventDays, 9);
 
         final TextView finishLabel = new TextView(this);
-        finishLabel.setText("Finish Date");
+        finishLabel.setText(R.string.label_dialog_finish_date);
         dialogLayout.addView(finishLabel, 10);
         finishDate = new Button(this);
         finishDate.setHint("Select date");
@@ -508,7 +484,7 @@ public class DisplayDay extends AppCompatActivity {
 
         Button deleteBut = new Button(this);
         deleteBut.setBackgroundColor(Color.argb(100,180,0,0));
-        deleteBut.setText("Delete Event");
+        deleteBut.setText(R.string.label_dialog_delete);
         deleteBut.setTextSize(20);
 
         deleteBut.setOnClickListener(new View.OnClickListener() {
@@ -636,7 +612,7 @@ public class DisplayDay extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     selectedRepeat = newSelection;
-                    if (selectedRepeat > 0) finishDate.setText("Forever");
+                    if (selectedRepeat > 0) finishDate.setText(R.string.input_default_repeat);
                     eventDays.setTextSize(20);
                     finishDate.setTextSize(20);
                 }
@@ -751,8 +727,8 @@ public class DisplayDay extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int hour = hourOfDay % 12;
-            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
-                    minute, hourOfDay < 12 ? "am" : "pm"));
+            setEndTime(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm");
             endTime.setTextSize(20);
         }
     }
@@ -766,6 +742,38 @@ public class DisplayDay extends AppCompatActivity {
             finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public Button getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime.setText(startTime);
+    }
+
+    public Button getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime.setText(endTime);
+    }
+
+    public Button getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(String finishDate) {
+        this.finishDate.setText(finishDate);
+    }
+
+    public Button getEventDays() {
+        return eventDays;
+    }
+
+    public void setEventDays(String eventDays) {
+        this.eventDays.setText(eventDays);
     }
 
     /**

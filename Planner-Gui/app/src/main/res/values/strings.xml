@@ -19,4 +19,12 @@
     <string name="label_sunday">Sun</string>
     <string name="label_ok">Sun</string>
     <string name="action_today">Today</string>
+    <string name="label_dialog_title">Event Title</string>
+    <string name="label_dialog_description">Event Description</string>
+    <string name="label_dialog_start_time">Start Time</string>
+    <string name="label_dialog_end_time">End Time</string>
+    <string name="label_dialog_finish_date">Finish Date</string>
+    <string name="label_dialog_repeat">Select event to repeat on</string>
+    <string name="label_dialog_delete">Delete Event</string>
+    <string name="input_default_repeat">Forever</string>
 </resources>

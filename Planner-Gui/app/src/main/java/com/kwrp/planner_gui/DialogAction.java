@@ -97,7 +97,7 @@ public class DialogAction extends AppCompatActivity {
         spinnerArray.add("Blue");
 
         Spinner spinner = new Spinner(parent);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(parent,
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(parent,
                 android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 
         spinner.setAdapter(spinnerArrayAdapter);

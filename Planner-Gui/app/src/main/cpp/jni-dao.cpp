@@ -57,7 +57,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
 
         (env)->ReleaseStringUTFChars(dir, nativePath);
 
-
         if (createDb) {
             confirm = "File Created!!";
         } else {
@@ -104,9 +103,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(), endMonth.c_str(), endYear.c_str(),
                                         atoi(nativeRepeat), nativepath);
-
-        std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
-                                                  nativepath);
+        displayDb(nativepath);
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -260,6 +257,8 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
     }
     return env->NewStringUTF(confirm.c_str());
 }
+
+
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
         JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir) {
 
@@ -311,14 +310,10 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDbEve
         string endMonth = endRest.substr(0, selectedDate.find(delimiter));
         string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
 
-
         bool addEventToSql = insertToDb(day.c_str(), month.c_str(), year.c_str(),
                                         nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                         endDay.c_str(), endMonth.c_str(), endYear.c_str(),
                                         atoi(nativeRepeat), nativepath);
-
-        std::vector<string> select = selectFromDB(day.c_str(), month.c_str(), year.c_str(),
-                                                  nativepath);
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);

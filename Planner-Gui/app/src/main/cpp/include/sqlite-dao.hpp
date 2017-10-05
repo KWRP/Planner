@@ -1,12 +1,7 @@
-//
-// Created by willy on 25/06/2017.
 
 #pragma once
 #ifndef PLANNER_GUI_SQLITE_DAO_H
 #define PLANNER_GUI_SQLITE_DAO_H
-
-//
-// Created by willy on 25/06/2017.
 
 #include "sqlite3.h"
 #include <stdio.h>
@@ -35,13 +30,13 @@ bool updateToDb(const char *day, const char *month, const char *year, const char
 
 bool deleteFromDb(int eventID, const char *filepath);
 
-std::vector<std::string> selectFromDB(const char *sday, const char *smonth,
-                                                   const char *syear,
+std::vector<std::string> selectFromDB(const char *day, const char *month,
+                                                   const char *year,
                                                    const char *filepath);
 
 std::string selectMonth(const char *month, const char *year, const char *filepath);
 
-bool displayDb(const char *nativeDb);
+void displayDb(const char *nativeDb);
 
 #endif //PLANNER_GUI_SQLITE_DAO_H
 #ifdef __cplusplus

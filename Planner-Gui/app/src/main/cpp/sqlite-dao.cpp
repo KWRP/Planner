@@ -1,10 +1,3 @@
-
-// To create sql executable to look at the database files use the following:
-// gcc -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION shell.c sqlite3.c -o sqlite
-
-// To compile this file use:
-// gcc sqlite3.c test.c -o testDb.
-
 #include <sqlite3.h>
 #include <sqlite-dao.hpp>
 #include <helpers.hpp>
@@ -26,7 +19,6 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName) {
         __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s = %s\n", azColName[i],
                             argv[i] ? argv[i] : "NULL");
     }
-    printf("\n");
     return 0;
 }
 /**
@@ -75,9 +67,7 @@ bool createTableQuery(const char *filepath) {
 
 
     sqlite3_close(db);
-    if (!weeklyResult || !calendarResult)
-        return false;
-    return true;
+    return !(!weeklyResult || !calendarResult);
 }
 /**
  * Creates the initial database if not already created.
@@ -185,9 +175,6 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
     strcat(endDate, "-");
     strcat(endDate, endDay);
 
-    printf("start date: %s\n", startDate);
-    printf("end date: %s\n", endDate);
-
     rc = sqlite3_prepare_v2(db, insertQueryCalendar, -1, &stmt, 0);
     if (rc == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, startDate, (int) strlen(startDate), 0);
@@ -198,7 +185,7 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
         sqlite3_bind_int(stmt, 6, repeatCycle);
         sqlite3_bind_text(stmt, 7, endDate, (int) strlen(endDate), 0);
     } else {
-        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+        (stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
     }
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
@@ -281,7 +268,7 @@ bool updateToDb(const char *sday, const char *smonth, const char *syear, const c
         sqlite3_bind_text(stmt, 1, startDate, (int) strlen(startDate), 0);
         sqlite3_bind_int(stmt, 2, eventID);
     } else {
-        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+        __android_log_print(ANDROID_LOG_ERROR, "Update failed: ", "%s", sqlite3_errmsg(db));
     }
     sqlite3_step(stmt);
     sqlite3_finalize(stmt);
@@ -316,7 +303,8 @@ bool deleteFromDb(int eventID, const char *filepath) {
     if (rc == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, eventID);
     } else {
-        fprintf(stderr, "Failed to execute statement: %s\n", sqlite3_errmsg(db));
+        __android_log_print(ANDROID_LOG_ERROR,
+                            "Failed to execute statement:", "%s\n", sqlite3_errmsg(db));
     }
 
     sqlite3_step(stmt);
@@ -372,7 +360,8 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
         sqlite3_bind_text(stmt, 1, eventDate, (int) strlen(eventDate), 0);
         sqlite3_bind_text(stmt, 2, eventDate, (int) strlen(eventDate), 0);
     } else {
-        __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", sqlite3_errmsg(db));
+        __android_log_print(ANDROID_LOG_ERROR, "Prepared Statement failed: ",
+                            "%s", sqlite3_errmsg(db));
     }
 
     while (true) {
@@ -387,16 +376,6 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             const unsigned char *repeat = sqlite3_column_text(stmt, 5);
             const unsigned char *endDate = sqlite3_column_text(stmt, 6);
             const unsigned char *eventID = sqlite3_column_text(stmt, 7);
-            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!",
-                                "\nStartDate: %s\n"
-                                        "Title: %s\n"
-                                        "Description: %s\n"
-                                        "Start Time: %s\n"
-                                        "Duration: %s\n"
-                                        "End Date: %s\n"
-                                        "EventID: %s\n"
-                                        "repeatCycle: %s\n",
-                                startDate, title, description, start, duration, endDate, eventID,repeat);
 
             eventC.append((std::string) (char *) startDate).append("__");
             eventC.append((std::string) (char *) title).append("__");
@@ -406,25 +385,12 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             eventC.append((std::string) (char *) endDate).append("__");
             eventC.append((std::string) (char *) eventID).append("__");
 
-
             std::string selectedDate = (std::string) (char *) startDate;
-            std::string yearstr = selectedDate.substr(0, 4);
             std::string monthstr = selectedDate.substr(5, 2);
             std::string daystr = selectedDate.substr(8, 2);
 
             const char *eday = daystr.c_str();
             const char *emonth = monthstr.c_str();
-            const char *eyear = yearstr.c_str();
-
-            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "DATE IS: %s\n"
-                                        "eday is: %s to %d\n"
-                                        "day is: %d\n"
-                                        "month is %s to %d\n"
-                                        "year is %s to %d\n"
-                                        "repeatCycle is %d\n",
-                                selectedDate.c_str(), eday, atoi(eday), atoi(day), emonth,
-                                atoi(month),
-                                eyear, atoi(eyear), atoi((char *) repeat));
 
             int lastDay = maxDays(atoi(month),atoi(year));
             if (atoi((char *) repeat) == 3) {//monthly
@@ -448,8 +414,7 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
             sqlite3_close(db);
             break;
         } else {
-            fprintf(stderr, "Failed.\n");
-            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL!!!", "%s", "Failed to read row");
+            __android_log_print(ANDROID_LOG_INFO, "TEST SELECT SQL", "%s", "Failed to read row");
             sqlite3_close(db);
             break;
         }
@@ -462,9 +427,8 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
  * logs the entire database
  *
  * @param filepath of the stored database
- * @return bool value of database manipulations
  */
-bool displayDb(const char *filepath) {
+void displayDb(const char *filepath) {
     sqlite3 *db;
     char *zErrMsg = 0;
     int rc;
@@ -474,10 +438,12 @@ bool displayDb(const char *filepath) {
     if (rc != SQLITE_OK) {
 
         sqlite3_free(zErrMsg);
-        return false;
+        return;
     }
 
-    const char *selectQuery = "select * from calendar join weeklyID on calendar.weeklyID = weekly.weeklyID ;";
+    const char *selectQuery = "select * from calendar join weeklyID on "
+            "calendar.weeklyID = weekly.weeklyID ;";
+
     /* Execute SQL statement */
     rc = sqlite3_exec(db, selectQuery, callback, 0, &zErrMsg);
 
@@ -485,8 +451,6 @@ bool displayDb(const char *filepath) {
         sqlite3_free(zErrMsg);
     }
     sqlite3_close(db);
-    printf("\n\n");
-    return true;
 }
 /**
  * Calls select for each day of a given month in a given year
