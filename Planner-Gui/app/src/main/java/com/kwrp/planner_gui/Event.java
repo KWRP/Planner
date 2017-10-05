@@ -109,12 +109,8 @@ public class Event {
      */
     @Override
     public String toString() {
-        return "Event " + eventId + " :\n" +
-                "\t\tTitle : " + title +
-                "\n\t\tDescription : " + description +
-                "\n\t\tStart Time : " + startTime +
-                "\n\t\tFinish Time: " + finishTime +
-                "\n\t\tStart Date: " + eventDate +
-                "\n\t\tEnd Date: " + endDate;
+        return "\t\tTitle : " + title +
+                "\n\t\tDescription : " + description;
+
     }
 }

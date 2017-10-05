@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.R.attr.id;
+import static android.R.id.text1;
+
 
 /**
  * Defines the display day activity where the user is shown
@@ -136,7 +139,7 @@ public class DisplayDay extends AppCompatActivity {
         currentDate = modifyDate(myIntent);
         selectedDate = selectDay + currentDate.substring(currentDate.indexOf("/"));
 
-        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventItems);
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_day, eventItems);
         ListView eventsView = (ListView) findViewById(R.id.list_view_events);
         eventsView.setAdapter(listAdapter);
 
