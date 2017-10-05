@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 
@@ -374,6 +375,16 @@ public class DisplayMonth extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_today) {
+            String[] systemDate = currentDate.split("/");
+            int mon = Integer.parseInt(systemDate[1]);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
+            toolbar.setTitle(monthList[mon - 1] + " - " + currentYear);
+            viewedYear = currentYear;
+            month_offset = 0;
+            updateMonthView(0);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -564,10 +575,21 @@ public class DisplayMonth extends AppCompatActivity {
                     myIntent.putExtra("date", dateSelected);
                     myIntent.putExtra("month", Integer.toString(month_offset));
                     myIntent.putExtra("year", Integer.toString(viewedYear));
-                    startActivity(myIntent);
+                    startActivityForResult(myIntent, 1);
                 }
             }
         });
+    }
+
+    // refreshes the activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            Intent refresh = new Intent(this, DisplayMonth.class);
+            startActivity(refresh);
+            this.finish();
+        }
     }
 
     /**
