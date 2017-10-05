@@ -51,7 +51,8 @@ public class Event {
 
         Log.e("s", event);
         String[] eventItems = event.split("__");
-        this.eventDate = eventItems[0];
+        String[] startDay = eventItems[0].split("-");
+        this.eventDate = startDay[2] + "/" + startDay[1] + "/" + startDay[0];
         this.title = eventItems[1];
         this.description = eventItems[2];
         this.startTime = eventItems[3];

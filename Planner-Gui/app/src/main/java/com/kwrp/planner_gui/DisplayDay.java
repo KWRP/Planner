@@ -516,12 +516,21 @@ public class DisplayDay extends AppCompatActivity {
                         newEvStartTime.equals("") || newEvFinishTime.equals("")) {
                     Log.d("JAVA create event: ", "failed!!");
                 } else {
+                    Log.e("Title", newEvTitle);
+                    Log.e("Desc", newEvDescription);
+                    Log.e("Start", newEvStartTime);
+                    Log.e("Finish", newEvFinishTime);
+                    Log.e("Date", selectedEvent.getEventDate());
+                    Log.e("End", selectedEvent.getEndDate());
+                    Log.e("ID", selectedEvent.getEventId());
+
                     jniUpdateEventDb(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
-                            selectedEvent.getEventDate(), selectedEvent.getEndDate(), repeat, selectedEvent.getEventId(), filepath);
+                            selectedDate, newEvEndDate, repeat, selectedEvent.getEventId(), filepath);
                 }
                 selectedDay = null;
                 selectedRepeat = 0;
                 getEvents();
+                listAdapter.notifyDataSetChanged();
             }
         });
 

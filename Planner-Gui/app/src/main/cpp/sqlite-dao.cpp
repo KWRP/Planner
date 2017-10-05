@@ -120,6 +120,7 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
     __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", filepath);
     createTableQuery(filepath);
     sqlite3 *db;
+
     char *zErrMsg = 0;
     int rc, i;
     int dayNum;
@@ -237,7 +238,7 @@ bool updateToDb(const char *sday, const char *smonth, const char *syear, const c
         }
         month = months[atoi(smonth)];
     } else {
-        day = days[atoi(sday)];
+        day = days[atoi(sday)-2];
         month = smonth;
     }
 

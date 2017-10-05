@@ -376,7 +376,7 @@ public class DisplayMonth extends AppCompatActivity {
         String[] systemDate = currentDate.split("/");
         int mon = Integer.parseInt(systemDate[1]) + month;
         final DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 
         String days =  jniGetEventsDb(Integer.toString(mon),
                 Integer.toString(viewedYear), filePath);
