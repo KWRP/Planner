@@ -305,12 +305,12 @@ public class DisplayMonth extends AppCompatActivity {
             item1.setVisible(false);
             item2.setVisible(false);
             item3.setVisible(false);
-            item4.setVisible(true);
+            item4.setVisible(false);
         } else {
             item1.setVisible(true);
             item2.setVisible(true);
             item3.setVisible(true);
-            item4.setVisible(false);
+            item4.setVisible(true);
         }
         return true;
     }

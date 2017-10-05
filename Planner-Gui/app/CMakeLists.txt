@@ -17,6 +17,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # you want to add. CMake verifies that the library exists before
 # completing its build.
 
+
 include_directories(src/main/cpp/include)
 
 file(GLOB SOURCES  "src/main/cpp/*.c" "src/main/cpp/*.cpp" )

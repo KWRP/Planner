@@ -49,10 +49,8 @@ public class DialogAction extends AppCompatActivity {
                 .setTitle("About us")
                 .setMessage("This application is designed for Otago University students. This" +
                         " application was created by students." +
-                        "\n\n\t\t\t\t\t How to use:"+
-                        "\nSwipe side to side to change month."+
-                        "\nPress and hold a day to edit single day."+
-                        "\nTap the pencil icon to enable multi-day \n\tevent creation.");
+
+                        "\n");
 
         builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -207,9 +205,22 @@ public class DialogAction extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage("")
                 .setTitle("Help")
-                .setMessage("This option is to add one event to multiple days." +
-                        "\nTo add an event for a single day, simply tap the selected day." +
-                        " and click the the green tick button");
+                .setMessage("How to use:"+
+                        "\nSwipe side to side to change month."+
+                        "\nTap on a day to edit single day. Tap on the pencil icon to make an event"+
+                        "\n\nTap the pencil icon to enable multi-day event creation" +
+                        "\n\nThe monthly and yearly repeat opinions repeat on that day of that month or " +
+                        "year up till the finish date eg a monthly repeat with a start date on 12/02/2017 " +
+                        "with an finish date of 11/05/2017 it will repeat on 12/02/2017, 12/03/2017 and 12/04/2017." +
+                        "\nWeekly repeat repeats on that day of the week eg friday, up till the finish date."+
+                        "\nDaily repeat repeats on ever day up till the finish date."+
+                        "\nBy default the end time will be set to an hour after start time."+
+                        "\nIf the finish date is before the date of an event that you are trying to add the event will not be added."+
+                        "\nAll the input boxes need to be filled in or the event will not be created."+
+                        "\n\nTap on an event to update or delete it."+
+                        "\nUpdating a repeated event will change that event and the event after it, but keep the events before it the same."+
+                        "\nDeleting a repeating event will delete all the repeating events."+
+                        "\n");
 
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
