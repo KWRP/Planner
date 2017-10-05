@@ -131,7 +131,7 @@ public class DisplayDay extends AppCompatActivity {
         currentDate = modifyDate(myIntent);
         selectedDate = selectDay + currentDate.substring(currentDate.indexOf("/"));
 
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_day, eventItems);
+        listAdapter = new ArrayAdapter<>(this, R.layout.list_day, eventItems);
         ListView eventsView = (ListView) findViewById(R.id.list_view_events);
         eventsView.setAdapter(listAdapter);
 
