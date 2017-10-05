@@ -36,11 +36,7 @@ public class Event {
      */
     private String finishTime;
     private String endDate;
-    /**
-     * Default constructor
-     */
-    public Event() {
-    }
+
 
     /**
      * Constructor given an event formatted in a standard string form

@@ -35,7 +35,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 
@@ -46,22 +45,6 @@ import static com.kwrp.planner_gui.R.id.gridview;
  * @author KWRP
  */
 public class DisplayMonth extends AppCompatActivity {
-
-    /**
-     * The selected date
-     */
-    private String selectedDate;
-
-    /**
-     * Text from the month box
-     */
-    private String selectDay;
-
-    /**
-     * The day object
-     */
-    private Day selectedDay = null;
-    private Event selectedEvent = null;
 
 
     /*month offset from current, if sees into the future, this month number will increase*/
@@ -134,8 +117,6 @@ public class DisplayMonth extends AppCompatActivity {
      * The current date
      */
     private String currentDate = jniGetCurrentDate();
-    private static String month;
-    private static String year;
 
     /**
      * selected event Id (for removal)

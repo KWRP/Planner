@@ -257,8 +257,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
     }
     return env->NewStringUTF(confirm.c_str());
 }
-
-
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
         JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir) {
 

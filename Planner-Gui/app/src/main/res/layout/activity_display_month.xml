@@ -27,7 +27,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp">
 
         <android.support.design.widget.FloatingActionButton
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="80dp"
+            android:layout_marginStart="80dp"
             app:backgroundTint="@android:color/holo_green_dark"
             app:layout_anchor="@id/fab"
             app:layout_anchorGravity="left"

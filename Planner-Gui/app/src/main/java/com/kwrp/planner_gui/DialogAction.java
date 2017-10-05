@@ -1,8 +1,7 @@
 package com.kwrp.planner_gui;
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import static com.kwrp.planner_gui.R.id.parent;
+
 
 /**
  * Defines a series of actions for specific actions such as "sync" button select.
@@ -63,8 +62,7 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        AlertDialog dialog = builder.create();
-        return dialog;
+        return  builder.create();
     }
 
     /**
@@ -83,7 +81,8 @@ public class DialogAction extends AppCompatActivity {
 
 
         TextView title = new TextView(parent);
-        title.setText("Select a colour scheme:");
+        String text = "Select a colour scheme:";
+        title.setText(text);
         title.setPadding(10, 10, 10, 10);
         title.setGravity(Gravity.CENTER);
         title.setTextColor(Color.rgb(0, 0, 0));
@@ -146,8 +145,7 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        AlertDialog dialog = builder.create();
-        return dialog;
+        return  builder.create();
     }
 
     /**
@@ -172,7 +170,8 @@ public class DialogAction extends AppCompatActivity {
 //        evisionTitle.setTextSize(14);
 
         Button button = new Button(parent);
-        button.setText("Otago Timetable");
+        String text = "Otago Timetable";
+        button.setText(text);
         button.setLayoutParams(new Toolbar.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -187,7 +186,8 @@ public class DialogAction extends AppCompatActivity {
 //        googleTitle.setTextSize(14);
 
         button = new Button(parent);
-        button.setText("Google Calendar");
+        text = "Google Calendar";
+        button.setText(text);
         button.setLayoutParams(new Toolbar.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -202,8 +202,7 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        AlertDialog dialog = builder.create();
-        return dialog;
+        return  builder.create();
     }
 
     /**
@@ -239,7 +238,6 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        AlertDialog dialog = builder.create();
-        return dialog;
+        return  builder.create();
     }
 }
