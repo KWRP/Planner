@@ -633,6 +633,7 @@ public class DisplayMonth extends AppCompatActivity {
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
         titleInput.setText(newEvTitle);
+        titleInput.setTextSize(20);
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
@@ -641,6 +642,7 @@ public class DisplayMonth extends AppCompatActivity {
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
         descriptInput.setText(newEvDescription);
+        descriptInput.setTextSize(20);
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
@@ -733,6 +735,7 @@ public class DisplayMonth extends AppCompatActivity {
             int h = (hourOfDay + 1) % 12;
             endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", h == 0 ? 12 : h,
                     minute, (hourOfDay + 1) < 12 ? "am" : "pm"));
+            endTime.setTextSize(20);
         }
     }
 
