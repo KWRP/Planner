@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -401,7 +402,9 @@ public class DisplayMonth extends AppCompatActivity {
                 if (pos == currentDayPos && month_offset == 0 && viewedYear == currentYear) {
                     view2.setBackgroundColor(currentDayColor);
                 } else if (eventPosList.contains(pos)) {
-                    view2.setBackgroundColor(DialogAction.eventColor);
+                    view2.setBackgroundColor(ContextCompat.getColor(mGridView.getContext(),
+                            DialogAction.dialogColor));
+//                    view2.setBackgroundColor(DialogAction.dialogColor);
                 } else {
                     view2.setBackgroundColor(DialogAction.defaultColor);
                 }
@@ -409,6 +412,7 @@ public class DisplayMonth extends AppCompatActivity {
 
 
             positionList = new ArrayList<>();
+            eventPosList = new ArrayList<>();
             dayList = new ArrayList<>();
             daysSelected = 0;
             editAvailable = true;
@@ -486,7 +490,9 @@ public class DisplayMonth extends AppCompatActivity {
                             if (position == currentDayPos) {
                                 view2.setBackgroundColor(currentDayColor);
                             } else if (eventPosList.contains(pos)) {
-                                view2.setBackgroundColor(DialogAction.eventColor);
+                                Log.d("EVENT SELECTED", "PLS COLOR");
+                                view2.setBackgroundColor(ContextCompat.getColor(mGridView.getContext(),
+                                        DialogAction.dialogColor));
                                 eventPosList.remove(pos);
                             } else {
                                 view2.setBackgroundColor(DialogAction.defaultColor);
@@ -502,7 +508,8 @@ public class DisplayMonth extends AppCompatActivity {
 
                             Integer pos = position;
 
-                            if (color == DialogAction.eventColor) {
+                            if (color == ContextCompat.getColor(mGridView.getContext(),
+                                    DialogAction.dialogColor)) {
                                 eventPosList.add(pos);
                             }
 
@@ -562,9 +569,10 @@ public class DisplayMonth extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            Intent refresh = new Intent(this, DisplayMonth.class);
-            startActivity(refresh);
-            this.finish();
+            //Intent refresh = new Intent(this, DisplayMonth.class);
+            //startActivity(refresh);
+            updateMonthView(month_offset);
+            //this.finish();
         }
     }
 
@@ -669,6 +677,8 @@ public class DisplayMonth extends AppCompatActivity {
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                titleInput.setText("");
+                descriptInput.setText("");
                 startTime.setText("");
                 endTime.setText("");
                 dialog.cancel();

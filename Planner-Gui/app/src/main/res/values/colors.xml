@@ -9,7 +9,7 @@
     <color name="blue">#ff33b5e5</color>
     <color name="green">#ff669900</color>
     <color name="black">#000000</color>
-    <color name="dialog_blue">#6699FF</color>
-    <color name="dialog_red">#FFCDD2</color>
-    <color name="dialog_green">#A2F78D</color>
+    <color name="dialog_blue">#d0d9ff</color>
+    <color name="dialog_red">#f9bdbb</color>
+    <color name="dialog_green">#CEFFCE</color>
 </resources>

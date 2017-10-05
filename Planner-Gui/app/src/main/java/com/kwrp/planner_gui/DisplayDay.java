@@ -483,7 +483,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(finishDate, 11);
 
         Button deleteBut = new Button(this);
-        deleteBut.setBackgroundColor(Color.argb(100,180,0,0));
+        deleteBut.setBackgroundColor(Color.argb(150,180,0,0));
         deleteBut.setText(R.string.label_dialog_delete);
         deleteBut.setTextSize(20);
 
