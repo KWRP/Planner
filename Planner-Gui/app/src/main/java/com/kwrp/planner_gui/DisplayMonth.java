@@ -375,6 +375,16 @@ public class DisplayMonth extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_today) {
+            String[] systemDate = currentDate.split("/");
+            int mon = Integer.parseInt(systemDate[1]);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
+            toolbar.setTitle(monthList[mon - 1] + " - " + currentYear);
+            viewedYear = currentYear;
+            month_offset = 0;
+            updateMonthView(0);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

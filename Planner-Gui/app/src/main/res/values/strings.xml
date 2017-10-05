@@ -18,4 +18,5 @@
     <string name="label_saturday">Sat</string>
     <string name="label_sunday">Sun</string>
     <string name="label_ok">Sun</string>
+    <string name="action_today">Today</string>
 </resources>
