@@ -105,10 +105,10 @@ public class DisplayDay extends AppCompatActivity {
      * selected event Id (for removal)
      */
     private static String eventId = "";
-    private Button startTime;
-    private Button endTime;
-    private Button finishDate;
-    private Button eventDays;
+    private static Button startTime;
+    private static Button endTime;
+    private static Button finishDate;
+    private static Button eventDays;
     private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
     private static int selectedRepeat = 0;
 
@@ -131,7 +131,7 @@ public class DisplayDay extends AppCompatActivity {
         currentDate = modifyDate(myIntent);
         selectedDate = selectDay + currentDate.substring(currentDate.indexOf("/"));
 
-        listAdapter = new ArrayAdapter<>(this, R.layout.list_day, eventItems);
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_day, eventItems);
         ListView eventsView = (ListView) findViewById(R.id.list_view_events);
         eventsView.setAdapter(listAdapter);
 
@@ -727,8 +727,8 @@ public class DisplayDay extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             int hour = hourOfDay % 12;
-            setEndTime(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
-                    minute, hourOfDay < 12 ? "am" : "pm");
+            endTime.setText(String.format(Locale.ENGLISH, "%02d:%02d %s", hour == 0 ? 12 : hour,
+                    minute, hourOfDay < 12 ? "am" : "pm"));
             endTime.setTextSize(20);
         }
     }
@@ -742,38 +742,6 @@ public class DisplayDay extends AppCompatActivity {
             finish();
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    public Button getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime.setText(startTime);
-    }
-
-    public Button getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime.setText(endTime);
-    }
-
-    public Button getFinishDate() {
-        return finishDate;
-    }
-
-    public void setFinishDate(String finishDate) {
-        this.finishDate.setText(finishDate);
-    }
-
-    public Button getEventDays() {
-        return eventDays;
-    }
-
-    public void setEventDays(String eventDays) {
-        this.eventDays.setText(eventDays);
     }
 
     /**

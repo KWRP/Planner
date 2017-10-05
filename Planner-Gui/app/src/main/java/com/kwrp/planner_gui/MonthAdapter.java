@@ -69,7 +69,7 @@ public class MonthAdapter extends BaseAdapter {
      */
     private int mTitleHeight, mDayHeight;
 
-    private ArrayList<Integer> eventDays = new ArrayList<Integer>();
+    private ArrayList<Integer> eventDays = new ArrayList<>();
 
     /**
      * Called on swipe, when the adapter needs to be updated for a new month
@@ -79,7 +79,7 @@ public class MonthAdapter extends BaseAdapter {
      * @param year    the year to generate for
      * @param metrics the dimensions
      */
-    public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics, ArrayList<Integer> days) {
+     public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics, ArrayList<Integer> days) {
         mContext = c;
         mMonth = month;
         mYear = year;
@@ -89,14 +89,6 @@ public class MonthAdapter extends BaseAdapter {
         eventDays =  new ArrayList<>(days);
         populateMonth();
 
-    }
-
-    /**
-     * @param date     - null if day title (0 - dd / 1 - mm / 2 - yy)
-     * @param position - position in item list
-     * @param item     - view for date
-     */
-    protected void onDate(int[] date, int position, View item) {
     }
 
     /**
@@ -305,8 +297,6 @@ public class MonthAdapter extends BaseAdapter {
             view.setBackgroundColor(ContextCompat.getColor(parent.getContext(), DialogAction.dialogColor));
             //view.setBackgroundColor(DialogAction.dialogColor);
         }
-
-        onDate(date, position, view);
         return view;
     }
 

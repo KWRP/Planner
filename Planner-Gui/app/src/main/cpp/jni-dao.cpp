@@ -135,7 +135,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
 
         const char *nativePath = env->GetStringUTFChars(dir, 0);
         const char *nativeDate = env->GetStringUTFChars(date, 0);
-        //displayDb(nativePath);
         string selectedDate = nativeDate;
         string delimiter = "/";
         string days = selectedDate.substr(0, selectedDate.find(delimiter));
