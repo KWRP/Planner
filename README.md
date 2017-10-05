@@ -73,8 +73,5 @@ Androud version, otherwise just select the most recent API Level.
 
 
 ### External library dependancies:
-
-tinyxml2: https://github.com/leethomason/tinyxml2 <br />
-Display month: https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java; <br />
-
-
+SQLite: https://www.sqlite.org/ <br/>
+Month adapter: https://github.com/jrdnull/Android-Calendar-GridView-Adapter/blob/master/MonthAdapter.java; <br />
