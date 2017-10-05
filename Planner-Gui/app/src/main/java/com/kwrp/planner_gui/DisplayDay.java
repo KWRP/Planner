@@ -1,6 +1,7 @@
 package com.kwrp.planner_gui;
 
 import android.app.*;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -43,7 +44,7 @@ import static android.R.id.text1;
  */
 public class DisplayDay extends AppCompatActivity {
 
-
+    public static Color dialogColour;
     /**
      * Loads the native library "calender" on start up
      */
@@ -154,7 +155,7 @@ public class DisplayDay extends AppCompatActivity {
                     eventId = selectedDay.getEvent(position).getEventId();
                     Dialog dialog = updateEventDialog(position);
                     dialog.show();
-                    dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
+                    dialog.getWindow().setBackgroundDrawableResource(DialogAction.dialogColor);
                 }
             }
         });
@@ -165,7 +166,7 @@ public class DisplayDay extends AppCompatActivity {
             public void onClick(View view) {
                 Dialog dialog = createEventDialog();
                 dialog.show();
-                dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
+                dialog.getWindow().setBackgroundDrawableResource(DialogAction.dialogColor);
             }
         });
 
@@ -506,7 +507,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(finishDate, 11);
 
         Button deleteBut = new Button(this);
-        deleteBut.setBackgroundColor(Color.rgb(180,0,0));
+        deleteBut.setBackgroundColor(Color.argb(100,180,0,0));
         deleteBut.setText("Delete Event");
         deleteBut.setTextSize(20);
 

@@ -1,7 +1,9 @@
 package com.kwrp.planner_gui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -301,7 +303,8 @@ public class MonthAdapter extends BaseAdapter {
         }
          //colour day with an event
         if (eventDays.contains(position)) {
-            view.setBackgroundColor(DialogAction.eventColor);
+            view.setBackgroundColor(ContextCompat.getColor(parent.getContext(), DialogAction.dialogColor));
+            //view.setBackgroundColor(DialogAction.dialogColor);
         }
 
         onDate(date, position, view);

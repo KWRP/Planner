@@ -140,11 +140,8 @@ public class DisplayMonth extends AppCompatActivity {
     /**
      * selected event Id (for removal)
      */
-    private static String eventId = "";
     private static Button startTime;
     private static Button endTime;
-    private static final String[] repeats = {"Never", "Daily", "Weekly", "Monthly", "Yearly"};
-    private static int selectedRepeat = 0;
 
     /**
      * Called when the activity is first created. Sets up buttons, labels, and initialises variables.
@@ -481,7 +478,7 @@ public class DisplayMonth extends AppCompatActivity {
         String eventYear = "" + viewedYear;
         Dialog dialog = createEventDialog(eventMonth, eventYear);
         dialog.show();
-        dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
+        dialog.getWindow().setBackgroundDrawableResource(DialogAction.dialogColor);
     }
 
 

@@ -1,6 +1,8 @@
 package com.kwrp.planner_gui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.kwrp.planner_gui.R.id.parent;
+
 /**
  * Defines a series of actions for specific actions such as "sync" button select.
  * Returns dialog boxes for specific actions and in some cases sends data to back-end.
@@ -27,10 +31,12 @@ public class DialogAction extends AppCompatActivity {
 
     public static int headColor = Color.BLUE;
     public static int textColor = Color.WHITE;
-    public static int eventColor = Color.argb(100, 10, 80, 255);
+    public static int eventColor = Color.argb(70, 10, 80, 255);
     public static int defaultColor = Color.rgb(244, 244, 244);
     public static int outMonthColor = Color.rgb(234, 234, 250);
     public static int selectedColor = Color.LTGRAY;
+    public static int dialogColor = R.color.dialog_blue;
+
 
 
     /*Default constructor*/
@@ -91,7 +97,9 @@ public class DialogAction extends AppCompatActivity {
         spinnerArray.add("Blue");
 
         Spinner spinner = new Spinner(parent);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(parent, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(parent,
+                android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+
         spinner.setAdapter(spinnerArrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -104,12 +112,15 @@ public class DialogAction extends AppCompatActivity {
                 switch (position) {
                     case 1:
                         headColor = Color.GREEN;
+                        dialogColor = R.color.dialog_green;
                         break;
                     case 2:
                         headColor = Color.RED;
+                        dialogColor = R.color.dialog_red;
                         break;
                     case 3:
                         headColor = Color.BLUE;
+                        dialogColor = R.color.dialog_blue;
                         break;
                 }
                 toolbar.setBackgroundColor(headColor);
