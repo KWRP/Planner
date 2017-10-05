@@ -220,6 +220,7 @@ public class DialogAction extends AppCompatActivity {
                         "\n\nTap on an event to update or delete it."+
                         "\nUpdating a repeated event will change that event and the event after it, but keep the events before it the same."+
                         "\nDeleting a repeating event will delete all the repeating events."+
+                        "\nIf you tap on TODAY you will go back to the current day."+
                         "\n");
 
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {

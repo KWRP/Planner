@@ -312,8 +312,13 @@ public class DisplayDay extends AppCompatActivity {
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            deleteDb();
-            checkDbExists();
+            AlertDialog dialog = DialogAction.createAboutDialog(this);
+            dialog.show();
+            return true;
+        }
+        if (id == R.id.action_help) {
+            AlertDialog dialog = DialogAction.createHelpDialog(this);
+            dialog.show();
             return true;
         }
 
