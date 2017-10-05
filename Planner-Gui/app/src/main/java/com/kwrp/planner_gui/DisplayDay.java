@@ -321,6 +321,11 @@ public class DisplayDay extends AppCompatActivity {
             dialog.show();
             return true;
         }
+        if (id == R.id.action_help) {
+            AlertDialog dialog = DialogAction.createHelpDialog(this);
+            dialog.show();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
