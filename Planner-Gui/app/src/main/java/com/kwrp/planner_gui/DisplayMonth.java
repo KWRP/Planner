@@ -142,6 +142,7 @@ public class DisplayMonth extends AppCompatActivity {
         filePath = getFilesDir().getAbsolutePath() + "/events.db";
         checkDbExists();
 
+        //get current date
         int index = 0;
         for (int i = 0; i < currentDate.length(); i++) {
             if (currentDate.charAt(i) == ('/')) {
@@ -149,6 +150,7 @@ public class DisplayMonth extends AppCompatActivity {
                 if (index == 0) {
                     index = i;
                 } else {
+
                     thisMonthIndex = (Integer.parseInt(currentDate.substring(index + 1, i)) - 1);
                     viewedYear = (Integer.parseInt(currentDate.substring(i + 1)));
                     currentYear = viewedYear;
@@ -195,7 +197,7 @@ public class DisplayMonth extends AppCompatActivity {
 
         String days = jniGetEventsDb(systemDate[1], systemDate[2], filePath);
         Log.e("EVENTS", jniGetEventsDb(systemDate[1], systemDate[2], filePath));
-        ArrayList<Integer> eventDays = new ArrayList<>();
+        ArrayList<Integer> eventDays = new ArrayList<Integer>();
         String[] events;
         if (days.length() > 0) {
             events = days.split("__");
@@ -318,7 +320,6 @@ public class DisplayMonth extends AppCompatActivity {
                     colorThreadRun = true;
                     int c = DialogAction.headColor;
                     while (c == DialogAction.headColor) {
-                        // waits until the colour is changed then restarts the activity
                     }
                     colorThreadRun = false;
                     startActivity(myIntent);
@@ -438,7 +439,7 @@ public class DisplayMonth extends AppCompatActivity {
         Log.e("Viewed Year", Integer.toString(viewedYear));
         Log.e("MONTH", Integer.toString(mon));
         String[] events = days.split("__");
-        ArrayList<Integer> eventDays = new ArrayList<>();
+        ArrayList<Integer> eventDays = new ArrayList<Integer>();
         if (days.length() > 0) {
             for (String s : events) {
                 eventDays.add(Integer.parseInt(s));
@@ -465,6 +466,9 @@ public class DisplayMonth extends AppCompatActivity {
     }
 
 
+    /**
+     * Set the grid event listener to select days for multi-event option.
+     */
     public void setGridEventEdit() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -480,13 +484,13 @@ public class DisplayMonth extends AppCompatActivity {
                         int color = ((ColorDrawable) background).getColor();
 
                         if (color == currentDayColor) {
-                            currentDayPos = position;
+                            currentDayPos = new Integer(position);
                             color = DialogAction.defaultColor;
                         }
 
 
                         if (color == DialogAction.selectedColor) {
-                            Integer pos = position;
+                            Integer pos = new Integer(position);
                             if (position == currentDayPos) {
                                 view2.setBackgroundColor(currentDayColor);
                             } else if (eventPosList.contains(pos)) {
@@ -506,7 +510,7 @@ public class DisplayMonth extends AppCompatActivity {
                         } else if (color != DialogAction.outMonthColor) {
                             view2.setBackgroundColor(DialogAction.selectedColor);
 
-                            Integer pos = position;
+                            Integer pos = new Integer(position);
 
                             if (color == ContextCompat.getColor(mGridView.getContext(),
                                     DialogAction.dialogColor)) {
@@ -533,6 +537,9 @@ public class DisplayMonth extends AppCompatActivity {
         });
     }
 
+    /**
+     * Set the grid event listener to default, which is to view the day and see events on that day
+     */
     public void setGridEventDefault() {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -600,7 +607,7 @@ public class DisplayMonth extends AppCompatActivity {
      * Creates the CREATE EVENT dialog box that pops up when the user wants to
      * add an event.
      *
-     * @return the dialog.
+     * @return the dialog for create event.
      */
     private AlertDialog createEventDialog(final String month, final String year) {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayMonth.this);
@@ -612,7 +619,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
         dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(this);
-        titleLabel.setText(R.string.label_dialog_title);
+        titleLabel.setText("Event Title:");
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -621,7 +628,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
-        descriptLabel.setText(R.string.label_dialog_description);
+        descriptLabel.setText("Event Description:");
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -630,7 +637,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
-        startLabel.setText(R.string.label_dialog_start_time);
+        startLabel.setText("Start Time:");
         dialogLayout.addView(startLabel, 4);
         startTime = new Button(this);
         startTime.setHint("Select time");
@@ -638,7 +645,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(startTime, 5);
 
         final TextView endLabel = new TextView(this);
-        endLabel.setText(R.string.label_dialog_end_time);
+        endLabel.setText("End Time");
         dialogLayout.addView(endLabel, 6);
         endTime = new Button(this);
         endTime.setHint("Select time");
@@ -699,6 +706,9 @@ public class DisplayMonth extends AppCompatActivity {
         }
     };
 
+    /**
+     * Creates the start time fragment for start/end times of events
+     */
     public static class StartTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -734,6 +744,9 @@ public class DisplayMonth extends AppCompatActivity {
         }
     };
 
+    /**
+     * Endtime fragment for the dialog box
+     */
     public static class EndTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -765,10 +778,33 @@ public class DisplayMonth extends AppCompatActivity {
      */
     public native String jniCreateDb(String filePath);
 
+    /**
+     * Get current date
+     * @return string for the current date
+     */
     public native String jniGetCurrentDate();
 
+    /** Gets the events for a particular month and year (i.e. September 2017)
+     *
+     * @param month the month you want
+     * @param year the year
+     * @param filePath path/to/database
+     * @return events
+     */
     public native String jniGetEventsDb(String month, String year, String filePath);
 
+    /** Creates an event on a particular date
+     *
+     * @param title the title of the event
+     * @param description description of the event
+     * @param start start time of the event
+     * @param finish finish time of the event
+     * @param selectedDate the start date of the event
+     * @param finishDate the last date the event will occur
+     * @param repeat how often the event repeats (i.e. daily, weekly, monthly)
+     * @param filepath path/to/database
+     * @return
+     */
     public native String jniCreateDbEvent(String title, String description, String start,
                                           String finish, String selectedDate,
                                           String finishDate, String repeat, String filepath);
