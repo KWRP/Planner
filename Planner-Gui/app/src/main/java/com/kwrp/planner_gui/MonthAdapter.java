@@ -294,8 +294,8 @@ public class MonthAdapter extends BaseAdapter {
         }
          //colour day with an event
         if (eventDays.contains(position)) {
-            view.setBackgroundColor(ContextCompat.getColor(parent.getContext(), DialogAction.dialogColor));
-            //view.setBackgroundColor(DialogAction.dialogColor);
+            view.setBackgroundColor(ContextCompat.getColor(parent.getContext(),
+                    DialogAction.dialogColor));
         }
         return view;
     }
