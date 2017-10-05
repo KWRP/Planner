@@ -14,16 +14,16 @@ Displays the events in a selected day.<br />
 
 - [x] Tap the three dot icon in top right corner to display the menu,<br />
    - Settings: choose a colour scheme,<br />
-   - Sync: buttons for when we implement external calendar sources (permission pending),<br />
+   - Help: how to use the app,<br/>
    - About: information about us and the app.<br />
 
 - [x] Tap the pencil to select multiple days,<br />
     Tap the tick when selected all desired days of the month,<br />
     Tap cancel to cancel the selection.<br />
   
-- [x] Press & hold on a day to edit the events on that day.<br />
+- [x] Tap on a day to edit the events on that day.<br />
     Tap the pencil to add an event,<br />
-    Tap an event to remove it (confirmation will be displayed).<br />
+    Tap an event to update or delete it.<br />
 
 
 ## Download and Install: <br />
