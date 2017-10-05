@@ -1,6 +1,5 @@
 package com.kwrp.planner_gui;
 
-
 import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,15 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
+import android.widget.ScrollView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import android.support.*;
 
-import static android.R.attr.dialogLayout;
-import static com.kwrp.planner_gui.R.id.text;
 
 /**
  * Defines the display day activity where the user is shown
@@ -43,7 +39,6 @@ import static com.kwrp.planner_gui.R.id.text;
  */
 public class DisplayDay extends AppCompatActivity {
 
-    // Used to load the 'native-lib' library on application startup.
 
     /**
      * Loads the native library "calender" on start up
@@ -78,7 +73,6 @@ public class DisplayDay extends AppCompatActivity {
     private String newEvFinishTime = "";
 
     private String newEvEndDate = "";
-    private int repeat = 0;
 
     /**
      * The file path to the file where events are being stored
@@ -154,7 +148,6 @@ public class DisplayDay extends AppCompatActivity {
             public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
                 if (selectedDay != null && selectedDay.getEvent(position) != null) {
                     eventId = selectedDay.getEvent(position).getEventId();
-                    //Dialog dialog = removeEventDialog();
                     Dialog dialog = updateEventDialog(position);
                     dialog.show();
                     dialog.getWindow().setBackgroundDrawableResource(R.color.dialog);
@@ -207,7 +200,6 @@ public class DisplayDay extends AppCompatActivity {
     private void createNewEvent(String title, String description, String start, String finish,
                                 String finishDate, String repeat) {
 
-        //if (this.repeat == 3) repeat += repeatDayDate;
         Log.e("Finish Date: ", finishDate);
         Log.e("start Date: ", selectedDate);
         String r = jniCreateDbEvent(title, description, start, finish, selectedDate, finishDate, repeat, filepath);
@@ -296,9 +288,7 @@ public class DisplayDay extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         if (id == R.id.action_display_month) {
@@ -321,8 +311,6 @@ public class DisplayDay extends AppCompatActivity {
         }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            //AlertDialog dialog = DialogAction.createAboutDialog(this);
-            //dialog.show();
             deleteDb();
             checkDbExists();
             return true;
@@ -340,6 +328,7 @@ public class DisplayDay extends AppCompatActivity {
     private AlertDialog createEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
 
+        final ScrollView scrollView = new ScrollView(this);
         builder.setTitle("New Event");
 
         final LinearLayout dialogLayout = new LinearLayout(this);
@@ -393,7 +382,6 @@ public class DisplayDay extends AppCompatActivity {
         eventDays.setOnClickListener(eventDaysOnClick);
         dialogLayout.addView(eventDays, 11);
 
-        builder.setView(dialogLayout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -425,6 +413,8 @@ public class DisplayDay extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+        scrollView.addView(dialogLayout);
+        builder.setView(scrollView);
 
         return builder.create();
     }
@@ -432,6 +422,7 @@ public class DisplayDay extends AppCompatActivity {
     private AlertDialog updateEventDialog(int eventId) {
         selectedEvent = selectedDay.getEvent(eventId);
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
+        final ScrollView scrollView = new ScrollView(this);
         builder.setTitle("Edit Event");
 
         final LinearLayout dialogLayout = new LinearLayout(this);
@@ -501,7 +492,7 @@ public class DisplayDay extends AppCompatActivity {
             }
         });
         dialogLayout.addView(deleteBut, 12);
-        builder.setView(dialogLayout);
+
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -544,6 +535,8 @@ public class DisplayDay extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+        scrollView.addView(dialogLayout);
+        builder.setView(scrollView);
 
         return builder.create();
     }
@@ -607,7 +600,6 @@ public class DisplayDay extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            //repeatDayDate = 0;
                             eventDays.setText(repeats[which]);
                             newSelection = which;
                         }
@@ -623,7 +615,7 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
-    // Code For times and dates, needs refactoring
+
     private View.OnClickListener endDateOnClick = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {

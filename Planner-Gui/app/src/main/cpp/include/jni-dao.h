@@ -15,10 +15,9 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentD
         JNIEnv *env,
         jobject /* this */);
 
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateXml(
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
         JNIEnv *env,
         jobject /* this */, jstring dir);
-
 
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDate(
         JNIEnv *env,
@@ -52,9 +51,11 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath);
 
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateDbEvent(
+JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath);
+
+
 #ifdef __cplusplus
 }
 #endif
