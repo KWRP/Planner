@@ -272,7 +272,7 @@ public class DisplayDay extends AppCompatActivity {
         if (id == R.id.action_settings) {
             AlertDialog dialog = DialogAction.createSettingsDialog(this);
 
-            final Intent myIntent = new Intent(this, DisplayMonth.class);
+           // final Intent myIntent = new Intent(this, DisplayMonth.class);
 
             class ColorSetThread extends Thread {
                 @Override
@@ -282,10 +282,10 @@ public class DisplayDay extends AppCompatActivity {
                     if(DisplayMonth.colorThreadRun){
                         DisplayMonth.colorThreadRun = false;
                     }
-                    while (colorThreadRun == true) {
+                    while (colorThreadRun) {
                         if (c != DialogAction.headColor) {
                             colorThreadRun = false;
-                            startActivity(myIntent);
+                            setResult(RESULT_OK, null);
                             finish();
                             break;
                         }

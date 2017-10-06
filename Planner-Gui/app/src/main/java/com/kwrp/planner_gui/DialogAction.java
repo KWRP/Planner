@@ -117,6 +117,7 @@ public class DialogAction extends AppCompatActivity {
                         break;
                 }
                 toolbar.setBackgroundColor(headColor);
+
             }
 
             @Override

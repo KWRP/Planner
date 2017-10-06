@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 
+import static com.kwrp.planner_gui.DialogAction.headColor;
 import static com.kwrp.planner_gui.R.id.gridview;
 
 /**
@@ -84,7 +85,7 @@ public class DisplayMonth extends AppCompatActivity {
     private int currentYear;
     public static boolean colorThreadRun = false;
     private int currentDayPos;
-    private int currentDayColor = DialogAction.headColor;
+    private int currentDayColor = headColor;
     private String newEvTitle = "";
     private String newEvDescription = "";
     private String newEvStartTime = "";
@@ -104,7 +105,7 @@ public class DisplayMonth extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_month);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_month);
-        toolbar.setBackgroundColor(DialogAction.headColor);
+        toolbar.setBackgroundColor(headColor);
         currentDate = jniGetCurrentDate();
         toolbar.setSubtitle("Today's Date: " + currentDate);
         setSupportActionBar(toolbar);
@@ -285,9 +286,9 @@ public class DisplayMonth extends AppCompatActivity {
                     if(DisplayDay.colorThreadRun){
                         DisplayDay.colorThreadRun = false;
                     }
-                    int c = DialogAction.headColor;
+                    int c = headColor;
                     while (colorThreadRun == true) {
-                        if (c != DialogAction.headColor) {
+                        if (c != headColor) {
                             colorThreadRun = false;
                             month_offset = 0;
                             viewedYear = currentYear;
@@ -551,6 +552,7 @@ public class DisplayMonth extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            this.findViewById(R.id.toolbar_month).setBackgroundColor(DialogAction.headColor);
             updateMonthView(month_offset);
         }
     }
