@@ -135,69 +135,11 @@ public class DialogAction extends AppCompatActivity {
 
         spinner.setDropDownHorizontalOffset(90);
         spinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        //spinner.setBackgroundColor(parseColor("#FAFAFA"));
         dialogLayout.addView(spinner);
         dialogLayout.setPadding(100, 50, 100, 50);
 
         builder.setView(dialogLayout);
         builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        return  builder.create();
-    }
-
-    /**
-     * Creates the "Sync" Dialog which occurs when the user selects "Sync" in the options menu
-     *
-     * @param parent The Intent the dialog box is spawned onto
-     * @return the dialog box object, to "shown".
-     */
-    public static AlertDialog createSyncDialog(AppCompatActivity parent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
-        builder.setTitle("Synchronise");
-
-        final LinearLayout dialogLayout = new LinearLayout(parent);
-        dialogLayout.setOrientation(LinearLayout.VERTICAL);
-
-
-        TextView evisionTitle = new TextView(parent);
-//        evisionTitle.setText("Evision:");
-//        evisionTitle.setPadding(10, 10, 10, 10);
-//        evisionTitle.setGravity(Gravity.CENTER);
-//        evisionTitle.setTextColor(Color.rgb(0, 0, 0));
-//        evisionTitle.setTextSize(14);
-
-        Button button = new Button(parent);
-        String text = "Otago Timetable";
-        button.setText(text);
-        button.setLayoutParams(new Toolbar.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        dialogLayout.addView(evisionTitle, 0);
-        dialogLayout.addView(button, 1);
-
-        TextView googleTitle = new TextView(parent);
-//        googleTitle.setText("Google Calendar:");
-//        googleTitle.setPadding(10, 10, 10, 10);
-//        googleTitle.setGravity(Gravity.CENTER);
-//        googleTitle.setTextColor(Color.rgb(0, 0, 0));
-//        googleTitle.setTextSize(14);
-
-        button = new Button(parent);
-        text = "Google Calendar";
-        button.setText(text);
-        button.setLayoutParams(new Toolbar.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        dialogLayout.addView(googleTitle, 2);
-        dialogLayout.addView(button, 3);
-
-        dialogLayout.setPadding(70, 10, 70, 10);
-        builder.setView(dialogLayout);
-
-        builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }

@@ -278,20 +278,13 @@ public class DisplayDay extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_display_month) {
-            Intent myIntent = new Intent(this, DisplayMonth.class);
-            startActivity(myIntent);
-            this.finish();
+            setResult(RESULT_OK, null);
+            finish();
         }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             AlertDialog dialog = DialogAction.createSettingsDialog(this);
-            dialog.show();
-            return true;
-        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sync) {
-            AlertDialog dialog = DialogAction.createSyncDialog(this);
             dialog.show();
             return true;
         }
@@ -511,14 +504,6 @@ public class DisplayDay extends AppCompatActivity {
                         newEvStartTime.equals("") || newEvFinishTime.equals("")) {
                     Log.d("JAVA create event: ", "failed!!");
                 } else {
-                    Log.e("Title", newEvTitle);
-                    Log.e("Desc", newEvDescription);
-                    Log.e("Start", newEvStartTime);
-                    Log.e("Finish", newEvFinishTime);
-                    Log.e("Date", selectedEvent.getEventDate());
-                    Log.e("End", selectedEvent.getEndDate());
-                    Log.e("ID", selectedEvent.getEventId());
-
                     jniUpdateEventDb(newEvTitle, newEvDescription, newEvStartTime, newEvFinishTime,
                             selectedDate, newEvEndDate, repeat, selectedEvent.getEventId(), filepath);
                 }

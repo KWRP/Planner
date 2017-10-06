@@ -275,21 +275,18 @@ public class DisplayMonth extends AppCompatActivity {
 
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem item1 = menu.findItem(R.id.action_settings);
-        MenuItem item2 = menu.findItem(R.id.action_sync);
-        MenuItem item3 = menu.findItem(R.id.action_about);
-        MenuItem item4 = menu.findItem(R.id.action_help);
+        MenuItem item2 = menu.findItem(R.id.action_about);
+        MenuItem item3 = menu.findItem(R.id.action_help);
 
         if (!editAvailable) {
 
             item1.setVisible(false);
             item2.setVisible(false);
             item3.setVisible(false);
-            item4.setVisible(false);
         } else {
             item1.setVisible(true);
             item2.setVisible(true);
             item3.setVisible(true);
-            item4.setVisible(true);
         }
         return true;
     }
@@ -332,12 +329,6 @@ public class DisplayMonth extends AppCompatActivity {
             if (!colorThreadRun) {
                 new ColorSetThread().start();
             }
-            return true;
-        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sync) {
-            AlertDialog dialog = DialogAction.createSyncDialog(this);
-            dialog.show();
             return true;
         }
         //noinspection SimplifiableIfStatement
