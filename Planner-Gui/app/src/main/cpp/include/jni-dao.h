@@ -34,11 +34,6 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
         JNIEnv *env, jobject /* this */, jstring dir, jstring date);
 
-JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniCreateEvent(
-        JNIEnv *env, jobject /* this */,
-        jstring title, jstring description, jstring start, jstring duration, jstring dir,
-        jstring date);
-
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate , jstring endDate, jstring repeat, jstring eventID,

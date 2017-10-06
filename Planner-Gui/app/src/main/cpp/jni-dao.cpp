@@ -13,7 +13,7 @@ extern "C" {
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDate(
         JNIEnv *env,
-        jobject /* this */) {
+        jobject) {
     string date = getCurrentDate();
     return env->NewStringUTF(date.c_str());
 }
@@ -25,7 +25,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDat
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniGetCurrentDate(
         JNIEnv *env,
-        jobject /* this */) {
+        jobject) {
     string date = getCurrentDate();
     return env->NewStringUTF(date.c_str());
 }
@@ -37,7 +37,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniGetCurrentD
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
         JNIEnv *env,
-        jobject /* this */, jstring dir) {
+        jobject , jstring dir) {
     string confirm = "";
 
     try {
@@ -70,7 +70,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
         JNIEnv *env,
-        jobject /* this */, jstring dir) {
+        jobject, jstring dir) {
     string confirm = "";
 
     try {
@@ -109,7 +109,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
  * @return confirm      Confirms if the event was addeded to the database.
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent(
-        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        JNIEnv *env, jobject, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
 
     string confirm = "";
@@ -173,7 +173,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
  * @return dayString Returns a delimited string with all the day events.
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
-        JNIEnv *env, jobject /* this */, jstring dir, jstring date) {
+        JNIEnv *env, jobject, jstring dir, jstring date) {
 
     string dayString = "";
 
@@ -211,7 +211,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentDate(
         JNIEnv *env,
-        jobject /* this */) {
+        jobject) {
     string date = getCurrentDate();
     return env->NewStringUTF(date.c_str());
 }
@@ -233,7 +233,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentD
  * @return confirm      Confirms if the event was updated.
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb(
-        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        JNIEnv *env, jobject, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring eventID,
         jstring filepath) {
 
@@ -304,7 +304,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
  * @return confirm      Confirms if an event was removed.
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb(
-        JNIEnv *env, jobject /* this */, jstring eventId, jstring filepath) {
+        JNIEnv *env, jobject, jstring eventId, jstring filepath) {
     string confirm = "";
     try {
 
@@ -338,7 +338,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
  * @return getMonth Returns a delimited string with all the day events.
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
-        JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir) {
+        JNIEnv *env, jobject, jstring month, jstring year, jstring dir) {
 
     string getMonth = "";
     try {
@@ -374,7 +374,7 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb
  * @return confirm      Confirms if the event was added to the database.
  */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDbEvent(
-        JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
+        JNIEnv *env, jobject, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
 
     string confirm = "";
