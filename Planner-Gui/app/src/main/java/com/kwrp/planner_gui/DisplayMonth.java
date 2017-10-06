@@ -82,7 +82,7 @@ public class DisplayMonth extends AppCompatActivity {
     private String filePath;
     private GridView mGridView;
     private int currentYear;
-    private boolean colorThreadRun = false;
+    public static boolean colorThreadRun = false;
     private int currentDayPos;
     private int currentDayColor = DialogAction.headColor;
     private String newEvTitle = "";
@@ -275,15 +275,18 @@ public class DisplayMonth extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             final AlertDialog dialog = DialogAction.createSettingsDialog(this);
-            dialog.show();
+
             final Intent myIntent = new Intent(this, DisplayMonth.class);
 
             class ColorSetThread extends Thread {
                 @Override
                 public void run() {
                     colorThreadRun = true;
+                    if(DisplayDay.colorThreadRun){
+                        DisplayDay.colorThreadRun = false;
+                    }
                     int c = DialogAction.headColor;
-                    while (true) {
+                    while (colorThreadRun == true) {
                         if (c != DialogAction.headColor) {
                             colorThreadRun = false;
                             month_offset = 0;
@@ -299,6 +302,7 @@ public class DisplayMonth extends AppCompatActivity {
             if (!colorThreadRun) {
                 new ColorSetThread().start();
             }
+            dialog.show();
             return true;
         }
         //noinspection SimplifiableIfStatement

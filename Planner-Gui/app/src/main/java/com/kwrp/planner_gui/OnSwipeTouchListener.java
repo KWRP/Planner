@@ -43,9 +43,14 @@ public class OnSwipeTouchListener implements OnTouchListener {
         return gestureDetector.onTouchEvent(event);
     }
 
-    public void onSwipeRight() {
-    }
+    /**
+     *  Defines the action to do when the user swipes right (by default nothing, must be overridden)
+     */
+    public void onSwipeRight() {}
 
+    /**
+     *  Defines the action to do when the user swipes left (by default nothing, must be overridden)
+     */
     public void onSwipeLeft() {
     }
 

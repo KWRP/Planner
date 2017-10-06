@@ -62,7 +62,7 @@ public class DisplayDay extends AppCompatActivity {
 
     /*The new event duration*/
     private String newEvFinishTime = "";
-
+    public static boolean colorThreadRun = false;
     private String newEvEndDate = "";
 
     /*The file path to the file where events are being stored*/
@@ -266,6 +266,31 @@ public class DisplayDay extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             AlertDialog dialog = DialogAction.createSettingsDialog(this);
+
+            final Intent myIntent = new Intent(this, DisplayMonth.class);
+
+            class ColorSetThread extends Thread {
+                @Override
+                public void run() {
+                    colorThreadRun = true;
+                    int c = DialogAction.headColor;
+                    if(DisplayMonth.colorThreadRun){
+                        DisplayMonth.colorThreadRun = false;
+                    }
+                    while (colorThreadRun == true) {
+                        if (c != DialogAction.headColor) {
+                            colorThreadRun = false;
+                            startActivity(myIntent);
+                            finish();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!colorThreadRun) {
+                new ColorSetThread().start();
+            }
             dialog.show();
             return true;
         }
