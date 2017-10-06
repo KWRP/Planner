@@ -7,6 +7,11 @@ Asthetically pleasing to see a clean calander until you look into the upcoming d
 Display the current month by default.<br />
 Stores events locally on the device.<br />
 Displays the events in a selected day.<br />
+Allows you to update stored events. <br />
+Allows you to remove stored events. <br />
+Has innovatively intense colour schemes <br />
+Events can be repeated daily, weekly, monthy, and yearly <br />
+
 
 ## How to:<br />
 
