@@ -35,7 +35,9 @@ Setting up Android Studio
 3. On the startup menu, click on Configure and then select SDK Manager.
 
 If you plan to run the application on you own android device, then select your operating 
-Android version, otherwise select your preferred Android version, we recommend Android 7.1.
+Android version, otherwise select your preferred Android version. 
+<br />We recommend a physical android device as we cannot guarantee the performance of virtual systems.
+<br />We support Samsung Galaxy S4, S5, S6 and S7 using API's 21 to 25. Results may vary for other devices.
 
 - Click on the tab that says SDK Tools and make sure the following are ticked:<br />
 	- [x] Android SDK Build-Tools <br />
