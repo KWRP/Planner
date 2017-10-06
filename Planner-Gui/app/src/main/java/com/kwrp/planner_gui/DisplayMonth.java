@@ -38,7 +38,6 @@ import java.util.Locale;
 
 import static com.kwrp.planner_gui.R.id.gridview;
 
-
 /**
  * Defines the displaymonth activity where the user is shown
  * every day in the month.
@@ -46,7 +45,6 @@ import static com.kwrp.planner_gui.R.id.gridview;
  * @author KWRP
  */
 public class DisplayMonth extends AppCompatActivity {
-
 
     /*month offset from current, if sees into the future, this month number will increase*/
     private static int month_offset = 0;
@@ -213,7 +211,7 @@ public class DisplayMonth extends AppCompatActivity {
     }
 
     /**
-     * Checks if the XML file where events are stored exists
+     * Checks if the file where events are stored exists
      * and create a file if not.
      */
     private void checkDbExists() {

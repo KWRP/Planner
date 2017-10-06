@@ -43,67 +43,43 @@ public class DisplayDay extends AppCompatActivity {
         System.loadLibrary("calendar");
     }
 
-    /**
-     * List of eventItems
-     */
+    /*List of eventItems*/
     private ArrayList<String> eventItems = new ArrayList<>();
 
-    /**
-     * The new event title
-     */
+    /* The new event title*/
     private String newEvTitle = "";
 
-    /**
-     * The new event description
-     */
+    /* The new event description*/
     private String newEvDescription = "";
 
-    /**
-     * The new event start time
-     */
+    /*The new event start time*/
     private String newEvStartTime = "";
 
-    /**
-     * The new event duration
-     */
+    /*The new event duration*/
     private String newEvFinishTime = "";
 
     private String newEvEndDate = "";
 
-    /**
-     * The file path to the file where events are being stored
-     */
+    /*The file path to the file where events are being stored*/
     private String filepath;
 
-    /**
-     * The listview for events
-     */
+    /*The listview for events*/
     private ArrayAdapter<String> listAdapter;
 
-    /**
-     * The current date
-     */
+    /*The current date */
     private String currentDate = jniGetCurrentDate();
 
-    /**
-     * The selected date
-     */
+    /* The selected date*/
     private String selectedDate;
 
-    /**
-     * Text from the month box
-     */
+    /*Text from the month box*/
     private String selectDay;
 
-    /**
-     * The day object
-     */
+    /*The day object*/
     private Day selectedDay = null;
     private Event selectedEvent = null;
 
-    /**
-     * selected event Id (for removal)
-     */
+    /*selected event Id (for removal)*/
     private static String eventId = "";
     private static Button startTime;
     private static Button endTime;
@@ -166,7 +142,7 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     /**
-     * Gets the events from the .xml file and adds them to the
+     * Gets the events from the file and adds them to the
      * eventItems list.
      */
     protected void getEvents() {
@@ -217,9 +193,7 @@ public class DisplayDay extends AppCompatActivity {
     private String modifyDate(Intent context) {
         selectDay = context.getStringExtra("date");
 
-        if (selectDay.length() == 1) {
-            selectDay = "0" + selectDay;
-        }
+        if (selectDay.length() == 1) {selectDay = "0" + selectDay;}
 
         String month = context.getStringExtra("month");
         int monthValue = Integer.parseInt(month);
@@ -238,7 +212,7 @@ public class DisplayDay extends AppCompatActivity {
     }
 
     /**
-     * Checks if the XML file where events are stored exists
+     * Checks if the file where events are stored exists
      * and create a file if not.
      */
     private void checkDbExists() {
@@ -409,6 +383,11 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
+    /** Creates the dialog to update an event
+     *
+     * @param eventId the event ID for the selected event
+     * @return an alert dialog to be shown
+     */
     private AlertDialog updateEventDialog(int eventId) {
         selectedEvent = selectedDay.getEvent(eventId);
         AlertDialog.Builder builder = new AlertDialog.Builder(DisplayDay.this);
@@ -566,8 +545,6 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
-    // Code For times and dates, needs refactoring
-
 
     private View.OnClickListener eventDaysOnClick = new View.OnClickListener() {
         @Override
@@ -578,6 +555,9 @@ public class DisplayDay extends AppCompatActivity {
         }
     };
 
+    /**
+     * Selected repeat dialog fragment
+     */
     public static class SelectRepeatFrag extends DialogFragment {
         private int newSelection = 0;
 
@@ -616,6 +596,9 @@ public class DisplayDay extends AppCompatActivity {
         }
     };
 
+    /**
+     * DatePicker Dialog fragment for start date/end date
+     */
     public static class DatePickerFrag extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
         @Override
@@ -659,6 +642,9 @@ public class DisplayDay extends AppCompatActivity {
         }
     };
 
+    /**
+     * DatePicker dialog for start time of the event
+     */
     public static class StartTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -694,6 +680,9 @@ public class DisplayDay extends AppCompatActivity {
         }
     };
 
+    /**
+     * DatePicker dialog for end time of the event
+     */
     public static class EndTimeFrag extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
         @Override
@@ -718,6 +707,12 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
+    /** Returns the user to the month view when the back key is pressed
+     *
+     * @param keyCode the keycode for the key pressed
+     * @param event the type of event triggered
+     * @return boolean type
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
     {
@@ -745,7 +740,7 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniGetDayDb(String filePath, String currentDate);
 
     /**
-     * A JNI function that removes an event from the .xml file rendering it
+     * A JNI function that removes an event from the file rendering it
      * non-existent.
      *
      * @param filepath path/to/file
@@ -754,12 +749,42 @@ public class DisplayDay extends AppCompatActivity {
      */
     public native String jniRemoveEventDb(String eventId, String filepath);
 
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
     public native String jniCreateDb(String filePath);
 
+
+    /** Creates an event in the database
+     *
+     * @param title the title of the event
+     * @param description the description of the event
+     * @param start the start time of the event
+     * @param finish the finish time of the event
+     * @param selectedDate the start date of the event
+     * @param finishDate the finish date of the event
+     * @param repeat how often the event repeats (daily, weekly, monthly)
+     * @param filepath path/to/database
+     * @return
+     */
     public native String jniCreateDbEvent(String title, String description, String start,
                                           String finish, String selectedDate,
                                           String finishDate, String repeat, String filepath);
 
+    /** Updates an event
+     *
+     * @param title the title of the event
+     * @param description the description of the event
+     * @param start the start time of the event
+     * @param finish the finish time of the event
+     * @param startDate the start date of the event
+     * @param endDate the finish date of the event
+     * @param repeat how often the event repeats (daily, weekly, monthly)
+     * @param eventID the event ID for the updated event
+     * @param filepath path/to/database
+     * @return
+     */
     public native String jniUpdateEventDb(String title, String description, String start, String finish,
                                           String startDate, String endDate, String repeat, String eventID,
                                           String filepath);

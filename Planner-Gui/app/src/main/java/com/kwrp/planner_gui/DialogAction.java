@@ -1,6 +1,5 @@
 package com.kwrp.planner_gui;
 
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -8,17 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-
-
 
 /**
  * Defines a series of actions for specific actions such as "sync" button select.
@@ -30,15 +24,12 @@ public class DialogAction extends AppCompatActivity {
 
     public static int headColor = Color.BLUE;
     public static int textColor = Color.WHITE;
-    public static int eventColor = Color.argb(70, 10, 80, 255);
     public static int defaultColor = Color.rgb(244, 244, 244);
     public static int outMonthColor = Color.rgb(234, 234, 250);
     public static int selectedColor = Color.LTGRAY;
     public static int dialogColor = R.color.dialog_blue;
 
-
-
-    /*Default constructor*/
+    /**Default constructor*/
     public DialogAction() {
     }
 
@@ -53,9 +44,7 @@ public class DialogAction extends AppCompatActivity {
         builder.setMessage("")
                 .setTitle("About us")
                 .setMessage("This application is designed for Otago University students. This" +
-                        " application was created by students." +
-
-                        "\n");
+                        " application was created by students.\n");
 
         builder.setNeutralButton("Back", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -124,7 +113,6 @@ public class DialogAction extends AppCompatActivity {
                 }
                 toolbar.setBackgroundColor(headColor);
             }
-
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
