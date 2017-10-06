@@ -65,7 +65,7 @@ Android version, otherwise select your preferred Android version.
    'Open an existing Android Studio project and locate the Planner-Gui project 
     in the cloned repository. 
 
-6. Once the project build you may get some errors about modules can't be loaded. 
+6. Once the project builds you may get some errors about modules can't be loaded. 
    Select to remove these files. If it fails to build, then you might not have
    selected all of the SDK components. 
    To fix this, just select the link to install the missing components below the error message.
