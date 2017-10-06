@@ -70,13 +70,10 @@ public class DisplayMonth extends AppCompatActivity {
     /*Defines whether the "edit" pencil has been selected.
      Consider it "edit mode".*/
     private boolean editAvailable = true;
-
     /* Number of days selected if in edit mode*/
     private int daysSelected = 0;
-
     /* A list of days selected in edit mode */
     private Collection<String> dayList = new ArrayList<>();
-
     /* A list of positions selected in edit mode */
     private Collection<Integer> positionList = new ArrayList<>();
     private Collection<Integer> eventPosList = new ArrayList<>();
@@ -84,44 +81,17 @@ public class DisplayMonth extends AppCompatActivity {
 
     /*The filepath where events are stored on the device */
     private String filePath;
-
     private GridView mGridView;
-
     private int currentYear;
     private boolean colorThreadRun = false;
     private int currentDayPos;
     private int currentDayColor = DialogAction.headColor;
-
-    /**
-     * The new event title
-     */
     private String newEvTitle = "";
-
-    /**
-     * The new event description
-     */
     private String newEvDescription = "";
-
-    /**
-     * The new event start time
-     */
     private String newEvStartTime = "";
-
-    /**
-     * The new event duration
-     */
     private String newEvFinishTime = "";
-
     private String newEvEndDate = "";
-
-    /**
-     * The current date
-     */
     private String currentDate = jniGetCurrentDate();
-
-    /**
-     * selected event Id (for removal)
-     */
     private static Button startTime;
     private static Button endTime;
 
@@ -240,8 +210,6 @@ public class DisplayMonth extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     /**
@@ -316,19 +284,21 @@ public class DisplayMonth extends AppCompatActivity {
                 public void run() {
                     colorThreadRun = true;
                     int c = DialogAction.headColor;
-                    while (c == DialogAction.headColor) {
+                    while (true) {
+                        if(c != DialogAction.headColor){
+                            colorThreadRun = false;
+                            month_offset = 0;
+                            viewedYear = currentYear;
+                            startActivity(myIntent);
+                            finish();
+
+                            break;
+                        }
                     }
-                    colorThreadRun = false;
-                    startActivity(myIntent);
-                    finish();
-
-
                 }
             }
 
-            if (!colorThreadRun) {
-                new ColorSetThread().start();
-            }
+            if (!colorThreadRun) {new ColorSetThread().start();}
             return true;
         }
         //noinspection SimplifiableIfStatement
@@ -551,18 +521,29 @@ public class DisplayMonth extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if (editAvailable) {
                     TextView view = (TextView) ((GridView) findViewById(gridview)).getChildAt(position);
-                    String dateSelected = view.getText().toString();
-                    Intent myIntent = new Intent(view.getContext(), DisplayDay.class);
-                    myIntent.putExtra("date", dateSelected);
-                    myIntent.putExtra("month", Integer.toString(month_offset));
-                    myIntent.putExtra("year", Integer.toString(viewedYear));
-                    startActivityForResult(myIntent, 1);
+                    Drawable background = view.getBackground();
+                    if (background instanceof ColorDrawable) {
+                        int color = ((ColorDrawable) background).getColor();
+                        if (color != DialogAction.outMonthColor) {
+                            String dateSelected = view.getText().toString();
+                            Intent myIntent = new Intent(view.getContext(), DisplayDay.class);
+                            myIntent.putExtra("date", dateSelected);
+                            myIntent.putExtra("month", Integer.toString(month_offset));
+                            myIntent.putExtra("year", Integer.toString(viewedYear));
+                            startActivityForResult(myIntent, 1);
+                        }
+                    }
                 }
             }
         });
     }
 
-    // refreshes the activity
+    /**
+     * Refreshes activity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -794,7 +775,7 @@ public class DisplayMonth extends AppCompatActivity {
      * @param finishDate the last date the event will occur
      * @param repeat how often the event repeats (i.e. daily, weekly, monthly)
      * @param filepath path/to/database
-     * @return
+     * @return says if it got created or not (is later logged)
      */
     public native String jniCreateDbEvent(String title, String description, String start,
                                           String finish, String selectedDate,
