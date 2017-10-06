@@ -70,6 +70,7 @@ Android version, otherwise select your preferred Android version, we recommend A
 
 7. Once the build is complete you can either plug in your android device and allow debugging mode,
    on it, or you can create an emulator from one of the downloaded mobile device images.
+   To install/execute the app navigate to Run>Run and select your desired device.
 
 
 ### External library dependancies:
