@@ -6,6 +6,11 @@
 using namespace std;
 extern "C" {
 
+/**
+ * Get tbe date from system for display day.
+ *
+ * @return date     Returns a delimited date.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
@@ -13,6 +18,11 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetCurrentDat
     return env->NewStringUTF(date.c_str());
 }
 
+/**
+ * Get the date from system for dialog action.
+ *
+ * @return date     Returns a delimited date.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
@@ -20,6 +30,11 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DialogAction_jniGetCurrentD
     return env->NewStringUTF(date.c_str());
 }
 
+/**
+ * Check if the database file exists otherwise create a new one.
+ *
+ * @return confirm      Confirms if the database was created.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
         JNIEnv *env,
         jobject /* this */, jstring dir) {
@@ -45,6 +60,14 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDb(
     return env->NewStringUTF(confirm.c_str());
 
 }
+
+/**
+ * Check if the database file exists otherwise create a new one.
+ *
+ * @param dir       The location of the database file.
+ *
+ * @return confirm      Confirms if the database was created.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
         JNIEnv *env,
         jobject /* this */, jstring dir) {
@@ -70,6 +93,21 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDb(
 
 }
 
+
+/**
+ * Creates a new event from display day.
+ *
+ * @param title         The title of the event.
+ * @param description   A description of the event.
+ * @param start         The start time of the event.
+ * @param finish        The start time of the event.
+ * @param startDate     The start date of the event.
+ * @param endDate       The end date of the event.
+ * @param repeat        The repeat cycle for the event.
+ * @param filepath      The location of the database file.
+ *
+ * @return confirm      Confirms if the event was addeded to the database.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
@@ -126,6 +164,14 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniCreateDbEvent
 
 }
 
+/**
+ * Gets all the events on a day for a selected date for display day.
+ *
+ * @param dir       The location of the database file.
+ * @param date      The date of the day to get the events for.
+ *
+ * @return dayString Returns a delimited string with all the day events.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
         JNIEnv *env, jobject /* this */, jstring dir, jstring date) {
 
@@ -158,6 +204,11 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniGetDayDb(
     return env->NewStringUTF(dayString.c_str());
 }
 
+/**
+ * Gets the current date from the system.
+ *
+ * @return date     Returns a delimited date.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentDate(
         JNIEnv *env,
         jobject /* this */) {
@@ -166,6 +217,21 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetCurrentD
 }
 
 
+/**
+ * Updates an existing event within the database.
+ *
+ * @param title         The title of the event.
+ * @param description   A description of the event.
+ * @param start         The start time of the event.
+ * @param finish        The start time of the event.
+ * @param startDate     The start date of the event.
+ * @param endDate       The end date of the event.
+ * @param repeat        The repeat cycle for the event.
+ * @param eventID       The id of an event in the database.
+ * @param filepath      The location of the database file.
+ *
+ * @return confirm      Confirms if the event was updated.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring eventID,
@@ -197,16 +263,13 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
         string endMonth = endRest.substr(0, selectedDate.find(delimiter));
         string endYear = endRest.substr(selectedDate.find(delimiter) + 1);
 
-        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
-
-
         bool updateEvent = updateToDb(day.c_str(), month.c_str(), year.c_str(),
                                       nativeTitle, nativeDescription, nativeStart, nativeFinish,
                                       endDay.c_str(), endMonth.c_str(), endYear.c_str(),
                                       atoi(nativeID),
                                       atoi(nativeRepeat), nativepath);
 
-        __android_log_print(ANDROID_LOG_INFO, "TEST Print DATABASE!!!", "%s", "Print failed");
+        displayDb(nativepath);
 
         (env)->ReleaseStringUTFChars(title, nativeTitle);
         (env)->ReleaseStringUTFChars(description, nativeDescription);
@@ -232,6 +295,14 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniUpdateEventDb
 }
 
 
+/**
+ * Removes a selected event from display day.
+ *
+ * @param eventId       The id of an event within the database.
+ * @param filepath      The location of the database file.
+ *
+ * @return confirm      Confirms if an event was removed.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb(
         JNIEnv *env, jobject /* this */, jstring eventId, jstring filepath) {
     string confirm = "";
@@ -256,6 +327,16 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayDay_jniRemoveEventDb
     }
     return env->NewStringUTF(confirm.c_str());
 }
+
+/**
+ * Gets the number of each day that has an event in a selected month.
+ *
+ * @param month     The month to search for events.
+ * @param year      The year to search for events.
+ * @param dir       The location of the database file.
+ *
+ * @return getMonth Returns a delimited string with all the day events.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb(
         JNIEnv *env, jobject /* this */, jstring month, jstring year, jstring dir) {
 
@@ -278,6 +359,20 @@ JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniGetEventsDb
     return env->NewStringUTF(getMonth.c_str());
 }
 
+/**
+ * Creates a new event from display month.
+ *
+ * @param title         The title of the event.
+ * @param description   A description of the event.
+ * @param start         The start time of the event.
+ * @param finish        The start time of the event.
+ * @param startDate     The start date of the event.
+ * @param endDate       The end date of the event.
+ * @param repeat        The repeat cycle for the event.
+ * @param filepath      The location of the database file.
+ *
+ * @return confirm      Confirms if the event was added to the database.
+ */
 JNIEXPORT jstring JNICALL Java_com_kwrp_planner_1gui_DisplayMonth_jniCreateDbEvent(
         JNIEnv *env, jobject /* this */, jstring title, jstring description, jstring start,
         jstring finish, jstring startDate, jstring endDate, jstring repeat, jstring filepath) {
