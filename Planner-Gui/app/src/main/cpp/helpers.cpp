@@ -3,8 +3,8 @@
 /**
  * Converts a given long into a string.
  *
- * @param long intended to be converted to string
- * @return the converted string
+ * @param long intended to be converted to string.
+ * @return the converted string.
  */
 std::string numToString(long l) {
     std::stringstream ss;
@@ -14,9 +14,9 @@ std::string numToString(long l) {
 }
 
 /**
- * collects and formats the date to the format DD/MM/YYYY
+ * Collects and formats the date to the format DD/MM/YYYY.
  *
- * @return the formatted date
+ * @return the formatted date.
  */
 std::string getCurrentDate() {
     std::string dayDate = "";
@@ -39,10 +39,10 @@ std::string getCurrentDate() {
 /**
  * Finds the day of the week a given date falls on.
  *
- * @param day portion of date
- * @param month portion of date
- * @param year portion of date
- * @return the day of the week
+ * @param day portion of date.
+ * @param month portion of date.
+ * @param year portion of date.
+ * @return the day of the week.
  */
 int dayOfWeekI(int day, int month, int year) {
 
@@ -57,11 +57,11 @@ int dayOfWeekI(int day, int month, int year) {
     return n;
 }
 /**
- * Finds the maximum days for a given month in a given year
+ * Finds the maximum days for a given month in a given year.
  *
- * @param month
- * @param year
- * @return the total days in the given month
+ * @param month.
+ * @param year.
+ * @return the total days in the given month.
  */
 int maxDays(int mon, int year) {
     int daysInMonth = 0;
@@ -79,10 +79,10 @@ int maxDays(int mon, int year) {
     return daysInMonth;
 }
 /**
- * Throws a Java exception
+ * Throws a Java exception.
  *
- * @param JNI environment
- * @param message to be thrown
+ * @param JNI environment.
+ * @param message to be thrown.
  */
 void throwJavaException(JNIEnv *env, const char *msg) {
     jclass c = env->FindClass("java/lang/RuntimeException");

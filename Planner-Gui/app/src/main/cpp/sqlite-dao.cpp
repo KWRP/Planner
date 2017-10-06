@@ -4,13 +4,13 @@
 #include <android/log.h>
 
 /**
- * Logs each line of a SQL execution
+ * Logs each line of a SQL execution.
  *
- * @param null pointer
- * @param argc for number of lines to log
- * @param argv is a character pointer for argument values
- * @param azColName is the name of the columns in the database
- * @return 0 once complete
+ * @param null pointer.
+ * @param argc for number of lines to log.
+ * @param argv is a character pointer for argument values.
+ * @param azColName is the name of the columns in the database.
+ * @return 0 once complete.
  */
 int callback(void *NotUsed, int argc, char **argv, char **azColName) {
     int i;
@@ -24,8 +24,8 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 /**
  * Creates the initial database if not already created.
  *
- * @param filepath of the stored database
- * @return bool value of database creation
+ * @param filepath of the stored database.
+ * @return bool value of database creation.
  */
 bool createTableQuery(const char *filepath) {
     sqlite3 *db;
@@ -72,9 +72,9 @@ bool createTableQuery(const char *filepath) {
 /**
  * Creates the initial database if not already created.
  *
- * @param createStatement is the statement to be executed
- * @param db is the opened instance of the database to execute the statement in
- * @return bool value of database creation
+ * @param createStatement is the statement to be executed.
+ * @param db is the opened instance of the database to execute the statement in.
+ * @return bool value of database creation.
  */
 bool createDb(const char *createStatement, sqlite3 *db) {
     char *zErrMsg = 0;
@@ -90,21 +90,21 @@ bool createDb(const char *createStatement, sqlite3 *db) {
     return true;
 }
 /**
- * Inserts an event into the database
+ * Inserts an event into the database.
  *
- * @param day portion of the start date
- * @param month portion of the start date
- * @param year portion of the start date
- * @param title of the event
- * @param description for the event
- * @param start time of the event
- * @param duration of the event
- * @param endDay portion of the end date
- * @param endMonth portion of the end date
- * @param endYear portion of the end date
- * @param repeatCycle of the event (0-4)
- * @param filepath of the stored database
- * @return bool value of database creation
+ * @param day portion of the start date.
+ * @param month portion of the start date.
+ * @param year portion of the start date.
+ * @param title of the event.
+ * @param description for the event.
+ * @param start time of the event.
+ * @param duration of the event.
+ * @param endDay portion of the end date.
+ * @param endMonth portion of the end date.
+ * @param endYear portion of the end date.
+ * @param repeatCycle of the event (0-4).
+ * @param filepath of the stored database.
+ * @return bool value of database creation.
  */
 bool insertToDb(const char *day, const char *month, const char *year, const char *title,
                 const char *description, const char *start, const char *duration,
@@ -194,24 +194,24 @@ bool insertToDb(const char *day, const char *month, const char *year, const char
     return true;
 }
 /**
- * updates the end date of an already existing event, then recalls insert for the new event.
+ * Updates the end date of an already existing event, then recalls insert for the new event.
  *
  * @param day portion of the start date of the new event,
- *          used to derive the end date of the old event
+ *          used to derive the end date of the old event.
  * @param month portion of the start date of the new event,
- *          used to derive the end date of the old event
+ *          used to derive the end date of the old event.
  * @param year portion of the start date of the new event,
- *          used to derive the end date of the old event
- * @param title of the event
- * @param description for the event
- * @param start time of the event
- * @param duration of the event
- * @param endDay portion of the end date
- * @param endMonth portion of the end date
- * @param endYear portion of the end date
- * @param repeatCycle of the event (0-4)
- * @param filepath of the stored database
- * @return bool value of database creation
+ *          used to derive the end date of the old event.
+ * @param title of the event.
+ * @param description for the event.
+ * @param start time of the event.
+ * @param duration of the event.
+ * @param endDay portion of the end date.
+ * @param endMonth portion of the end date.
+ * @param endYear portion of the end date.
+ * @param repeatCycle of the event (0-4).
+ * @param filepath of the stored database.
+ * @return bool value of database creation.
  */
 bool updateToDb(const char *sday, const char *smonth, const char *syear, const char *title,
                 const char *description, const char *start, const char *duration,
@@ -277,11 +277,11 @@ bool updateToDb(const char *sday, const char *smonth, const char *syear, const c
                       endDay, endMonth, endYear, repeatCycle, filepath);
 }
 /**
- * Removes a database entry with the given ID
+ * Removes a database entry with the given ID.
  *
- * @param eventID is the ID of the desired event to be deleted
- * @param filepath of the stored database
- * @return bool value of database creation
+ * @param eventID is the ID of the desired event to be deleted.
+ * @param filepath of the stored database.
+ * @return bool value of database creation.
  */
 bool deleteFromDb(int eventID, const char *filepath) {
     sqlite3 *db;
@@ -315,11 +315,11 @@ bool deleteFromDb(int eventID, const char *filepath) {
 /**
  * Selects and returns all events that occur on a given date.
  *
- * @param day portion of date
- * @param month portion of date
- * @param year portion of date
- * @param filepath of the stored database
- * @return vector of strings with the information of each event
+ * @param day portion of date.
+ * @param month portion of date.
+ * @param year portion of date.
+ * @param filepath of the stored database.
+ * @return vector of strings with the information of each event.
  */
 std::vector<std::string> selectFromDB(const char *day, const char *month,
                                                    const char *year,
@@ -424,9 +424,9 @@ std::vector<std::string> selectFromDB(const char *day, const char *month,
 }
 
 /**
- * logs the entire database
+ * Logs the entire database.
  *
- * @param filepath of the stored database
+ * @param filepath of the stored database.
  */
 void displayDb(const char *filepath) {
     sqlite3 *db;
@@ -453,12 +453,12 @@ void displayDb(const char *filepath) {
     sqlite3_close(db);
 }
 /**
- * Calls select for each day of a given month in a given year
+ * Calls select for each day of a given month in a given year.
  *
- * @param month to select from
- * @param year of the given month
- * @param filepath of the stored database
- * @return bool value of database manipulations
+ * @param month to select from.
+ * @param year of the given month.
+ * @param filepath of the stored database.
+ * @return bool value of database manipulations.
  */
 std::string selectMonth(const char *month, const char *year, const char *filepath){
     int lastDay = maxDays(atoi(month),atoi(year));

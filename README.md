@@ -34,8 +34,8 @@ Setting up Android Studio
 2. Install android studio and start the application.
 3. On the startup menu, click on Configure and then select SDK Manager.
 
-If you are plan to run the application on you own android device, then select its 
-Androud version, otherwise just select the most recent API Level.
+If you plan to run the application on you own android device, then select your operating 
+Android version, otherwise select your preferred Android version, we recommend Android 7.1.
 
 - Click on the tab that says SDK Tools and make sure the following are ticked:<br />
 	- [x] Android SDK Build-Tools <br />
@@ -70,6 +70,7 @@ Androud version, otherwise just select the most recent API Level.
 
 7. Once the build is complete you can either plug in your android device and allow debugging mode,
    on it, or you can create an emulator from one of the downloaded mobile device images.
+   <br />To install/execute the app navigate to Run>Run and select your desired device.
 
 
 ### External library dependancies:
