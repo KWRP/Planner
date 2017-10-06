@@ -158,21 +158,22 @@ public class DialogAction extends AppCompatActivity {
         builder.setMessage("")
                 .setTitle("Help")
                 .setMessage("How to use:"+
-                        "\nSwipe side to side to change month."+
-                        "\nTap on a day to edit single day. Tap on the pencil icon to make an event"+
-                        "\n\nTap the pencil icon to enable multi-day event creation" +
-                        "\n\nThe monthly and yearly repeat opinions repeat on that day of that month or " +
-                        "year up till the finish date eg a monthly repeat with a start date on 12/02/2017 " +
-                        "with an finish date of 11/05/2017 it will repeat on 12/02/2017, 12/03/2017 and 12/04/2017." +
-                        "\nWeekly repeat repeats on that day of the week eg friday, up till the finish date."+
-                        "\nDaily repeat repeats on ever day up till the finish date."+
-                        "\nBy default the end time will be set to an hour after start time."+
-                        "\nIf the finish date is before the date of an event that you are trying to add the event will not be added."+
-                        "\nAll the input boxes need to be filled in or the event will not be created."+
-                        "\n\nTap on an event to update or delete it."+
-                        "\nUpdating a repeated event will change that event and the event after it, but keep the events before it the same."+
-                        "\nDeleting a repeating event will delete all the repeating events."+
-                        "\nIf you tap on TODAY you will go back to the current day."+
+                        "\nSwipe side to side in the month view\n\tto change the viewed month." +
+                        "\nTap on TODAY to back to the current \n\tmonth." +
+                        "\nTap on the pencil icon to make \n\tindividual events on multiple days." +
+                        "\nTap on a day to view and edit events \n\tfor that day." +
+                        "\nTap on an event to update or delete \n\tthe chosen event."+
+                        "\nUpdating a repeated event will only \n\tupdate occurrences for the chosen\n\tdate onwards."+
+                        "\nDeleting a repeating event will delete \n\tall occurrences of that event.\n"+
+
+                        "\nThe monthly and yearly repeat \n\toptions repeat on the given date\n\tby month or " +
+                        "year until the finish\n\tdate eg. a monthly repeat with a\n\tstart date 12/02/2017 " +
+                        "and a finish\n\tdate of 11/05/2017, will occur on\n\t12/02/2017, 12/03/2017 and\n\t12/04/2017." +
+                        "\nWeekly repeat occurs on the day of\n\tthe week eg. every friday, until the\n\tfinish date."+
+                        "\nDaily repeat occurs on every day\n\tuntil the finish date."+
+                        "\nBy default the end time will be set\n\tto an hour after the chosen start\n\ttime."+
+                        "\nAn event with a finish date earlier \n\tthan a start date is invalid and\n\twill not be created."+
+                        "\nAll the input boxes need to be filled\n\tin or the event will not be created."+
                         "\n");
 
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -182,4 +183,5 @@ public class DialogAction extends AppCompatActivity {
         });
         return  builder.create();
     }
+
 }
