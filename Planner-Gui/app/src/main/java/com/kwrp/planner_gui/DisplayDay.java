@@ -1,6 +1,10 @@
 package com.kwrp.planner_gui;
 
-import android.app.*;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,9 +26,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ScrollView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -193,7 +198,9 @@ public class DisplayDay extends AppCompatActivity {
     private String modifyDate(Intent context) {
         selectDay = context.getStringExtra("date");
 
-        if (selectDay.length() == 1) {selectDay = "0" + selectDay;}
+        if (selectDay.length() == 1) {
+            selectDay = "0" + selectDay;
+        }
 
         String month = context.getStringExtra("month");
         int monthValue = Integer.parseInt(month);
@@ -383,7 +390,8 @@ public class DisplayDay extends AppCompatActivity {
         return builder.create();
     }
 
-    /** Creates the dialog to update an event
+    /**
+     * Creates the dialog to update an event
      *
      * @param eventId the event ID for the selected event
      * @return an alert dialog to be shown
@@ -455,7 +463,7 @@ public class DisplayDay extends AppCompatActivity {
         dialogLayout.addView(finishDate, 11);
 
         Button deleteBut = new Button(this);
-        deleteBut.setBackgroundColor(Color.argb(150,180,0,0));
+        deleteBut.setBackgroundColor(Color.argb(150, 180, 0, 0));
         deleteBut.setText(R.string.label_dialog_delete);
         deleteBut.setTextSize(20);
 
@@ -707,17 +715,16 @@ public class DisplayDay extends AppCompatActivity {
         }
     }
 
-    /** Returns the user to the month view when the back key is pressed
+    /**
+     * Returns the user to the month view when the back key is pressed
      *
      * @param keyCode the keycode for the key pressed
-     * @param event the type of event triggered
+     * @param event   the type of event triggered
      * @return boolean type
      */
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if ((keyCode == KeyEvent.KEYCODE_BACK))
-        {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             setResult(RESULT_OK, null);
             finish();
         }
@@ -756,34 +763,36 @@ public class DisplayDay extends AppCompatActivity {
     public native String jniCreateDb(String filePath);
 
 
-    /** Creates an event in the database
+    /**
+     * Creates an event in the database
      *
-     * @param title the title of the event
-     * @param description the description of the event
-     * @param start the start time of the event
-     * @param finish the finish time of the event
+     * @param title        the title of the event
+     * @param description  the description of the event
+     * @param start        the start time of the event
+     * @param finish       the finish time of the event
      * @param selectedDate the start date of the event
-     * @param finishDate the finish date of the event
-     * @param repeat how often the event repeats (daily, weekly, monthly)
-     * @param filepath path/to/database
-     * @return
+     * @param finishDate   the finish date of the event
+     * @param repeat       how often the event repeats (daily, weekly, monthly)
+     * @param filepath     path/to/database
+     * @return             confirm if the event was created
      */
     public native String jniCreateDbEvent(String title, String description, String start,
                                           String finish, String selectedDate,
                                           String finishDate, String repeat, String filepath);
 
-    /** Updates an event
+    /**
+     * Updates an event
      *
-     * @param title the title of the event
+     * @param title       the title of the event
      * @param description the description of the event
-     * @param start the start time of the event
-     * @param finish the finish time of the event
-     * @param startDate the start date of the event
-     * @param endDate the finish date of the event
-     * @param repeat how often the event repeats (daily, weekly, monthly)
-     * @param eventID the event ID for the updated event
-     * @param filepath path/to/database
-     * @return
+     * @param start       the start time of the event
+     * @param finish      the finish time of the event
+     * @param startDate   the start date of the event
+     * @param endDate     the finish date of the event
+     * @param repeat      how often the event repeats (daily, weekly, monthly)
+     * @param eventID     the event ID for the updated event
+     * @param filepath    path/to/database
+     * @return            if the update was successful
      */
     public native String jniUpdateEventDb(String title, String description, String start, String finish,
                                           String startDate, String endDate, String repeat, String eventID,

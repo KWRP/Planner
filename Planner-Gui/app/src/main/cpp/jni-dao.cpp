@@ -1,4 +1,4 @@
-#include <android/log.h>
+
 #include "include/jni-dao.h"
 #include "include/helpers.hpp"
 #include "sqlite-dao.hpp"

@@ -79,14 +79,14 @@ public class MonthAdapter extends BaseAdapter {
      * @param year    the year to generate for
      * @param metrics the dimensions
      */
-     public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics, ArrayList<Integer> days) {
+    public MonthAdapter(Context c, int month, int year, DisplayMetrics metrics, ArrayList<Integer> days) {
         mContext = c;
         mMonth = month;
         mYear = year;
         mCalendar = new GregorianCalendar(mYear, mMonth, 1);
         mCalendarToday = Calendar.getInstance();
         mDisplayMetrics = metrics;
-        eventDays =  new ArrayList<>(days);
+        eventDays = new ArrayList<>(days);
         populateMonth();
 
     }
@@ -128,11 +128,11 @@ public class MonthAdapter extends BaseAdapter {
 
         // show events
         for (int i = 0; i < eventDays.size(); i++) {
-            eventDays.set(i, eventDays.get(i) + firstDay+6);
+            eventDays.set(i, eventDays.get(i) + firstDay + 6);
         }
 
         //buffer bottom of the screen with another row of next month dates
-        if(mDaysNextMonth < 6) {
+        if (mDaysNextMonth < 6) {
             for (int i = 1; i < 8; i++) {
                 mItems.add(String.valueOf(mDaysNextMonth));
                 mDaysShown++;
@@ -141,7 +141,7 @@ public class MonthAdapter extends BaseAdapter {
         }
 
         mTitleHeight = 30;
-        int rows = (mDaysShown / 7) ;
+        int rows = (mDaysShown / 7);
         mDayHeight = (mDisplayMetrics.heightPixels - mTitleHeight
                 - (rows * 8) - getBarHeight()) / (rows - 1);
 
@@ -292,7 +292,7 @@ public class MonthAdapter extends BaseAdapter {
             view.setBackgroundColor(DialogAction.defaultColor);
             view.setHeight(mTitleHeight + 100);
         }
-         //colour day with an event
+        //colour day with an event
         if (eventDays.contains(position)) {
             view.setBackgroundColor(ContextCompat.getColor(parent.getContext(),
                     DialogAction.dialogColor));

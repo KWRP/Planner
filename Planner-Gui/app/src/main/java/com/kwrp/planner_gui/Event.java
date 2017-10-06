@@ -4,7 +4,7 @@ import android.util.Log;
 
 
 /**
- * A class defining an event object containg all the appropriate
+ * A class defining an event object containing all the appropriate
  * details (e.g. title, description)
  *
  * @author KWRP

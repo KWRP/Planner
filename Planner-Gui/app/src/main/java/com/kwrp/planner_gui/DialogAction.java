@@ -12,11 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 
 /**
  * Defines a series of actions for specific actions such as "sync" button select.
- * Returns dialog boxes for specific actions and in some cases sends data to back-end.
+ * Returns dialog boxes for specific actions and in some cases sends data to the back-end.
  *
  * @author KWRP
  */
@@ -29,12 +30,15 @@ public class DialogAction extends AppCompatActivity {
     public static int selectedColor = Color.LTGRAY;
     public static int dialogColor = R.color.dialog_blue;
 
-    /**Default constructor*/
+    /**
+     * Default constructor
+     */
     public DialogAction() {
     }
 
     /**
-     * Creates the "About" Dialog box which occurs when the user selects "About" in the options menu
+     * Creates the "About" Dialog box which occurs when the user selects
+     * "About" in the options menu.
      *
      * @param parent The Intent the dialog box is spawned onto
      * @return the dialog box object, to "shown".
@@ -51,11 +55,12 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        return  builder.create();
+        return builder.create();
     }
 
     /**
-     * Creates the "Settings" Dialog which occurs when the user selects "Settings" in the options menu
+     * Creates the "Settings" Dialog which occurs when the user selects
+     * "Settings" in the options menu.
      *
      * @param parent The Intent the dialog box is spawned onto
      * @return the dialog box object, to "shown".
@@ -94,7 +99,7 @@ public class DialogAction extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toolbar toolbar = (Toolbar) parentf.findViewById(R.id.toolbar_month);
-                if (toolbar == null){
+                if (toolbar == null) {
                     toolbar = (Toolbar) parentf.findViewById(R.id.toolbar_day);
                 }
                 switch (position) {
@@ -118,7 +123,7 @@ public class DialogAction extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
 
-    });
+        });
         spinner.setPadding(100, 20, 100, 20);
 
         spinner.setDropDownHorizontalOffset(90);
@@ -132,7 +137,7 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        return  builder.create();
+        return builder.create();
     }
 
     /**
@@ -145,23 +150,23 @@ public class DialogAction extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setMessage("")
                 .setTitle("Help")
-                .setMessage("How to use:"+
+                .setMessage("How to use:" +
                         "\nSwipe side to side in the month view\n\tto change the viewed month." +
                         "\nTap on TODAY to back to the current \n\tmonth." +
                         "\nTap on the pencil icon to make \n\tindividual events on multiple days." +
                         "\nTap on a day to view and edit events \n\tfor that day." +
-                        "\nTap on an event to update or delete \n\tthe chosen event."+
-                        "\nUpdating a repeated event will only \n\tupdate occurrences for the chosen\n\tdate onwards."+
-                        "\nDeleting a repeating event will delete \n\tall occurrences of that event.\n"+
+                        "\nTap on an event to update or delete \n\tthe chosen event." +
+                        "\nUpdating a repeated event will only \n\tupdate occurrences for the chosen\n\tdate onwards." +
+                        "\nDeleting a repeating event will delete \n\tall occurrences of that event.\n" +
 
                         "\nThe monthly and yearly repeat \n\toptions repeat on the given date\n\tby month or " +
                         "year until the finish\n\tdate eg. a monthly repeat with a\n\tstart date 12/02/2017 " +
                         "and a finish\n\tdate of 11/05/2017, will occur on\n\t12/02/2017, 12/03/2017 and\n\t12/04/2017." +
-                        "\nWeekly repeat occurs on the day of\n\tthe week eg. every friday, until the\n\tfinish date."+
-                        "\nDaily repeat occurs on every day\n\tuntil the finish date."+
-                        "\nBy default the end time will be set\n\tto an hour after the chosen start\n\ttime."+
-                        "\nAn event with a finish date earlier \n\tthan a start date is invalid and\n\twill not be created."+
-                        "\nAll the input boxes need to be filled\n\tin or the event will not be created."+
+                        "\nWeekly repeat occurs on the day of\n\tthe week eg. every friday, until the\n\tfinish date." +
+                        "\nDaily repeat occurs on every day\n\tuntil the finish date." +
+                        "\nBy default the end time will be set\n\tto an hour after the chosen start\n\ttime." +
+                        "\nAn event with a finish date earlier \n\tthan a start date is invalid and\n\twill not be created." +
+                        "\nAll the input boxes need to be filled\n\tin or the event will not be created." +
                         "\n");
 
         builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -169,7 +174,7 @@ public class DialogAction extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        return  builder.create();
+        return builder.create();
     }
 
 }

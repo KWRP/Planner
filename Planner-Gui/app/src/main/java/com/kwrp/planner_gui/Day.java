@@ -9,25 +9,25 @@ import java.util.ArrayList;
  */
 public class Day {
 
-    /**
-     * The date the day is on
+    /*
+     * The date the day is on.
      */
     private String date = "";
 
-    /**
-     * A list of events on that day
+    /*
+     * A list of events on that day.
      */
     private ArrayList<Event> events = new ArrayList<>();
 
-    /**
-     * Default constructor
+    /*
+     * Default constructor.
      */
     public Day() {
     }
 
     /**
      * Constructor passing in a string containing a list
-     * of events in String form
+     * of events in String form.
      *
      * @param data the list of events
      */
@@ -40,7 +40,7 @@ public class Day {
     }
 
     /**
-     * Gets the date
+     * Gets the date.
      *
      * @return the date
      */
@@ -49,7 +49,7 @@ public class Day {
     }
 
     /**
-     * Sets the date
+     * Sets the date.
      *
      * @param date the date
      */
@@ -58,7 +58,7 @@ public class Day {
     }
 
     /**
-     * Gets the event
+     * Gets the event.
      *
      * @param eventNumber the event number (index in list)
      * @return the event at that index
@@ -68,7 +68,7 @@ public class Day {
     }
 
     /**
-     * Gets the list of events
+     * Gets the list of events.
      *
      * @return the list of events
      */
@@ -77,16 +77,7 @@ public class Day {
     }
 
     /**
-     * Gets the number of events in the list
-     *
-     * @return size of list
-     */
-    public int numOfEvents() {
-        return events.size();
-    }
-
-    /**
-     * Gets the string form of the object
+     * Gets the string form of the object.
      *
      * @return the string
      */

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -283,20 +284,21 @@ public class DisplayMonth extends AppCompatActivity {
                     colorThreadRun = true;
                     int c = DialogAction.headColor;
                     while (true) {
-                        if(c != DialogAction.headColor){
+                        if (c != DialogAction.headColor) {
                             colorThreadRun = false;
                             month_offset = 0;
                             viewedYear = currentYear;
                             startActivity(myIntent);
                             finish();
-
                             break;
                         }
                     }
                 }
             }
 
-            if (!colorThreadRun) {new ColorSetThread().start();}
+            if (!colorThreadRun) {
+                new ColorSetThread().start();
+            }
             return true;
         }
         //noinspection SimplifiableIfStatement
@@ -321,7 +323,6 @@ public class DisplayMonth extends AppCompatActivity {
             month_offset = 0;
             updateMonthView(0);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -364,7 +365,6 @@ public class DisplayMonth extends AppCompatActivity {
                 } else if (eventPosList.contains(pos)) {
                     view2.setBackgroundColor(ContextCompat.getColor(mGridView.getContext(),
                             DialogAction.dialogColor));
-//                    view2.setBackgroundColor(DialogAction.dialogColor);
                 } else {
                     view2.setBackgroundColor(DialogAction.defaultColor);
                 }
@@ -394,11 +394,9 @@ public class DisplayMonth extends AppCompatActivity {
 
         String days = jniGetEventsDb(Integer.toString(mon),
                 Integer.toString(viewedYear), filePath);
-        Log.e("EVENT DAYS", days);
-        Log.e("Viewed Year", Integer.toString(viewedYear));
-        Log.e("MONTH", Integer.toString(mon));
+
         String[] events = days.split("__");
-        ArrayList<Integer> eventDays = new ArrayList<Integer>();
+        ArrayList<Integer> eventDays = new ArrayList<>();
         if (days.length() > 0) {
             for (String s : events) {
                 eventDays.add(Integer.parseInt(s));
@@ -443,13 +441,13 @@ public class DisplayMonth extends AppCompatActivity {
                         int color = ((ColorDrawable) background).getColor();
 
                         if (color == currentDayColor) {
-                            currentDayPos = new Integer(position);
+                            currentDayPos = position;
                             color = DialogAction.defaultColor;
                         }
 
 
                         if (color == DialogAction.selectedColor) {
-                            Integer pos = new Integer(position);
+                            Integer pos = position;
                             if (position == currentDayPos) {
                                 view2.setBackgroundColor(currentDayColor);
                             } else if (eventPosList.contains(pos)) {
@@ -469,7 +467,7 @@ public class DisplayMonth extends AppCompatActivity {
                         } else if (color != DialogAction.outMonthColor) {
                             view2.setBackgroundColor(DialogAction.selectedColor);
 
-                            Integer pos = new Integer(position);
+                            Integer pos = position;
 
                             if (color == ContextCompat.getColor(mGridView.getContext(),
                                     DialogAction.dialogColor)) {
@@ -536,20 +534,20 @@ public class DisplayMonth extends AppCompatActivity {
         });
     }
 
+
     /**
-     * Refreshes activity
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * Is called when the display day activity is closed so that the Display month activity
+     * can be refreshed.
+     *
+     * @param requestCode   The request code originally supplied to startActivityForResult().
+     * @param resultCode    The result code returned by the child activity through its setResult().
+     * @param data          An Intent, which can return result data to the caller.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
-            //Intent refresh = new Intent(this, DisplayMonth.class);
-            //startActivity(refresh);
+        if (resultCode == RESULT_OK) {
             updateMonthView(month_offset);
-            //this.finish();
         }
     }
 
@@ -589,7 +587,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.setOrientation(LinearLayout.VERTICAL);
         dialogLayout.setPadding(50, 50, 50, 50);
         final TextView titleLabel = new TextView(this);
-        titleLabel.setText("Event Title:");
+        titleLabel.setText(R.string.label_dialog_title);
         dialogLayout.addView(titleLabel, 0);
         final EditText titleInput = new EditText(this);
         titleInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -598,7 +596,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(titleInput, 1);
 
         final TextView descriptLabel = new TextView(this);
-        descriptLabel.setText("Event Description:");
+        descriptLabel.setText(R.string.label_dialog_description);
         dialogLayout.addView(descriptLabel, 2);
         final EditText descriptInput = new EditText(this);
         descriptInput.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -607,7 +605,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(descriptInput, 3);
 
         final TextView startLabel = new TextView(this);
-        startLabel.setText("Start Time:");
+        startLabel.setText(R.string.label_dialog_start_time);
         dialogLayout.addView(startLabel, 4);
         startTime = new Button(this);
         startTime.setHint("Select time");
@@ -615,7 +613,7 @@ public class DisplayMonth extends AppCompatActivity {
         dialogLayout.addView(startTime, 5);
 
         final TextView endLabel = new TextView(this);
-        endLabel.setText("End Time");
+        endLabel.setText(R.string.label_dialog_end_time);
         dialogLayout.addView(endLabel, 6);
         endTime = new Button(this);
         endTime.setHint("Select time");
@@ -750,29 +748,32 @@ public class DisplayMonth extends AppCompatActivity {
 
     /**
      * Get current date
+     *
      * @return string for the current date
      */
     public native String jniGetCurrentDate();
 
-    /** Gets the events for a particular month and year (i.e. September 2017)
+    /**
+     * Gets the events for a particular month and year (i.e. September 2017)
      *
-     * @param month the month you want
-     * @param year the year
+     * @param month    the month you want
+     * @param year     the year
      * @param filePath path/to/database
      * @return events
      */
     public native String jniGetEventsDb(String month, String year, String filePath);
 
-    /** Creates an event on a particular date
+    /**
+     * Creates an event on a particular date
      *
-     * @param title the title of the event
-     * @param description description of the event
-     * @param start start time of the event
-     * @param finish finish time of the event
+     * @param title        the title of the event
+     * @param description  description of the event
+     * @param start        start time of the event
+     * @param finish       finish time of the event
      * @param selectedDate the start date of the event
-     * @param finishDate the last date the event will occur
-     * @param repeat how often the event repeats (i.e. daily, weekly, monthly)
-     * @param filepath path/to/database
+     * @param finishDate   the last date the event will occur
+     * @param repeat       how often the event repeats (i.e. daily, weekly, monthly)
+     * @param filepath     path/to/database
      * @return says if it got created or not (is later logged)
      */
     public native String jniCreateDbEvent(String title, String description, String start,
