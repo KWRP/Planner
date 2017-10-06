@@ -34,8 +34,8 @@ Setting up Android Studio
 2. Install android studio and start the application.
 3. On the startup menu, click on Configure and then select SDK Manager.
 
-If you are plan to run the application on you own android device, then select its 
-Androud version, otherwise just select the most recent API Level.
+If you plan to run the application on you own android device, then select your operating 
+Android version, otherwise select your preferred Android version, we recommend Android 7.1.
 
 - Click on the tab that says SDK Tools and make sure the following are ticked:<br />
 	- [x] Android SDK Build-Tools <br />
