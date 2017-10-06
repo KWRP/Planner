@@ -35,7 +35,9 @@ Setting up Android Studio
 3. On the startup menu, click on Configure and then select SDK Manager.
 
 If you plan to run the application on you own android device, then select your operating 
-Android version, otherwise select your preferred Android version, we recommend Android 7.1.
+Android version, otherwise select your preferred Android version. 
+<br />We recommend a physical android device as we cannot guarantee the performance of virtual systems.
+<br />We support Samsung Galaxy S4, S5, S6 and S7 using API's 21 to 25. Results may vary for other devices.
 
 - Click on the tab that says SDK Tools and make sure the following are ticked:<br />
 	- [x] Android SDK Build-Tools <br />
@@ -63,7 +65,7 @@ Android version, otherwise select your preferred Android version, we recommend A
    'Open an existing Android Studio project and locate the Planner-Gui project 
     in the cloned repository. 
 
-6. Once the project build you may get some errors about modules can't be loaded. 
+6. Once the project builds you may get some errors about modules can't be loaded. 
    Select to remove these files. If it fails to build, then you might not have
    selected all of the SDK components. 
    To fix this, just select the link to install the missing components below the error message.
