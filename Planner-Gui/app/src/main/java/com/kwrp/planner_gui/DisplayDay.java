@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.R.attr.dialogLayout;
+
 /**
  * Defines the display day activity where the user is shown
  * the events for a single day, and what the ability to add
@@ -47,6 +49,9 @@ public class DisplayDay extends AppCompatActivity {
     static {
         System.loadLibrary("calendar");
     }
+
+    /*Default forever date */
+    private static final String forever = "10/10/9999";
 
     /*List of eventItems*/
     private ArrayList<String> eventItems = new ArrayList<>();
@@ -360,7 +365,7 @@ public class DisplayDay extends AppCompatActivity {
                 newEvFinishTime = endTime.getText().toString();
                 newEvEndDate = finishDate.getText().toString();
 
-                if (newEvEndDate.compareTo("Forever") == 0) newEvEndDate = "10/10/9999";
+                if (newEvEndDate.compareTo("Forever") == 0) newEvEndDate = forever;
 
                 String repeat = Integer.toString(selectedRepeat);
                 if (newEvTitle.equals("") || newEvDescription.equals("") ||
@@ -458,7 +463,12 @@ public class DisplayDay extends AppCompatActivity {
         finishDate = new Button(this);
         finishDate.setHint("Select date");
         finishDate.setOnClickListener(endDateOnClick);
-        finishDate.setText(selectedEvent.getEndDate());
+        String date = selectedEvent.getEndDate();
+        if (date.compareTo(forever) == 0) {
+            finishDate.setText(R.string.input_default_repeat);
+        } else {
+            finishDate.setText(selectedEvent.getEndDate());
+        }
         finishDate.setTextSize(20);
         dialogLayout.addView(finishDate, 11);
 
@@ -484,7 +494,7 @@ public class DisplayDay extends AppCompatActivity {
                 newEvStartTime = startTime.getText().toString();
                 newEvFinishTime = endTime.getText().toString();
                 newEvEndDate = finishDate.getText().toString();
-                if (newEvEndDate.compareTo("Forever") == 0) newEvEndDate = "10/10/9999";
+                if (newEvEndDate.compareTo("Forever") == 0) newEvEndDate = forever;
 
                 String repeat = Integer.toString(selectedRepeat);
                 if (newEvTitle.equals("") || newEvDescription.equals("") ||
