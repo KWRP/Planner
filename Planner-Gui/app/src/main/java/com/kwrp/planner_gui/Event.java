@@ -10,28 +10,28 @@ import android.util.Log;
  * @author KWRP
  */
 public class Event {
-    /**
+    /*
      * The event ID
      */
     private String eventId;
     private String eventDate;
 
-    /**
+    /*
      * The event title
      */
     private String title;
 
-    /**
+    /*
      * The event description
      */
     private String description;
 
-    /**
+    /*
      * The event start time
      */
     private String startTime;
 
-    /**
+    /*
      * The event duration
      */
     private String finishTime;
@@ -67,6 +67,10 @@ public class Event {
         return eventId;
     }
 
+    /** Returns the end date
+     *
+     * @return String the end date
+     */
     public String getEndDate() { return endDate;}
 
     /**
@@ -86,9 +90,13 @@ public class Event {
     public String getDescription() {
         return description;
     }
-    public String getEventDate() { return eventDate; }
 
+    /** Gets the finish time
+     *
+     * @return String finish time
+     */
     public String getFinishTime() { return finishTime;}
+
     /**
      * Get the event start time
      *
